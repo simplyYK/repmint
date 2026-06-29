@@ -1,25 +1,25 @@
-# AGENTS.md: RepWise
+# AGENTS.md: RepMint
 
-This repository is for RepWise only.
+This repository is for RepMint only.
 
-RepWise is a camera-based form coach and trainer-style companion for everyday exercise. It uses a phone or webcam to give practical movement feedback, count reps, and summarize sets. Do not introduce unrelated brand or commerce context into this repo.
+RepMint is a camera-based form coach and trainer-style companion for everyday exercise. It uses a phone or webcam to give practical movement feedback, count reps, and summarize sets. Do not introduce unrelated brand or commerce context into this repo.
 
 ## Canonical Files
 
-- `brands/repwise/AGENTS.md`
-- `brands/repwise/PRD.md`
-- `brands/repwise/DESIGN.md`
+- `brands/repmint/AGENTS.md`
+- `brands/repmint/PRD.md`
+- `brands/repmint/DESIGN.md`
 
 ## Current Implementation
 
 - `app/page.tsx`
 - `app/globals.css`
 - `app/layout.tsx`
-- `public/images/repwise-hero.png`
+- `public/images/repmint-hero.png`
 
 ## Product Scope
 
-Position RepWise as a broader movement form coach, not a squat-only demo.
+Position RepMint as a broader movement form coach, not a squat-only demo.
 
 Supported language:
 
@@ -46,7 +46,7 @@ It is fine to say a first prototype may focus on a small set of movements. Do no
 
 ## Claim Safety
 
-RepWise is a coaching product, not clinical guidance.
+RepMint is a coaching product, not clinical guidance.
 
 Avoid clinical, safety, replacement, or guaranteed-outcome claims.
 

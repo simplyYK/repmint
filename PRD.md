@@ -1,16 +1,16 @@
-# RepWise Product Plan
+# RepMint Product Plan
 
 ## Overview
 
-RepWise is a camera-based form coach and trainer-style companion for everyday workouts. A user opens the app, chooses a movement, places a phone or laptop camera in view, performs a set, receives short real-time cues, and gets a concise set review afterward.
+RepMint is a camera-based form coach and trainer-style companion for everyday workouts. A user opens the app, chooses a movement, places a phone or laptop camera in view, performs a set, receives short real-time cues, and gets a concise set review afterward.
 
-The landing page should make the product feel useful beyond one exercise: RepWise is for movement practice, rep counting, form awareness, and post-set guidance across common strength and mobility patterns.
+The landing page should make the product feel useful beyond one exercise: RepMint is for movement practice, rep counting, form awareness, and post-set guidance across common strength and mobility patterns.
 
 ## Core Promise
 
 Your form coach, in your pocket.
 
-RepWise helps users train with more awareness by turning camera-based movement tracking into practical cues, sample metrics, and set summaries.
+RepMint helps users train with more awareness by turning camera-based movement tracking into practical cues, sample metrics, and set summaries.
 
 ## Primary User
 
@@ -23,7 +23,7 @@ RepWise helps users train with more awareness by turning camera-based movement t
 
 The first screen should show the product, not a generic hero. It should include:
 
-- RepWise wordmark.
+- RepMint wordmark.
 - Clear value proposition.
 - Generated or real training visual.
 - Pose-tracking overlay.
@@ -42,7 +42,7 @@ The first screen should show the product, not a generic hero. It should include:
 
 ## Movement Scope
 
-RepWise should be positioned as multi-movement from the start.
+RepMint should be positioned as multi-movement from the start.
 
 Initial movement profiles may include:
 
@@ -81,7 +81,7 @@ No backend is required for the landing page.
 
 ## Definition Of Done
 
-- Public UI and metadata use RepWise only.
+- Public UI and metadata use RepMint only.
 - Page communicates a broader form coach, not a squat-only demo.
 - Hero has a real visual asset and product preview.
 - Copy is concise, supportive, and claim-safe.

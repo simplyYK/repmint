@@ -1,8 +1,8 @@
-# RepWise Design System
+# RepMint Design System
 
 ## Design Read
 
-RepWise is a camera-based form coach and personal-trainer-style companion. The experience should feel focused, athletic, credible, and easy to read during movement.
+RepMint is a camera-based form coach and personal-trainer-style companion. The experience should feel focused, athletic, credible, and easy to read during movement.
 
 Design direction:
 
@@ -158,8 +158,8 @@ Avoid:
 
 ## Quality Checklist
 
-- RepWise only.
-- RepWise only.
+- RepMint only.
+- RepMint only.
 - No squat-only positioning.
 - Hero CTA visible without scroll.
 - Generated visual renders correctly.

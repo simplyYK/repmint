@@ -416,7 +416,7 @@ h1 {
 .metric-card,
 .phone-panel,
 .summary-panel,
-.highlight-section article {
+.investor-card {
   background: rgba(20, 26, 34, 0.88);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -462,11 +462,13 @@ h1 {
   margin-top: 10px;
 }
 
-.signal-strip,
+.motion-ticker,
 .movement-section,
+.scroll-story,
 .how-section,
-.highlight-section,
+.investor-section,
 .results-section,
+.waitlist-section,
 .site-footer {
   margin: 0 auto;
   max-width: var(--maxw);
@@ -474,18 +476,24 @@ h1 {
   padding-right: clamp(16px, 3vw, 30px);
 }
 
-.signal-strip {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.motion-ticker {
+  overflow: hidden;
   padding-bottom: clamp(58px, 8vw, 96px);
 }
 
-.signal-strip span {
+.motion-ticker div {
+  animation: tickerMove 24s linear infinite;
+  display: flex;
+  gap: 10px;
+  width: max-content;
+}
+
+.motion-ticker span {
   background: rgba(20, 26, 34, 0.66);
   border: 1px solid var(--line);
   border-radius: var(--radius-pill);
   color: var(--text-soft);
+  flex: 0 0 auto;
   font-weight: 760;
   padding: 13px 16px;
   text-align: center;
@@ -532,6 +540,67 @@ h2 {
   font-weight: 850;
   min-height: 108px;
   padding: 24px;
+}
+
+.scroll-story {
+  align-items: start;
+  display: grid;
+  gap: clamp(26px, 5vw, 72px);
+  grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+  padding-bottom: clamp(64px, 10vw, 120px);
+}
+
+.story-sticky {
+  position: sticky;
+  top: 96px;
+}
+
+.story-sticky p:last-child {
+  max-width: 46ch;
+}
+
+.story-cards {
+  display: grid;
+  gap: 18px;
+}
+
+.story-card,
+.investor-card {
+  background: rgba(20, 26, 34, 0.88);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.story-card {
+  min-height: 260px;
+  padding: clamp(24px, 4vw, 42px);
+  transform-origin: center top;
+}
+
+.story-card span {
+  color: var(--accent);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 850;
+  margin-bottom: 28px;
+}
+
+.story-card h3 {
+  font-size: clamp(1.7rem, 3vw, 3rem);
+  margin-bottom: 12px;
+}
+
+.story-card:nth-child(2) {
+  background:
+    linear-gradient(135deg, rgba(183, 255, 60, 0.12), transparent),
+    rgba(20, 26, 34, 0.9);
+}
+
+.story-card:nth-child(3) {
+  background:
+    linear-gradient(135deg, rgba(72, 229, 194, 0.12), transparent),
+    rgba(20, 26, 34, 0.9);
 }
 
 .how-section {
@@ -606,53 +675,55 @@ h2 {
   padding: 12px 14px;
 }
 
-.flow-content h2 {
-  max-width: 760px;
+.phone-copy {
+  max-width: 680px;
 }
 
-.flow-list {
+.principle-grid {
   display: grid;
-  gap: 1px;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 28px;
 }
 
-.flow-list article {
-  border-top: 1px solid var(--line);
-  display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(180px, 0.52fr) 1fr;
-  padding: 22px 0;
+.principle-grid span {
+  background: rgba(20, 26, 34, 0.86);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--text-soft);
+  font-weight: 760;
+  min-height: 92px;
+  padding: 18px;
 }
 
-.flow-list h3 {
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  margin: 0;
-}
-
-.flow-list p {
-  margin: 0;
-}
-
-.highlight-section {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: 1.2fr 0.9fr 1.05fr;
+.investor-section {
   padding-bottom: clamp(64px, 10vw, 120px);
 }
 
-.highlight-section article {
-  min-height: 250px;
+.investor-copy {
+  max-width: 860px;
+}
+
+.investor-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1.2fr 0.9fr 1.05fr;
+  margin-top: 32px;
+}
+
+.investor-card {
+  min-height: 260px;
   padding: clamp(22px, 3vw, 32px);
 }
 
-.highlight-section article:nth-child(2) {
+.investor-card:nth-child(2) {
   background:
     linear-gradient(135deg, rgba(72, 229, 194, 0.12), transparent),
     rgba(20, 26, 34, 0.9);
   transform: translateY(34px);
 }
 
-.highlight-section h3 {
+.investor-card h3 {
   font-size: clamp(1.35rem, 2.2vw, 2rem);
 }
 
@@ -709,6 +780,26 @@ h2 {
   margin-bottom: 0;
 }
 
+.waitlist-section {
+  align-items: center;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(183, 255, 60, 0.18), transparent 34%),
+    rgba(20, 26, 34, 0.92);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr auto;
+  margin-bottom: clamp(54px, 8vw, 96px);
+  padding-bottom: clamp(28px, 5vw, 52px);
+  padding-top: clamp(28px, 5vw, 52px);
+}
+
+.waitlist-section h2 {
+  margin-bottom: 0;
+  max-width: 900px;
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   display: flex;
@@ -751,10 +842,91 @@ h2 {
   }
 }
 
+@keyframes tickerMove {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal-block {
+    animation: revealUp both;
+    animation-range: entry 12% cover 34%;
+    animation-timeline: view();
+  }
+
+  .hero-product {
+    animation: productFloat both ease-out;
+    animation-range: exit 0% exit 88%;
+    animation-timeline: view();
+  }
+
+  .story-card {
+    animation: storyFocus both ease-out;
+    animation-range: entry 12% cover 46%;
+    animation-timeline: view();
+  }
+
+  .phone-shell {
+    animation: phoneTilt both ease-out;
+    animation-range: entry 10% cover 46%;
+    animation-timeline: view();
+  }
+}
+
+@keyframes productFloat {
+  from {
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    transform: translateY(28px) scale(0.97);
+  }
+}
+
+@keyframes storyFocus {
+  from {
+    opacity: 0.62;
+    transform: translateY(24px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes phoneTilt {
+  from {
+    transform: rotate(-3deg) translateY(26px);
+  }
+
+  to {
+    transform: rotate(1.5deg) translateY(0);
+  }
+}
+
 @media (max-width: 1100px) {
   .hero-coach,
   .coach-grid,
   .movement-section,
+  .scroll-story,
   .how-section,
   .results-section {
     grid-template-columns: 1fr;
@@ -764,13 +936,18 @@ h2 {
     min-height: auto;
   }
 
-  .metrics-rail {
+  .metrics-rail,
+  .principle-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
   }
 
   .metric-card-featured {
     grid-column: span 2;
+  }
+
+  .story-sticky {
+    position: static;
   }
 
   .body-frame {
@@ -813,9 +990,10 @@ h2 {
   }
 
   .metrics-rail,
-  .signal-strip,
+  .principle-grid,
   .summary-stats,
-  .highlight-section {
+  .investor-grid,
+  .waitlist-section {
     grid-template-columns: 1fr;
   }
 
@@ -823,15 +1001,11 @@ h2 {
     grid-column: span 1;
   }
 
-  .flow-list article {
-    grid-template-columns: 1fr;
-  }
-
   .phone-panel {
     min-height: auto;
   }
 
-  .highlight-section article:nth-child(2) {
+  .investor-card:nth-child(2) {
     transform: none;
   }
 
@@ -847,5 +1021,9 @@ h2 {
     animation: none !important;
     scroll-behavior: auto !important;
     transition-duration: 1ms !important;
+  }
+
+  .motion-ticker div {
+    transform: none;
   }
 }

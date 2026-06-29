@@ -1,10 +1,10 @@
-# App Plan - RepWise
+# App Plan - RepMint
 
 ## Overview
 
-RepWise is a browser-based form coach and personal-trainer-style companion. It uses camera-based pose tracking to count reps, provide practical movement cues, and generate concise set summaries for common exercises.
+RepMint is a browser-based form coach and personal-trainer-style companion. It uses camera-based pose tracking to count reps, provide practical movement cues, and generate concise set summaries for common exercises.
 
-The landing page presents RepWise as a broader movement coach, not a single-exercise demo.
+The landing page presents RepMint as a broader movement coach, not a single-exercise demo.
 
 ## Core Experience
 
@@ -19,7 +19,7 @@ User flow:
 
 ## Movement Profiles
 
-RepWise should support a profile-driven approach.
+RepMint should support a profile-driven approach.
 
 Initial profiles:
 
@@ -40,7 +40,7 @@ Each movement profile can define:
 - coaching language
 - summary logic
 
-This lets RepWise expand without hard-coding the whole product around one exercise.
+This lets RepMint expand without hard-coding the whole product around one exercise.
 
 ## User Interface
 
@@ -61,7 +61,7 @@ The first screen should show the live coach preview immediately.
 
 ## Landing Page Goals
 
-- Explain RepWise in one glance.
+- Explain RepMint in one glance.
 - Show the camera-based coach visually.
 - Communicate multi-movement support.
 - Make the product feel credible for home and gym use.
@@ -85,7 +85,7 @@ No backend is required for the current landing page.
 
 ## Safety And Claims
 
-RepWise is a coaching aid. Keep all claims practical, transparent, and outcome-safe.
+RepMint is a coaching aid. Keep all claims practical, transparent, and outcome-safe.
 
 Use practical cues:
 
@@ -108,7 +108,7 @@ Avoid fear-based or clinical language.
 
 ## Definition Of Done
 
-- Public page says RepWise only.
+- Public page says RepMint only.
 - Page communicates form coaching beyond one movement.
 - Generated visual asset is used in the hero.
 - Sample output is clearly framed.

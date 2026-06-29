@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RepWise | Form Coach In Your Pocket",
+  title: "RepMint | Form Coach In Your Pocket",
   description:
-    "RepWise is a camera-based form coach for rep counting, movement feedback, set review, and trainer-style cues across everyday exercises.",
+    "RepMint is a camera-based form coach for rep counting, movement feedback, set review, and trainer-style cues across everyday exercises.",
 };
 
 export default function RootLayout({

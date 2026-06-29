@@ -1,18 +1,18 @@
-# AGENTS.md: RepWise Build
+# AGENTS.md: RepMint Build
 
-RepWise is a camera-based form coach and personal-trainer-style companion for everyday workouts.
+RepMint is a camera-based form coach and personal-trainer-style companion for everyday workouts.
 
 The product uses a phone or webcam to observe movement, count reps, surface simple coaching cues, and summarize sets. It should feel useful for common strength and mobility movements, not only squats.
 
 ## Single Brand Rule
 
-This repo is RepWise only.
+This repo is RepMint only.
 
 Do not use unrelated brand, wellness, or commerce language.
 
 ## Product Positioning
 
-RepWise helps users train with more awareness when a coach is not nearby.
+RepMint helps users train with more awareness when a coach is not nearby.
 
 Preferred terms:
 
@@ -26,13 +26,13 @@ Preferred terms:
 - set review
 - practical coaching cues
 
-Avoid positioning RepWise as a clinician, medical product, or replacement for professional instruction.
+Avoid positioning RepMint as a clinician, medical product, or replacement for professional instruction.
 
 ## Experience Goal
 
 A polished product flow should let a user:
 
-1. Open RepWise.
+1. Open RepMint.
 2. Choose a movement.
 3. Place their phone or laptop camera in view.
 4. Start a set.
@@ -72,7 +72,7 @@ Movement profiles can define landmarks, phases, thresholds, scoring rules, and c
 
 ## Claim Safety
 
-RepWise is not clinical guidance.
+RepMint is not clinical guidance.
 
 Never make clinical, safety, replacement, or guaranteed-outcome claims.
 

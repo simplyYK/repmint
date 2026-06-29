@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-repwise/types/**/*.ts"
+    ".next-repmint/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
