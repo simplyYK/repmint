@@ -26,10 +26,9 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".next-dusk/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-repmint/types/**/*.ts"
+    ".next-repwise/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

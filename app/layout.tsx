@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RepMint | Webcam Squat Coach",
+  title: "RepWise | Form Coach In Your Pocket",
   description:
-    "RepMint is a browser-based demo for live squat rep counting, form scoring, and practical coaching cues from a webcam session.",
+    "RepWise is a camera-based form coach for rep counting, movement feedback, set review, and trainer-style cues across everyday exercises.",
 };
 
 export default function RootLayout({

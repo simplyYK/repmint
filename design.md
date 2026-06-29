@@ -1,15 +1,7 @@
-# AI Lab Design Router
+# RepWise Design Index
 
-This lowercase file mirrors `DESIGN.md` because prior sessions referenced both names. Keep both aligned.
+Use `brands/repwise/DESIGN.md` for RepWise visual, UX, and interaction guidance.
 
-## DUSK
+The active app is a dark athletic landing page for a camera-based form coach. Keep the visual language focused on training, movement feedback, phone-camera coaching, and concise set review.
 
-Use `brands/dusk/DESIGN.md` for DUSK visual, UX, and copy-style guidance.
-
-## RepMint
-
-Use `brands/repmint/DESIGN.md` for RepMint visual, UX, and interaction guidance.
-
-## Rule
-
-Never blend the DUSK supplement/ecommerce identity with the RepMint webcam-coaching identity unless the user explicitly asks for a cross-brand comparison.
+Do not introduce unrelated wellness, commerce, or old-name design language.

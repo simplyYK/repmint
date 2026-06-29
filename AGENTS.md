@@ -1,104 +1,68 @@
-# AGENTS.md: AI Lab Brand Router
+# AGENTS.md: RepWise
 
-This workspace is an AI lab for multiple brands. Do not assume every project file belongs to the same product.
+This repository is for RepWise only.
 
-## First Step For Every New Prompt
+RepWise is a camera-based form coach and trainer-style companion for everyday exercise. It uses a phone or webcam to give practical movement feedback, count reps, and summarize sets. Do not introduce unrelated brand or commerce context into this repo.
 
-Before planning, writing, building, or using subagents, classify the request as one of:
+## Canonical Files
 
-1. `DUSK`
-2. `RepMint`
-3. `Multi-brand / lab operations`
-4. `Unclear`
+- `brands/repwise/AGENTS.md`
+- `brands/repwise/PRD.md`
+- `brands/repwise/DESIGN.md`
 
-Use the user's latest message as the strongest signal. If the user names a brand, that brand wins even if other files mention a different product.
-
-If a prompt asks to "read AGENTS.md, PRD.md, DESIGN.md, memory/MEMORY.md, memory/lessons.md, tasks/todo.md", read those files, then follow this router and the brand-specific files below.
-
-## Brand Routing
-
-### DUSK
-
-Route to DUSK when the prompt mentions:
-
-- DUSK
-- gummies, supplements, functional gummies
-- sleep support, stress support, wind-down, calm routine
-- guided quiz, formula match, subscription purchase, checkout, subscription management
-- launch strategy, segments, landing pages, outreach, email sequences, conversion copy for DUSK
-
-Canonical files:
-
-- `brands/dusk/AGENTS.md`
-- `brands/dusk/PRD.md`
-- `brands/dusk/DESIGN.md`
-
-Current implementation files for DUSK:
+## Current Implementation
 
 - `app/page.tsx`
 - `app/globals.css`
-- `public/images/`
-- `dusk-final-deploy/`
-- `dusk-static-deploy/`
+- `app/layout.tsx`
+- `public/images/repwise-hero.png`
 
-### RepMint
+## Product Scope
 
-Route to RepMint when the prompt mentions:
+Position RepWise as a broader movement form coach, not a squat-only demo.
 
-- RepMint
-- webcam fitness coach
-- MediaPipe, BlazePose, pose landmarks
-- squats, rep counting, form scoring, exercise cues
-- React + Vite hackathon demo for live movement coaching
+Supported language:
 
-Canonical files:
+- form coach
+- trainer-style guidance
+- personal trainer in your pocket
+- camera-based movement feedback
+- rep counting
+- set review
+- movement profiles
+- exercise library
+- practical coaching cues
 
-- `brands/repmint/AGENTS.md`
-- `brands/repmint/PRD.md`
-- `brands/repmint/DESIGN.md`
+Allowed first movements:
 
-Important note: the current root app is a Next.js DUSK site. RepMint implementation may need a separate app folder or new project setup if the user asks to build it.
+- squats
+- lunges
+- push-ups
+- hinges
+- planks
+- mobility drills
 
-### Multi-brand / Lab Operations
+It is fine to say a first prototype may focus on a small set of movements. Do not make the whole brand identity squat-only.
 
-Route here when the user asks to organize files, update memory, create process docs, compare brands, or set up instructions for future agents.
+## Claim Safety
 
-Use:
+RepWise is a coaching product, not clinical guidance.
 
-- root `AGENTS.md`
-- root `PRD.md`
-- root `DESIGN.md`
-- `memory/MEMORY.md`
-- `memory/lessons.md`
-- `tasks/todo.md`
+Avoid clinical, safety, replacement, or guaranteed-outcome claims.
 
-## If The Request Is Unclear
+Use practical wording instead:
 
-Do not guess silently when the work could affect files, strategy, or brand claims. Ask one concise clarification question:
+- train with more awareness
+- move with better control
+- get clear real-time feedback
+- review what to focus on next
+- improve consistency over time
 
-"Is this for DUSK, RepMint, or both?"
+## Build Rules
 
-If the request is read-only and the likely brand is obvious from the prompt, proceed and state the routing assumption.
-
-## Cross-Brand Rules
-
-- Do not mix DUSK supplement copy into RepMint fitness coaching.
-- Do not mix RepMint webcam/exercise architecture into DUSK ecommerce strategy.
-- Do not overwrite brand-specific docs with another brand's context.
-- For strategy/copy tasks, return the plan in chat unless the user explicitly asks to create or edit files.
-- For build tasks, inspect the relevant implementation files first and keep changes scoped to the routed brand.
-- Keep workspace memory current when the user corrects routing, strategy, or process.
-
-## DUSK Claim Safety
-
-DUSK is a wellness supplement brand, not a medical product.
-
-Never claim DUSK cures, treats, prevents, or diagnoses any disease or condition. Avoid medical promises, fake proof, exaggerated outcomes, fear-based language, and candy-like positioning.
-
-Use calm, premium, trustworthy, science-informed, warm, conversion-focused language.
-
-## RepMint Claim Safety
-
-RepMint is a coaching demo, not a medical device.
-
-Avoid injury-prevention, diagnosis, treatment, or medical-grade analysis claims. Use practical coaching cues and transparent form-scoring language.
+- Keep the first screen product-led, not a generic marketing splash.
+- Use real visual assets or generated bitmap visuals for major hero/product moments.
+- Keep CTAs short and consistent.
+- Keep copy direct, supportive, and non-medical.
+- Keep generated or demo numbers clearly framed as sample session output.
+- Do not push old exports, zips, duplicate backup pages, temp folders, or screenshots.

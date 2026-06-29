@@ -13,9 +13,7 @@ const eslintConfig = [
   {
     ignores: [
       ".next/**",
-      ".next-dusk/**",
-      "dusk-static-deploy/**",
-      "dusk-final-deploy*/**",
+      ".next-repwise/**",
       "node_modules/**",
       "next-env.d.ts",
       "screenshots/**",

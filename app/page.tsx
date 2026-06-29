@@ -1,80 +1,110 @@
-const metrics = [
-  { label: "Reps", value: "12", note: "current set" },
-  { label: "Form score", value: "86", note: "live average" },
-  { label: "Phase", value: "Bottom", note: "squat state" },
-  { label: "Timer", value: "01:38", note: "set time" },
+import Image from "next/image";
+
+const liveMetrics = [
+  { label: "Reps", value: "12", note: "sample set", featured: true },
+  { label: "Tempo", value: "Good", note: "steady pace" },
+  { label: "Range", value: "Clean", note: "full enough" },
+  { label: "Cue", value: "Control", note: "next focus" },
 ];
 
-const cues = [
-  "Try a little more depth",
-  "Keep your chest lifted",
-  "Move with control",
-  "Stay centered",
+const coachingModes = [
+  "Squats",
+  "Lunges",
+  "Push-ups",
+  "Hinges",
+  "Planks",
+  "Mobility",
 ];
 
 const flow = [
   {
-    title: "Camera starts locally",
-    copy: "RepMint asks for webcam access and keeps frames in the browser for the current session.",
+    title: "Choose a movement",
+    copy: "Pick the exercise you are training and RepWise loads the right movement profile.",
   },
   {
-    title: "Pose landmarks appear",
-    copy: "MediaPipe-style body points make the demo visible, inspectable, and easy to judge.",
+    title: "Set your phone down",
+    copy: "The camera watches body position locally while you move through the set.",
   },
   {
-    title: "Squats become signals",
-    copy: "Knee, hip, and torso angles feed a simple state machine for rep counting.",
+    title: "Follow one cue",
+    copy: "RepWise keeps feedback short, so you can adjust without pausing your workout.",
   },
   {
-    title: "The set ends clearly",
-    copy: "Reps, score, duration, common cue, and a short local coaching note appear after End Set.",
+    title: "Review the set",
+    copy: "See reps, control, range, tempo, and what to focus on next time.",
   },
 ];
 
-const checks = [
-  "Depth reached",
-  "Chest position",
-  "Controlled tempo",
-  "Centered frame",
-  "Rep completion",
+const highlights = [
+  {
+    title: "Trainer-style cues",
+    copy: "Simple prompts help you move with better control during real sets, not after the moment is gone.",
+  },
+  {
+    title: "Multi-movement profiles",
+    copy: "Start with the basics and expand across strength, mobility, and bodyweight practice.",
+  },
+  {
+    title: "Built for solo training",
+    copy: "Use RepWise when you are at home, traveling, or training without a coach nearby.",
+  },
+];
+
+const results = [
+  ["Total reps", "12"],
+  ["Best set cue", "Control"],
+  ["Range", "Clean"],
+  ["Tempo", "Steady"],
 ];
 
 export default function Home() {
   return (
     <main className="app-shell" id="top">
       <header className="top-bar" aria-label="Primary navigation">
-        <a className="wordmark" href="#top" aria-label="RepMint home">
-          RepMint
+        <a className="wordmark" href="#top" aria-label="RepWise home">
+          RepWise
         </a>
         <nav className="nav-links" aria-label="Page sections">
           <a href="#coach">Coach</a>
-          <a href="#flow">Flow</a>
-          <a href="#summary">Summary</a>
+          <a href="#movements">Movements</a>
+          <a href="#results">Results</a>
         </nav>
         <a className="top-action" href="#coach">
-          Start Set
+          Start Training
         </a>
       </header>
 
       <section className="hero-coach" id="coach" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <p className="micro-label">Webcam squat coach</p>
-          <h1 id="hero-title">Real-time reps. Clear form cues.</h1>
+          <p className="micro-label">RepWise</p>
+          <h1 id="hero-title">Your form coach, in your pocket.</h1>
           <p className="hero-text">
-            RepMint turns a webcam squat set into live rep counting, simple scoring, and one readable cue at a time.
+            RepWise watches your movement, counts reps, and gives simple coaching cues across the exercises you already do.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#summary">
-              View Demo
+            <a className="button button-primary" href="#results">
+              Start Training
             </a>
-            <a className="button button-secondary" href="#flow">
-              See Flow
+            <a className="button button-secondary" href="#how">
+              See Results
             </a>
           </div>
+          <p className="trust-line">
+            No wearables. No guesswork. Just guided movement feedback from your camera.
+          </p>
         </div>
 
-        <div className="coach-grid" aria-label="RepMint live coach preview">
-          <section className="video-stage" aria-label="Webcam preview with pose overlay">
+        <div className="coach-grid" aria-label="RepWise live coach preview">
+          <section className="video-stage" aria-label="Camera preview with movement overlay">
+            <Image
+              className="coach-photo"
+              src="/images/repwise-hero.png"
+              alt="Athlete training at home with subtle pose tracking overlay"
+              width={1586}
+              height={992}
+              priority
+            />
+            <div className="stage-scrim" />
             <div className="stage-topline">
               <span>Tracking</span>
               <span>Local session</span>
@@ -97,13 +127,16 @@ export default function Home() {
               <span className="bone right-shin" />
             </div>
             <div className="cue-panel" aria-live="polite">
-              Try a little more depth
+              Move with control
             </div>
           </section>
 
-          <aside className="metrics-rail" aria-label="Live metrics">
-            {metrics.map((metric) => (
-              <article className="metric-card" key={metric.label}>
+          <aside className="metrics-rail" aria-label="Sample live metrics">
+            {liveMetrics.map((metric) => (
+              <article
+                className={metric.featured ? "metric-card metric-card-featured" : "metric-card"}
+                key={metric.label}
+              >
                 <span>{metric.label}</span>
                 <strong>{metric.value}</strong>
                 <small>{metric.note}</small>
@@ -113,107 +146,97 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="state-strip" aria-label="Demo states">
-        <article>
-          <strong>Loading</strong>
-          <span>Loading pose model</span>
-        </article>
-        <article>
-          <strong>Permission</strong>
-          <span>Retry Camera</span>
-        </article>
-        <article>
-          <strong>No person</strong>
-          <span>Step back into frame</span>
-        </article>
-        <article>
-          <strong>Tracking</strong>
-          <span>Good rep</span>
-        </article>
+      <section className="signal-strip" aria-label="RepWise product signals">
+        <span>Camera-based feedback</span>
+        <span>Exercise library</span>
+        <span>Rep counting</span>
+        <span>Set review</span>
       </section>
 
-      <section className="flow-section" id="flow" aria-labelledby="flow-title">
+      <section className="movement-section" id="movements" aria-labelledby="movement-title">
         <div className="section-copy">
-          <h2 id="flow-title">The demo flow is built for judges.</h2>
+          <h2 id="movement-title">Coaching that moves with you.</h2>
           <p>
-            One reliable squat workflow, clear browser-only architecture, and visible feedback from camera permission to set summary.
+            RepWise is designed around movement profiles, so feedback can stay specific without pretending every exercise works the same way.
           </p>
         </div>
-        <div className="flow-grid">
-          {flow.map((item) => (
-            <article key={item.title}>
-              <h3>{item.title}</h3>
-              <p>{item.copy}</p>
-            </article>
+        <div className="movement-cloud" aria-label="Supported movement examples">
+          {coachingModes.map((mode) => (
+            <span key={mode}>{mode}</span>
           ))}
         </div>
       </section>
 
-      <section className="scoring-section" aria-labelledby="scoring-title">
-        <div className="score-card">
-          <span>Live score</span>
-          <strong>86</strong>
-          <p>Transparent rules produce a simple score. No medical claims, no hidden model magic.</p>
+      <section className="how-section" id="how" aria-labelledby="how-title">
+        <div className="phone-panel" aria-label="RepWise phone result preview">
+          <div className="phone-shell">
+            <div className="phone-top">
+              <strong>RepWise</strong>
+              <span>Set complete</span>
+            </div>
+            <div className="phone-score">
+              <span>Next focus</span>
+              <strong>Control</strong>
+            </div>
+            <div className="phone-rows">
+              <span>12 reps counted</span>
+              <span>Range looked clean</span>
+              <span>Tempo stayed steady</span>
+            </div>
+          </div>
         </div>
-        <div className="scoring-copy">
-          <h2 id="scoring-title">Coaching cues stay practical.</h2>
-          <p>
-            RepMint chooses one short instruction at a time, so the user can keep moving without reading a wall of text.
-          </p>
-          <div className="cue-list" aria-label="Example cues">
-            {cues.map((cue) => (
-              <span key={cue}>{cue}</span>
+        <div className="flow-content">
+          <h2 id="how-title">From camera to cue in one set.</h2>
+          <div className="flow-list">
+            {flow.map((item) => (
+              <article key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="summary-section" id="summary" aria-labelledby="summary-title">
-        <div className="summary-panel">
-          <div>
-            <h2 id="summary-title">Set summary</h2>
-            <p>
-              12 reps completed with an 86 average score. Best rep was 92. Most common cue: try a little more depth.
-            </p>
-          </div>
-          <dl className="summary-stats">
-            <div>
-              <dt>Total reps</dt>
-              <dd>12</dd>
-            </div>
-            <div>
-              <dt>Average</dt>
-              <dd>86</dd>
-            </div>
-            <div>
-              <dt>Best</dt>
-              <dd>92</dd>
-            </div>
-            <div>
-              <dt>Duration</dt>
-              <dd>01:38</dd>
-            </div>
-          </dl>
+      <section className="highlight-section" aria-label="RepWise benefits">
+        {highlights.map((item) => (
+          <article key={item.title}>
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="results-section" id="results" aria-labelledby="results-title">
+        <div className="results-copy">
+          <h2 id="results-title">A smarter way to finish a set.</h2>
+          <p>
+            After training, RepWise turns the session into a short review: what looked solid, what needs attention, and what to try next.
+          </p>
           <a className="button button-primary" href="#coach">
-            Start New Set
+            Start Training
           </a>
         </div>
-
-        <div className="check-panel" aria-label="Scoring checks">
-          <h3>Form checks</h3>
-          {checks.map((check) => (
-            <div className="check-row" key={check}>
-              <span>{check}</span>
-              <strong>Checked</strong>
-            </div>
-          ))}
+        <div className="summary-panel" aria-label="Sample set summary">
+          <p className="sample-label">Sample session</p>
+          <dl className="summary-stats">
+            {results.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p>
+            Good set. Keep your range consistent and stay patient through the lowering phase.
+          </p>
         </div>
       </section>
 
       <footer className="site-footer">
-        <strong>RepMint</strong>
+        <strong>RepWise</strong>
         <p>
-          Browser-based movement coaching demo. RepMint is not a medical device and does not diagnose, treat, or prevent conditions.
+          Camera-based coaching feedback for training awareness. RepWise is not a substitute for professional health advice.
         </p>
       </footer>
     </main>

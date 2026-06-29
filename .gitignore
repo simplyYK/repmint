@@ -1,7 +1,6 @@
 node_modules
 .next
-.next-dusk
-.next-repmint
+.next-repwise
 out
 .npm-cache
 *.log

@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-  distDir: ".next-repmint",
+  distDir: ".next-repwise",
   images: {
     unoptimized: true,
   },
