@@ -14,9 +14,9 @@
   --accent-2: #48e5c2;
   --warn: #ffb84d;
   --video-bg: #05070a;
-  --font-display: "Satoshi", "Geist", system-ui, sans-serif;
-  --font-ui: "Geist", "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+  --font-display: "Satoshi", var(--font-geist-sans), system-ui, sans-serif;
+  --font-ui: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, monospace;
   --radius-md: 16px;
   --radius-lg: 24px;
   --radius-pill: 999px;
@@ -75,7 +75,8 @@ p {
 
 .app-shell {
   min-height: 100dvh;
-  overflow: hidden;
+  /* overflow: hidden breaks position:sticky — use clip which doesn't create a scroll container */
+  overflow-x: clip;
 }
 
 .top-bar {
@@ -235,8 +236,8 @@ h1 {
 
 .stage-scrim {
   background:
-    linear-gradient(90deg, rgba(5, 7, 10, 0.72), transparent 58%),
-    linear-gradient(180deg, rgba(5, 7, 10, 0.12), rgba(5, 7, 10, 0.72));
+    linear-gradient(90deg, rgba(5, 7, 10, 0.48), transparent 58%),
+    linear-gradient(180deg, rgba(5, 7, 10, 0.08), rgba(5, 7, 10, 0.62));
   inset: 0;
   position: absolute;
   z-index: 1;
@@ -825,6 +826,70 @@ h2 {
   flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-end;
+}
+
+.waitlist-form,
+.waitlist-form-wrap {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 260px;
+}
+
+.waitlist-input {
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  min-height: 48px;
+  padding: 0 20px;
+  transition: border-color 180ms ease;
+}
+
+.waitlist-input::placeholder {
+  color: var(--text-muted);
+}
+
+.waitlist-input:focus {
+  border-color: var(--accent);
+  outline: 0;
+}
+
+.waitlist-input:disabled {
+  opacity: 0.5;
+}
+
+.waitlist-confirm {
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 760;
+  margin: 0;
+}
+
+.waitlist-error {
+  color: var(--warn);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.waitlist-error a {
+  color: var(--warn);
+  text-decoration: underline;
+}
+
+.waitlist-survey-link {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 760;
+  text-align: right;
+  transition: color 180ms ease;
+}
+
+.waitlist-survey-link:hover {
+  color: var(--text-soft);
 }
 
 .site-footer {

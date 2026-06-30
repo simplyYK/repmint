@@ -1,4 +1,5 @@
 import Image from "next/image";
+import WaitlistForm from "./components/WaitlistForm";
 
 const liveMetrics = [
   { label: "Today", value: "Push", note: "sample plan", featured: true },
@@ -67,6 +68,15 @@ const planCards = [
   },
 ];
 
+const tickerItems = [
+  "Camera feedback",
+  "Goal-based plans",
+  "Time under tension",
+  "Supersets",
+  "Rep counting",
+  "Progress tracking",
+];
+
 export default function Home() {
   return (
     <main className="app-shell" id="top">
@@ -80,7 +90,7 @@ export default function Home() {
           <a href="#traction">Why Now</a>
         </nav>
         <a className="top-action" href="#waitlist">
-          Join Pilot
+          Get Access
         </a>
       </header>
 
@@ -93,7 +103,7 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#waitlist">
-              Join Pilot
+              Get Early Access
             </a>
             <a className="button button-secondary" href="#engine">
               See How It Works
@@ -144,29 +154,24 @@ export default function Home() {
 
           <aside className="metrics-rail" aria-label="Sample live metrics">
             {liveMetrics.map((metric) => (
-              <article
+              <div
                 className={metric.featured ? "metric-card metric-card-featured" : "metric-card"}
                 key={metric.label}
               >
                 <span>{metric.label}</span>
                 <strong>{metric.value}</strong>
                 <small>{metric.note}</small>
-              </article>
+              </div>
             ))}
           </aside>
         </div>
       </section>
 
       <section className="motion-ticker" aria-label="RepMint product capabilities">
-        <div>
-          <span>Camera feedback</span>
-          <span>Goal-based plans</span>
-          <span>Time under tension</span>
-          <span>Supersets</span>
-          <span>Rep counting</span>
-          <span>Progress tracking</span>
-          <span>Camera feedback</span>
-          <span>Goal-based plans</span>
+        <div aria-hidden="true">
+          {[...tickerItems, ...tickerItems].map((item, i) => (
+            <span key={i}>{item}</span>
+          ))}
         </div>
       </section>
 
@@ -262,7 +267,7 @@ export default function Home() {
             RepMint turns a finished set into a short review of reps, TUT, tempo, and what the user should focus on in the next set or session.
           </p>
           <a className="button button-primary" href="#waitlist">
-            Join Pilot
+            Get Early Access
           </a>
         </div>
         <div className="summary-panel" aria-label="Sample set summary">
@@ -289,14 +294,7 @@ export default function Home() {
             Join the pilot list if you train solo and want goal-based workouts with camera-based set feedback.
           </p>
         </div>
-        <div className="waitlist-actions">
-          <a className="button button-primary" href="mailto:hello@repmint.ai?subject=RepMint%20pilot%20request&body=Hi%20RepMint%2C%0A%0AI%27d%20like%20to%20join%20the%20pilot.%0A%0AMy%20main%20training%20goal%3A%0AMy%20current%20routine%3A%0AWhat%20I%20want%20help%20with%3A">
-            Join Pilot
-          </a>
-          <a className="button button-secondary" href="mailto:hello@repmint.ai?subject=RepMint%20survey&body=Hi%20RepMint%2C%0A%0AI%27d%20like%20to%20answer%20the%20validation%20survey.">
-            Take Survey
-          </a>
-        </div>
+        <WaitlistForm />
       </section>
 
       <footer className="site-footer">
