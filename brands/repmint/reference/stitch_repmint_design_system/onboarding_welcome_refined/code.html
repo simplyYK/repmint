@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>RepMint - AI Performance Coaching</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&amp;f[]=geist@400,700&amp;f[]=jetbrains-mono@400,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;family=Satoshi:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .glass-panel {
+            background: rgba(20, 26, 34, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 247, 251, 0.12);
+        }
+
+        .kinetic-glow {
+            box-shadow: inset 0 0 20px rgba(176, 247, 52, 0.05), 0 0 40px rgba(176, 247, 52, 0.1);
+        }
+
+        body {
+            background-color: #111317;
+            overflow-x: hidden;
+        }
+
+        /* Prevent scroll bounce on iOS */
+        html, body {
+            position: fixed;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .vignette-overlay {
+            background: radial-gradient(circle at center, transparent 0%, rgba(5, 7, 10, 0.4) 70%, rgba(5, 7, 10, 0.9) 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "bg-raised": "#0e1319",
+                        "surface-bright": "#37393d",
+                        "on-secondary-fixed": "#002019",
+                        "camera-bg": "#05070a",
+                        "inverse-surface": "#e2e2e6",
+                        "secondary-fixed": "#63fbd7",
+                        "surface-container": "#1e2023",
+                        "primary": "#ffffff",
+                        "surface-container-lowest": "#0c0e11",
+                        "surface-container-highest": "#333538",
+                        "surface-strong": "#263342",
+                        "surface-variant": "#333538",
+                        "critical": "#ff6b7f",
+                        "outline-variant": "#424935",
+                        "surface": "#141a22",
+                        "on-surface-variant": "#c2caaf",
+                        "text-inverse": "#10141b",
+                        "tertiary": "#ffffff",
+                        "on-tertiary-container": "#8a5a00",
+                        "on-tertiary": "#452b00",
+                        "surface-container-high": "#282a2d",
+                        "on-tertiary-fixed": "#291800",
+                        "inverse-primary": "#456800",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "on-error": "#690005",
+                        "overlay-line": "rgba(183, 255, 60, 0.92)",
+                        "background": "#111317",
+                        "surface-container-low": "#1a1c1f",
+                        "surface-raised": "#1c2430",
+                        "on-secondary-container": "#004b3d",
+                        "text-muted": "#8794a4",
+                        "tertiary-fixed": "#ffddb3",
+                        "on-primary-fixed-variant": "#334f00",
+                        "on-primary": "#223600",
+                        "on-surface": "#e2e2e6",
+                        "secondary": "#42e1be",
+                        "tertiary-container": "#ffddb3",
+                        "primary-fixed": "#b0f734",
+                        "on-primary-fixed": "#121f00",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed-variant": "#005142",
+                        "primary-container": "#b0f734",
+                        "secondary-fixed-dim": "#3edebb",
+                        "on-secondary": "#00382d",
+                        "surface-tint": "#96da06",
+                        "on-error-container": "#ffdad6",
+                        "text-soft": "#c8d2df",
+                        "tertiary-fixed-dim": "#ffb951",
+                        "inverse-on-surface": "#2f3034",
+                        "on-primary-container": "#4a6f00",
+                        "primary-fixed-dim": "#96da06",
+                        "secondary-container": "#00c4a3",
+                        "outline": "#8c947b",
+                        "on-background": "#e2e2e6",
+                        "surface-dim": "#111317",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "margin-desktop": "30px",
+                        "lg": "24px",
+                        "margin-mobile": "16px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "metric-lg": ["JetBrains Mono"],
+                        "body-bold": ["Geist"],
+                        "section-heading": ["Satoshi"],
+                        "cue-text-mobile": ["Geist"],
+                        "metric-lg-mobile": ["JetBrains Mono"],
+                        "label-mono": ["JetBrains Mono"],
+                        "cue-text": ["Geist"],
+                        "body-base": ["Geist"],
+                        "display-title": ["Satoshi"]
+                    },
+                    "fontSize": {
+                        "metric-lg": ["88px", {"lineHeight": "0.95", "fontWeight": "850"}],
+                        "body-bold": ["16px", {"lineHeight": "1.62", "fontWeight": "780"}],
+                        "section-heading": ["32px", {"lineHeight": "0.98", "fontWeight": "800"}],
+                        "cue-text-mobile": ["22px", {"lineHeight": "1.2", "fontWeight": "850"}],
+                        "metric-lg-mobile": ["48px", {"lineHeight": "0.95", "fontWeight": "850"}],
+                        "label-mono": ["13px", {"lineHeight": "1.0", "letterSpacing": "0.12em", "fontWeight": "850"}],
+                        "cue-text": ["40px", {"lineHeight": "1.2", "fontWeight": "850"}],
+                        "body-base": ["16px", {"lineHeight": "1.62", "fontWeight": "400"}],
+                        "display-title": ["48px", {"lineHeight": "0.92", "fontWeight": "850"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Hero Background Layer -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-camera-bg">
+<div class="w-full h-full relative overflow-hidden" data-alt="A powerful, high-contrast cinematic shot of a professional athlete in a dark, tech-infused training facility. Electric lime neon light strips outline the sleek architecture, casting a futuristic glow. Digital pose-estimation skeleton overlays are subtly visible on the athlete's body, highlighting technical biomechanics. The atmosphere is premium, moody, and hyper-focused, dominated by deep obsidian tones with sharp kinetic energy accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwNkkOJV06ye3r9VUhchBORav6leVoSAMWJAe_IHUueeo_mzvxPYL825pMmDwD0wGVKDgkL2prj1CnrMJNOu0rzvO4S0dUArPai5ywbZ3Q9VbcTjV18p3DtkJ6L6-58PtottcKRQcTxS57QypYeSzcTg7j96RYL66vYhfWEv2KdsOGYya1njs0IBBP-IcJdb-H3IypQ9zIAoJ9KG6Ftcwz6u3T_x6Oe5H4OYShNuqVMkcSr0_wdHrde1JGzM_2t1bNnS8fCHBKS7T_')">
+</div>
+<div class="absolute inset-0 vignette-overlay"></div>
+<!-- Atmospheric Shader -->
+
+</div>
+</div>
+<!-- UI Layer -->
+<div class="relative z-10 flex flex-col min-h-screen">
+<!-- TopAppBar - Mapped from JSON -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/90 backdrop-blur-md border-b border-outline-variant/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="videocam">videocam</span>
+<h1 class="font-display-title text-2xl tracking-tighter text-on-surface">RepMint</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity" data-icon="sensors">sensors</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col justify-end px-margin-mobile pb-12 pt-32 max-w-lg mx-auto md:max-w-4xl md:px-margin-desktop lg:justify-center">
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+<!-- Headline Area -->
+<div class="space-y-4">
+<div class="inline-flex items-center px-3 py-1 rounded-full bg-primary-fixed/10 border border-primary-fixed/20">
+<span class="material-symbols-outlined text-primary-fixed text-sm mr-2" data-icon="bolt" data-weight="fill">bolt</span>
+<span class="font-label-mono text-primary-fixed uppercase tracking-widest text-[10px]">Next-Gen Coaching</span>
+</div>
+<h2 class="font-display-title text-primary text-5xl md:text-7xl leading-[0.9] tracking-tighter uppercase italic">
+                        Your AI <br/>
+<span class="text-primary-fixed">Trainer</span> <br/>
+                        Awaits
+                    </h2>
+</div>
+<!-- Features Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Feature 1 -->
+<div class="glass-panel p-6 rounded-xl kinetic-glow group">
+<div class="flex items-start gap-4">
+<div class="p-3 rounded-lg bg-surface-container-highest">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="visibility">visibility</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-body-bold text-primary">Camera-Based Coaching</h3>
+<p class="font-body-base text-text-soft text-sm leading-snug">Real-time biomechanical analysis that tracks your form with sub-centimeter precision, ensuring every rep counts.</p>
+</div>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="glass-panel p-6 rounded-xl kinetic-glow group">
+<div class="flex items-start gap-4">
+<div class="p-3 rounded-lg bg-surface-container-highest">
+<span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
+</div>
+<div class="space-y-1">
+<h3 class="font-body-bold text-primary">Time Under Tension</h3>
+<p class="font-body-base text-text-soft text-sm leading-snug">Proprietary TUT tracking monitors the eccentric and concentric phases to maximize hypertrophic response.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-4 flex flex-col sm:flex-row gap-4">
+<button class="flex-1 bg-primary-fixed text-on-primary-fixed font-display-title text-xl py-5 px-8 rounded-full uppercase tracking-tight hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+                        Start Training
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="px-8 py-5 rounded-full border border-outline/30 font-display-title text-on-surface uppercase text-sm tracking-widest hover:bg-surface-bright transition-colors">
+                        Watch Demo
+                    </button>
+</div>
+</div>
+</main>
+<!-- Footer / Status -->
+<footer class="p-margin-mobile flex justify-between items-center">
+<div class="flex gap-1.5 items-center">
+<div class="w-2 h-2 rounded-full bg-primary-fixed animate-pulse"></div>
+<span class="font-label-mono text-[10px] text-text-muted">SYSTEMS ACTIVE</span>
+</div>
+<div class="font-label-mono text-[10px] text-text-muted opacity-50 uppercase tracking-tighter">
+                v2.4.0 High-Performance Stable
+            </div>
+</footer>
+</div>
+<script>
+        // Micro-interaction: Subtle parallax on the background image
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) / 50;
+            const moveY = (e.clientY - window.innerHeight / 2) / 50;
+            const bg = document.querySelector('[style*="background-image"]');
+            if (bg) {
+                bg.style.transform = `scale(1.1) translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+
+        // Initialize state for the button click
+        const mainBtn = document.querySelector('button');
+        mainBtn.addEventListener('click', () => {
+            mainBtn.innerHTML = 'Initialising...';
+            mainBtn.classList.add('opacity-80');
+            // Mock transition delay
+            setTimeout(() => {
+                console.log("Navigating to onboarding flow...");
+            }, 500);
+        });
+    </script>
+</body></html>

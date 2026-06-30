@@ -1,57 +1,70 @@
 import Image from "next/image";
 
 const liveMetrics = [
-  { label: "Reps", value: "12", note: "sample set", featured: true },
-  { label: "Tempo", value: "Steady", note: "live cue" },
-  { label: "Range", value: "Clean", note: "movement check" },
-  { label: "Focus", value: "Control", note: "next rep" },
+  { label: "Today", value: "Push", note: "sample plan", featured: true },
+  { label: "TUT", value: "38s", note: "sample set" },
+  { label: "Reps", value: "12", note: "counted" },
+  { label: "Focus", value: "Control", note: "next set" },
 ];
-
-const movements = ["Squats", "Lunges", "Push-ups", "Hinges", "Planks", "Mobility"];
 
 const scrollStory = [
   {
-    title: "Choose a movement",
-    copy: "RepMint loads a movement profile with the right phases, cues, and set summary logic.",
+    title: "Pick a goal",
+    copy: "RepMint starts with the outcome a user cares about: strength foundation, muscle building, mobility, consistency, or technique.",
     stat: "01",
   },
   {
-    title: "Train in frame",
-    copy: "Your camera becomes the coach surface. No wearable setup, no extra hardware, no manual counting.",
+    title: "Follow today's plan",
+    copy: "The daily hub recommends the next session, shows plan progress, and explains why the workout fits today.",
     stat: "02",
   },
   {
-    title: "Adjust in the moment",
-    copy: "The interface keeps feedback short, so users can act on the cue before the set is over.",
+    title: "Train with the camera",
+    copy: "The active set coach counts reps, checks tempo and time under tension, and keeps feedback to one cue at a time.",
     stat: "03",
   },
   {
-    title: "Leave with a focus",
-    copy: "Each set ends with a compact review of reps, range, tempo, and what to work on next.",
+    title: "Review and progress",
+    copy: "Every workout updates the plan, progress journey, and next recommendation.",
     stat: "04",
   },
 ];
 
 const investorProof = [
   {
-    title: "Camera-first coaching",
-    copy: "A familiar device becomes the input layer for form feedback, rep counting, and exercise guidance.",
+    title: "Plan-first training",
+    copy: "The idea is not just rep counting. Users get a goal-based plan, a daily session, and clear next steps.",
   },
   {
-    title: "Profile-driven expansion",
-    copy: "New movements can be added as profiles instead of rebuilding the whole experience around one exercise.",
+    title: "Camera-based feedback",
+    copy: "A phone or webcam becomes the input layer for form cues, time under tension, tempo, and set review.",
   },
   {
-    title: "Designed for habit loops",
-    copy: "Live cue, completed set, next focus. The product gives users a reason to come back tomorrow.",
+    title: "Built for habit loops",
+    copy: "Plan, train, review, progress. RepMint gives users a reason to come back for the next session.",
   },
 ];
 
 const summaryRows = [
   ["Total reps", "12"],
+  ["TUT", "38s"],
+  ["Tempo", "3-1-2"],
   ["Next focus", "Control"],
-  ["Range", "Clean"],
-  ["Tempo", "Steady"],
+];
+
+const planCards = [
+  {
+    title: "Strength foundation",
+    copy: "Three sessions per week with camera-guided basics and simple progression.",
+  },
+  {
+    title: "Muscle-building tempo",
+    copy: "TUT-focused sets, supersets, and rest guidance for consistent training.",
+  },
+  {
+    title: "Mobility and control",
+    copy: "Short movement blocks for range, positioning, and weekly consistency.",
+  },
 ];
 
 export default function Home() {
@@ -67,27 +80,27 @@ export default function Home() {
           <a href="#traction">Why Now</a>
         </nav>
         <a className="top-action" href="#waitlist">
-          Request Access
+          Join Pilot
         </a>
       </header>
 
       <section className="hero-coach" id="coach" aria-labelledby="hero-title">
         <div className="hero-copy reveal-block">
-          <p className="micro-label">RepMint</p>
-          <h1 id="hero-title">A form coach for every solo workout.</h1>
+          <p className="micro-label">RepMint pilot</p>
+          <h1 id="hero-title">Your AI camera trainer for goal-based workouts.</h1>
           <p className="hero-text">
-            RepMint turns your camera into a rep counter, form cue layer, and set review for the movements you already train.
+            RepMint builds a plan around your goal, guides each set with camera-based feedback, tracks reps and time under tension, and shows what to focus on next.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#waitlist">
-              Request Access
+              Join Pilot
             </a>
             <a className="button button-secondary" href="#engine">
-              See Product
+              See How It Works
             </a>
           </div>
           <p className="trust-line">
-            Built for home workouts, gym sessions, travel training, and form practice.
+            Built for home workouts, gym sessions, mobility work, and solo training days.
           </p>
         </div>
 
@@ -103,8 +116,8 @@ export default function Home() {
             />
             <div className="stage-scrim" />
             <div className="stage-topline">
-              <span>Tracking</span>
-              <span>Local session</span>
+              <span>Live tracking</span>
+              <span>Goal: strength</span>
             </div>
             <div className="scan-plane" aria-hidden="true" />
             <div className="body-frame" aria-hidden="true">
@@ -125,7 +138,7 @@ export default function Home() {
               <span className="bone right-shin" />
             </div>
             <div className="cue-panel" aria-live="polite">
-              Move with control
+              Slow the lowering phase
             </div>
           </section>
 
@@ -147,25 +160,29 @@ export default function Home() {
       <section className="motion-ticker" aria-label="RepMint product capabilities">
         <div>
           <span>Camera feedback</span>
-          <span>Movement profiles</span>
+          <span>Goal-based plans</span>
+          <span>Time under tension</span>
+          <span>Supersets</span>
           <span>Rep counting</span>
-          <span>Set review</span>
-          <span>Trainer-style cues</span>
+          <span>Progress tracking</span>
           <span>Camera feedback</span>
-          <span>Movement profiles</span>
+          <span>Goal-based plans</span>
         </div>
       </section>
 
       <section className="movement-section reveal-block" id="engine" aria-labelledby="movement-title">
         <div className="section-copy">
-          <h2 id="movement-title">One engine. Many movement patterns.</h2>
+          <h2 id="movement-title">Start with a goal. Train with a plan.</h2>
           <p>
-            RepMint is built around movement profiles, so the product can expand from bodyweight basics into a larger coaching library.
+            RepMint combines plan guidance with movement profiles, so workouts can include sets, supersets, tempo targets, and camera-based coaching cues.
           </p>
         </div>
-        <div className="movement-cloud" aria-label="Supported movement examples">
-          {movements.map((mode) => (
-            <span key={mode}>{mode}</span>
+        <div className="movement-cloud" aria-label="Sample training plans">
+          {planCards.map((plan) => (
+            <span key={plan.title}>
+              <strong>{plan.title}</strong>
+              <small>{plan.copy}</small>
+            </span>
           ))}
         </div>
       </section>
@@ -173,9 +190,9 @@ export default function Home() {
       <section className="scroll-story" aria-labelledby="story-title">
         <div className="story-sticky">
           <p className="micro-label">Product loop</p>
-          <h2 id="story-title">The RepMint set flow feels obvious.</h2>
+          <h2 id="story-title">The RepMint loop is simple enough to test now.</h2>
           <p>
-            The page motion mirrors the product: observe, cue, review, repeat.
+            The first experiments validate whether users want the plan, trust the camera coach, and come back for the next recommendation.
           </p>
         </div>
         <div className="story-cards">
@@ -192,29 +209,29 @@ export default function Home() {
       <section className="how-section reveal-block" aria-labelledby="phone-title">
         <div className="phone-panel" aria-label="RepMint phone result preview">
           <div className="phone-shell">
-            <div className="phone-top">
-              <strong>RepMint</strong>
-              <span>Set complete</span>
-            </div>
-            <div className="phone-score">
-              <span>Next focus</span>
-              <strong>Control</strong>
-            </div>
-            <div className="phone-rows">
-              <span>12 reps counted</span>
-              <span>Range looked clean</span>
-              <span>Tempo stayed steady</span>
-            </div>
+          <div className="phone-top">
+            <strong>RepMint</strong>
+            <span>Set complete</span>
+          </div>
+          <div className="phone-score">
+            <span>Next focus</span>
+            <strong>Control</strong>
+          </div>
+          <div className="phone-rows">
+            <span>12 reps counted</span>
+            <span>38s time under tension</span>
+            <span>Tempo target: 3-1-2</span>
+          </div>
           </div>
         </div>
         <div className="phone-copy">
-          <h2 id="phone-title">A coach UI people can read mid-set.</h2>
+          <h2 id="phone-title">A coach UI people can use mid-set.</h2>
           <p>
-            Motion, contrast, and short labels are tuned for someone who is moving, breathing, and checking the screen from a few feet away.
+            RepMint keeps the live screen focused: one cue, visible reps, TUT, tempo, and controls that are easy to hit between sets.
           </p>
           <div className="principle-grid" aria-label="Product principles">
             <span>One cue at a time</span>
-            <span>Visible status</span>
+            <span>Goal-based plan</span>
             <span>Sample set review</span>
           </div>
         </div>
@@ -223,9 +240,9 @@ export default function Home() {
       <section className="investor-section" id="traction" aria-labelledby="traction-title">
         <div className="investor-copy reveal-block">
           <p className="micro-label">Why it can matter</p>
-          <h2 id="traction-title">The training companion between video content and live coaching.</h2>
+          <h2 id="traction-title">The training companion between workout apps and live coaching.</h2>
           <p>
-            Fitness content tells people what to do. Coaches give feedback. RepMint sits in the gap with camera-based guidance that can scale.
+            Workout apps tell people what to do. Coaches adjust the plan and give feedback. RepMint tests whether camera-based training guidance can sit in that gap.
           </p>
         </div>
         <div className="investor-grid">
@@ -240,12 +257,12 @@ export default function Home() {
 
       <section className="results-section reveal-block" id="results" aria-labelledby="results-title">
         <div className="results-copy">
-          <h2 id="results-title">Every set ends with a next step.</h2>
+          <h2 id="results-title">Every set feeds the next recommendation.</h2>
           <p>
-            RepMint turns a finished set into a short review of what happened and what the user should focus on next.
+            RepMint turns a finished set into a short review of reps, TUT, tempo, and what the user should focus on in the next set or session.
           </p>
           <a className="button button-primary" href="#waitlist">
-            Request Access
+            Join Pilot
           </a>
         </div>
         <div className="summary-panel" aria-label="Sample set summary">
@@ -259,19 +276,27 @@ export default function Home() {
             ))}
           </dl>
           <p>
-            Good set. Keep your range consistent and stay patient through the lowering phase.
+            Good set. Keep the lowering phase patient and use the same range on the next round.
           </p>
         </div>
       </section>
 
       <section className="waitlist-section" id="waitlist" aria-labelledby="waitlist-title">
         <div>
-          <p className="micro-label">Launch path</p>
-          <h2 id="waitlist-title">Bring trainer-style feedback to the camera people already own.</h2>
+          <p className="micro-label">Pilot waitlist</p>
+          <h2 id="waitlist-title">Help test RepMint before the full app is built.</h2>
+          <p>
+            Join the pilot list if you train solo and want goal-based workouts with camera-based set feedback.
+          </p>
         </div>
-        <a className="button button-primary" href="mailto:hello@repmint.ai">
-          Request Access
-        </a>
+        <div className="waitlist-actions">
+          <a className="button button-primary" href="mailto:hello@repmint.ai?subject=RepMint%20pilot%20request&body=Hi%20RepMint%2C%0A%0AI%27d%20like%20to%20join%20the%20pilot.%0A%0AMy%20main%20training%20goal%3A%0AMy%20current%20routine%3A%0AWhat%20I%20want%20help%20with%3A">
+            Join Pilot
+          </a>
+          <a className="button button-secondary" href="mailto:hello@repmint.ai?subject=RepMint%20survey&body=Hi%20RepMint%2C%0A%0AI%27d%20like%20to%20answer%20the%20validation%20survey.">
+            Take Survey
+          </a>
+        </div>
       </section>
 
       <footer className="site-footer">

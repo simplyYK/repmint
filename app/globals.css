@@ -536,10 +536,24 @@ h2 {
   border-radius: var(--radius-lg);
   color: var(--text);
   flex: 1 1 160px;
+  min-height: 156px;
+  padding: 24px;
+}
+
+.movement-cloud strong {
+  display: block;
   font-size: clamp(1.18rem, 2vw, 1.7rem);
   font-weight: 850;
-  min-height: 108px;
-  padding: 24px;
+  line-height: 1.05;
+  margin-bottom: 12px;
+}
+
+.movement-cloud small {
+  color: var(--text-soft);
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .scroll-story {
@@ -796,8 +810,21 @@ h2 {
 }
 
 .waitlist-section h2 {
-  margin-bottom: 0;
+  margin-bottom: 10px;
   max-width: 900px;
+}
+
+.waitlist-section p {
+  margin-bottom: 0;
+  max-width: 620px;
+}
+
+.waitlist-actions {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
 .site-footer {
