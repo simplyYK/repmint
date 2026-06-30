@@ -65,7 +65,7 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -448,9 +448,18 @@ h1 {
 .summary-stats dd {
   color: var(--accent);
   display: block;
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: clamp(1.8rem, 3vw, 3.35rem);
+  font-weight: 850;
+  letter-spacing: -0.02em;
   line-height: 0.95;
+}
+
+/* Numeric metrics (reps, TUT, timers) use mono to prevent layout shift */
+.metric-card strong.is-numeric,
+.summary-stats dd.is-numeric {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
 }
 
 .metric-card-featured strong {

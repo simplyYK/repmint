@@ -2,10 +2,10 @@ import Image from "next/image";
 import WaitlistForm from "./components/WaitlistForm";
 
 const liveMetrics = [
-  { label: "Today", value: "Push", note: "sample plan", featured: true },
-  { label: "TUT", value: "38s", note: "sample set" },
-  { label: "Reps", value: "12", note: "counted" },
-  { label: "Focus", value: "Control", note: "next set" },
+  { label: "Today", value: "Push", note: "sample plan", featured: true, numeric: false },
+  { label: "TUT", value: "38s", note: "sample set", numeric: true },
+  { label: "Reps", value: "12", note: "counted", numeric: true },
+  { label: "Focus", value: "Control", note: "next set", numeric: false },
 ];
 
 const scrollStory = [
@@ -159,7 +159,7 @@ export default function Home() {
                 key={metric.label}
               >
                 <span>{metric.label}</span>
-                <strong>{metric.value}</strong>
+                <strong className={metric.numeric ? "is-numeric" : undefined}>{metric.value}</strong>
                 <small>{metric.note}</small>
               </div>
             ))}
