@@ -186,3 +186,11 @@ Never claim RepMint prevents injury, diagnoses problems, guarantees strength or 
 - Make empty/loading/error states feel designed.
 - Treat screenshots in the imported Stitch package as references, not production copy.
 - Do not push old exports, zips, duplicate backup pages, temp folders, or screenshots unless explicitly requested.
+
+## GitHub Push Security Rule
+
+Each time new RepMint code is pushed to GitHub, spawn a subagent to run a security audit over the pushed code before considering the push complete.
+
+The audit must check for private or sensitive information in source, assets, configuration, logs, generated files, and documentation, including API keys, tokens, secrets, credentials, personal data, private URLs, environment values, and accidental local artifacts.
+
+If private information is found, stop and report the finding before any follow-up release, PR, or deployment step.
