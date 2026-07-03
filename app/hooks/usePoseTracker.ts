@@ -11,7 +11,11 @@ import { SKELETON, bestSide, visibilityOf, type Pose } from "../lib/pose/landmar
 import type { MovementDef, PoseContext, RepPhase } from "../lib/movements/types";
 import { RepEngine, type RepEvent } from "../lib/tracking/repEngine";
 import { FormCoach, type CoachTone } from "../lib/tracking/formCoach";
-import type { FaultTally } from "../lib/types";
+import type { CoachConfig, FaultTally } from "../lib/types";
+
+function strictnessScale(s: CoachConfig["strictness"]) {
+  return s === "Lenient" ? 0.82 : s === "Strict" ? 1.14 : 1;
+}
 
 type PoseLandmarker = {
   detectForVideo: (video: HTMLVideoElement, timestamp: number) => { landmarks?: Pose[] };
@@ -81,7 +85,7 @@ const PHASE_LABEL: Record<RepPhase, string> = {
   rising: "Rising",
 };
 
-export function usePoseTracker(movement: MovementDef) {
+export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -90,8 +94,10 @@ export function usePoseTracker(movement: MovementDef) {
 
   const movementRef = useRef(movement);
   const smootherRef = useRef(new PoseSmoother());
-  const engineRef = useRef(new RepEngine(movement));
-  const coachRef = useRef(new FormCoach(movement));
+  const engineRef = useRef(new RepEngine(movement, strictnessScale(config.strictness)));
+  const coachRef = useRef(
+    new FormCoach(movement, { intensity: config.intensity, tutTargetPerRep: config.tutTargetPerRep }),
+  );
   const runningRef = useRef(false);
   const startedAtRef = useRef(0);
   const manualRef = useRef(0);
@@ -102,12 +108,15 @@ export function usePoseTracker(movement: MovementDef) {
   const liveRef = useRef<TrackerSnapshot>({ ...IDLE });
   const [snapshot, setSnapshot] = useState<TrackerSnapshot>({ ...IDLE });
 
-  // Recreate the pure engines whenever the movement changes.
+  // Recreate the pure engines whenever the movement or coaching config changes.
   useEffect(() => {
     movementRef.current = movement;
     smootherRef.current = new PoseSmoother();
-    engineRef.current = new RepEngine(movement);
-    coachRef.current = new FormCoach(movement);
+    engineRef.current = new RepEngine(movement, strictnessScale(config.strictness));
+    coachRef.current = new FormCoach(movement, {
+      intensity: config.intensity,
+      tutTargetPerRep: config.tutTargetPerRep,
+    });
     manualRef.current = 0;
     repEventsRef.current = [];
     runningRef.current = false;
@@ -122,7 +131,7 @@ export function usePoseTracker(movement: MovementDef) {
       cue: movement.setupCue,
     };
     setSnapshot(liveRef.current);
-  }, [movement]);
+  }, [movement, config.strictness, config.intensity, config.tutTargetPerRep]);
 
   const drawPose = useCallback((pose: Pose) => {
     const canvas = canvasRef.current;
@@ -179,6 +188,7 @@ export function usePoseTracker(movement: MovementDef) {
             depth: frame.depth,
             peakDepth: frame.peakDepth,
             phase: frame.phase,
+            velocity: frame.velocity,
           };
 
           if (runningRef.current) {

@@ -8,9 +8,20 @@ import type { MovementDef } from "./lib/movements/types";
 import { usePoseTracker, type SetOutcome } from "./hooks/usePoseTracker";
 import { persistProfile, persistSetResult } from "./lib/persistence";
 import type { RepEvent } from "./lib/tracking/repEngine";
-import type { FaultTally, Phase, Profile, SetResult, View } from "./lib/types";
+import {
+  DEFAULT_PROFILE,
+  configFromProfile,
+  type CoachConfig,
+  type FaultTally,
+  type Phase,
+  type Profile,
+  type SetResult,
+  type View,
+} from "./lib/types";
 import Landing from "./components/Landing";
 import AuthScreen from "./components/AuthScreen";
+import AiCoach from "./components/AiCoach";
+import { AVATARS, AvatarIcon } from "./lib/avatars";
 
 const STORAGE_ENTERED = "repmint-entered";
 type Stage = "landing" | "auth" | "app";
@@ -18,14 +29,7 @@ type Stage = "landing" | "auth" | "app";
 const STORAGE_PROFILE = "repmint-working-profile";
 const STORAGE_HISTORY = "repmint-working-history";
 
-const defaultProfile: Profile = {
-  name: "RepMint athlete",
-  goal: "Strength foundation",
-  level: "Beginner",
-  equipment: "Bodyweight",
-  schedule: 3,
-  coaching: "Standard",
-};
+const defaultProfile: Profile = DEFAULT_PROFILE;
 
 const sampleHistory: SetResult[] = [
   {
@@ -110,10 +114,18 @@ export default function Home() {
   if (stage === "auth") {
     return <AuthScreen onAuthed={enterApp} onGuest={enterApp} onBack={() => setStage("landing")} />;
   }
-  return <TrainerApp authUser={authUser} onSignOut={exitToLanding} />;
+  return <TrainerApp authUser={authUser} onSignOut={exitToLanding} onRequireAuth={() => setStage("auth")} />;
 }
 
-function TrainerApp({ authUser, onSignOut }: { authUser: User | null; onSignOut: () => void }) {
+function TrainerApp({
+  authUser,
+  onSignOut,
+  onRequireAuth,
+}: {
+  authUser: User | null;
+  onSignOut: () => void;
+  onRequireAuth: () => void;
+}) {
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [history, setHistory] = useState<SetResult[]>([]);
   const [coachAdvice, setCoachAdvice] = useState<{ setId: string; message: string } | null>(null);
@@ -124,12 +136,14 @@ function TrainerApp({ authUser, onSignOut }: { authUser: User | null; onSignOut:
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setProfile(loadJson(STORAGE_PROFILE, defaultProfile));
+    // Merge with defaults so profiles saved before new settings existed backfill.
+    setProfile({ ...defaultProfile, ...loadJson(STORAGE_PROFILE, defaultProfile) });
     setHistory(loadJson(STORAGE_HISTORY, sampleHistory));
     setReady(true);
   }, []);
 
   const movement = useMemo(() => getMovement(selectedMovement), [selectedMovement]);
+  const config = useMemo(() => configFromProfile(profile), [profile]);
 
   const saveProfile = (next: Profile) => {
     setProfile(next);
@@ -205,11 +219,19 @@ function TrainerApp({ authUser, onSignOut }: { authUser: User | null; onSignOut:
           <span>R</span>
           <strong>RepMint</strong>
         </button>
+        <button className="nav-profile" onClick={() => setView("settings")} aria-label="Open settings">
+          <AvatarIcon id={profile.avatar} size={36} />
+          <span className="nav-profile-text">
+            <strong>{profile.name}</strong>
+            <small>{profile.goal}</small>
+          </span>
+        </button>
         <nav>
           {(
             [
               ["hub", "Hub"],
               ["coach", "Coach"],
+              ["ai", "AI Coach"],
               ["progress", "Progress"],
               ["settings", "Settings"],
             ] as const
@@ -243,10 +265,13 @@ function TrainerApp({ authUser, onSignOut }: { authUser: User | null; onSignOut:
             movement={movement}
             phase={phase}
             setPhase={setPhase}
+            config={config}
             onSelectMovement={setSelectedMovement}
             onSave={saveResult}
           />
         )}
+
+        {view === "ai" && <AiCoach authUser={authUser} profile={profile} onRequireAuth={onRequireAuth} />}
 
         {view === "progress" && (
           <ProgressView
@@ -394,17 +419,20 @@ function CameraCoach({
   movement,
   phase,
   setPhase,
+  config,
   onSelectMovement,
   onSave,
 }: {
   movement: MovementDef;
   phase: Phase;
   setPhase: (phase: Phase) => void;
+  config: CoachConfig;
   onSelectMovement: (id: string) => void;
   onSave: (result: SetResult, repEvents: RepEvent[]) => void;
 }) {
   const { videoRef, canvasRef, snapshot, startCamera, startSet, endSet, resetSet, manualRep } =
-    usePoseTracker(movement);
+    usePoseTracker(movement, config);
+  const mirrorClass = config.mirror ? "" : " no-mirror";
   const groups = movementsByCategory();
   const isHold = movement.mode === "hold";
   const targetReps = movement.target.reps ?? 0;
@@ -468,8 +496,13 @@ function CameraCoach({
 
       <section className="coach-layout">
         <div className="camera-stage">
-          <video ref={videoRef} className={snapshot.hasCamera ? "camera-video active" : "camera-video"} playsInline muted />
-          <canvas ref={canvasRef} className="pose-canvas" aria-hidden="true" />
+          <video
+            ref={videoRef}
+            className={`${snapshot.hasCamera ? "camera-video active" : "camera-video"}${mirrorClass}`}
+            playsInline
+            muted
+          />
+          <canvas ref={canvasRef} className={`pose-canvas${mirrorClass}`} aria-hidden="true" />
           {!snapshot.hasCamera && (
             <div className="camera-empty">
               <strong>Camera preview</strong>
@@ -502,7 +535,7 @@ function CameraCoach({
               value={isHold ? formatTime(snapshot.seconds) : `${snapshot.reps}/${targetReps}`}
               note="current set"
             />
-            <Metric label="TUT" value={`${snapshot.tut}s`} note="time under tension" />
+            <Metric label="TUT" value={`${snapshot.tut}s`} note={isHold ? "time under tension" : `target ${config.tutTargetPerRep}s/rep`} />
             <Metric label="Pose" value={`${snapshot.quality}%`} note={snapshot.angle ? `${snapshot.angle}°` : "align in frame"} />
             <Metric label="Phase" value={snapshot.motion} note={isHold ? (snapshot.holdValid ? "line held" : "adjust") : "live"} />
           </div>
@@ -646,6 +679,45 @@ function ProgressView({
   );
 }
 
+function Seg<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { label: string; value: T }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="seg" role="group">
+      {options.map((o) => (
+        <button
+          type="button"
+          key={o.value}
+          className={o.value === value ? "active" : ""}
+          onClick={() => onChange(o.value)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      className={`toggle ${checked ? "on" : ""}`}
+      onClick={() => onChange(!checked)}
+    >
+      <span />
+    </button>
+  );
+}
+
 function SettingsView({
   authUser,
   profile,
@@ -659,18 +731,33 @@ function SettingsView({
 }) {
   const [draft, setDraft] = useState(profile);
   useEffect(() => setDraft(profile), [profile]);
+  const set = (patch: Partial<Profile>) => setDraft((d) => ({ ...d, ...patch }));
+  const dirty = JSON.stringify(draft) !== JSON.stringify(profile);
+  const reset = () => {
+    setDraft(defaultProfile);
+    onSave(defaultProfile);
+  };
 
   return (
     <div className="screen-stack">
       <header className="section-header">
         <div>
           <p className="micro-label">Settings</p>
-          <h1>Training setup and coaching preferences.</h1>
+          <h1>Personalize your coaching.</h1>
+        </div>
+        <div className="settings-headactions">
+          <button className="button ghost-button" type="button" onClick={reset}>
+            Reset to defaults
+          </button>
+          <button className="button button-primary" type="button" onClick={() => onSave(draft)} disabled={!dirty}>
+            {dirty ? "Save changes" : "Saved"}
+          </button>
         </div>
       </header>
+
       <section className="panel">
         <p className="micro-label">Account</p>
-        <h2>{authUser ? "Signed in — history and AI review sync to your profile." : "Training as a guest on this device."}</h2>
+        <h2>{authUser ? "Signed in — history and AI coach sync to your profile." : "Training as a guest on this device."}</h2>
         <p>
           {isSupabaseConfigured
             ? authUser?.email ?? "You're training locally. Sign out to create an account and sync across devices."
@@ -680,69 +767,192 @@ function SettingsView({
           {authUser ? "Sign out" : "Back to landing page"}
         </button>
       </section>
-      <form
-        className="settings-form"
-        onSubmit={(event) => {
-          event.preventDefault();
-          onSave(draft);
-        }}
-      >
-        <label>
+
+      <section className="settings-card">
+        <p className="micro-label">Profile</p>
+        <h2>Pick your avatar.</h2>
+        <div className="avatar-grid">
+          {AVATARS.map((a) => (
+            <button
+              type="button"
+              key={a.id}
+              className={`avatar-option ${draft.avatar === a.id ? "selected" : ""}`}
+              onClick={() => set({ avatar: a.id })}
+              aria-pressed={draft.avatar === a.id}
+            >
+              <AvatarIcon id={a.id} size={58} />
+              <small>{a.label}</small>
+            </button>
+          ))}
+        </div>
+        <label className="field">
           <span>Name</span>
-          <input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
+          <input value={draft.name} onChange={(e) => set({ name: e.target.value })} />
         </label>
-        <label>
-          <span>Goal</span>
-          <select value={draft.goal} onChange={(e) => setDraft({ ...draft, goal: e.target.value })}>
-            <option>Strength foundation</option>
-            <option>Muscle building</option>
-            <option>Mobility and control</option>
-            <option>Consistency</option>
-            <option>Return to gym confidence</option>
-            <option>Technique practice</option>
-          </select>
-        </label>
-        <label>
-          <span>Level</span>
-          <select value={draft.level} onChange={(e) => setDraft({ ...draft, level: e.target.value })}>
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
-          </select>
-        </label>
-        <label>
-          <span>Equipment</span>
-          <select value={draft.equipment} onChange={(e) => setDraft({ ...draft, equipment: e.target.value })}>
-            <option>Bodyweight</option>
-            <option>Dumbbells</option>
-            <option>Full gym</option>
-          </select>
-        </label>
-        <label>
-          <span>Sessions per week</span>
-          <input
-            type="number"
-            min="1"
-            max="7"
-            value={draft.schedule}
-            onChange={(e) => setDraft({ ...draft, schedule: Number(e.target.value) })}
+      </section>
+
+      <section className="settings-card">
+        <p className="micro-label">Training</p>
+        <h2>Your plan basics.</h2>
+        <div className="field-grid">
+          <label className="field">
+            <span>Goal</span>
+            <select value={draft.goal} onChange={(e) => set({ goal: e.target.value })}>
+              <option>Strength foundation</option>
+              <option>Muscle building</option>
+              <option>Mobility and control</option>
+              <option>Consistency</option>
+              <option>Return to gym confidence</option>
+              <option>Technique practice</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Experience</span>
+            <select value={draft.level} onChange={(e) => set({ level: e.target.value })}>
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Equipment</span>
+            <select value={draft.equipment} onChange={(e) => set({ equipment: e.target.value })}>
+              <option>Bodyweight</option>
+              <option>Dumbbells</option>
+              <option>Full gym</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Sessions / week</span>
+            <input
+              type="number"
+              min="1"
+              max="7"
+              value={draft.schedule}
+              onChange={(e) => set({ schedule: Number(e.target.value) })}
+            />
+          </label>
+        </div>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Weight units</strong>
+            <small>How loads are shown across RepMint.</small>
+          </div>
+          <Seg
+            options={[
+              { label: "kg", value: "kg" },
+              { label: "lb", value: "lb" },
+            ]}
+            value={draft.units}
+            onChange={(v) => set({ units: v })}
           />
-        </label>
-        <label>
-          <span>Coaching detail</span>
-          <select
+        </div>
+      </section>
+
+      <section className="settings-card">
+        <p className="micro-label">Coaching</p>
+        <h2>How your coach talks, times, and counts.</h2>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Live cue frequency</strong>
+            <small>How much the camera coach speaks up mid-set.</small>
+          </div>
+          <Seg
+            options={[
+              { label: "Quiet", value: "Quiet" },
+              { label: "Standard", value: "Standard" },
+              { label: "Detailed", value: "Detailed" },
+            ]}
             value={draft.coaching}
-            onChange={(e) => setDraft({ ...draft, coaching: e.target.value as Profile["coaching"] })}
-          >
-            <option>Quiet</option>
-            <option>Standard</option>
-            <option>Detailed</option>
-          </select>
-        </label>
-        <button className="button button-primary" type="submit">
-          Save settings
+            onChange={(v) => set({ coaching: v })}
+          />
+        </div>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>AI coach tone</strong>
+            <small>Style of the AI coach&apos;s written answers.</small>
+          </div>
+          <Seg
+            options={[
+              { label: "Supportive", value: "Supportive" },
+              { label: "Direct", value: "Direct" },
+              { label: "Technical", value: "Technical" },
+            ]}
+            value={draft.tone}
+            onChange={(v) => set({ tone: v })}
+          />
+        </div>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Time under tension target</strong>
+            <small>Seconds per rep the coach nudges you toward. Faster than this and it&apos;ll say &ldquo;slow the descent&rdquo;.</small>
+          </div>
+          <div className="slider-wrap">
+            <input
+              type="range"
+              min="1.5"
+              max="6"
+              step="0.5"
+              value={draft.tutTargetPerRep}
+              onChange={(e) => set({ tutTargetPerRep: Number(e.target.value) })}
+            />
+            <span className="slider-value">{draft.tutTargetPerRep}s / rep</span>
+          </div>
+        </div>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Rep counting strictness</strong>
+            <small>How much range of motion a rep needs before it counts.</small>
+          </div>
+          <Seg
+            options={[
+              { label: "Lenient", value: "Lenient" },
+              { label: "Standard", value: "Standard" },
+              { label: "Strict", value: "Strict" },
+            ]}
+            value={draft.strictness}
+            onChange={(v) => set({ strictness: v })}
+          />
+        </div>
+      </section>
+
+      <section className="settings-card">
+        <p className="micro-label">Camera &amp; session</p>
+        <h2>Camera and rest.</h2>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Mirror camera</strong>
+            <small>Flip the preview like a mirror (recommended for front-facing cameras).</small>
+          </div>
+          <Toggle checked={draft.mirrorCamera} onChange={(v) => set({ mirrorCamera: v })} />
+        </div>
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Rest timer</strong>
+            <small>Default rest between sets.</small>
+          </div>
+          <div className="slider-wrap">
+            <input
+              type="range"
+              min="20"
+              max="180"
+              step="5"
+              value={draft.restSeconds}
+              onChange={(e) => set({ restSeconds: Number(e.target.value) })}
+            />
+            <span className="slider-value">{draft.restSeconds}s</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="settings-actions">
+        <button className="button ghost-button" type="button" onClick={reset}>
+          Reset to defaults
         </button>
-      </form>
+        <button className="button button-primary" type="button" onClick={() => onSave(draft)} disabled={!dirty}>
+          {dirty ? "Save changes" : "Saved"}
+        </button>
+      </div>
     </div>
   );
 }

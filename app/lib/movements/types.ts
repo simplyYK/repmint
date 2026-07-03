@@ -30,6 +30,7 @@ export type PoseContext = {
   depth: number; // 0..1 normalized rep progress (0 = rest, 1 = full range)
   peakDepth: number; // deepest depth reached in the current rep
   phase: RepPhase;
+  velocity: number; // depth units per second (signed); + = moving away from rest
 };
 
 export type FormResult =

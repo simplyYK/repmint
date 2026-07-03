@@ -68,8 +68,13 @@ export class RepEngine {
   private bottomTs = 0;
   private riseTs = 0;
 
-  constructor(movement: MovementDef) {
+  // repFractionScale scales the range-of-motion gate: <1 = more lenient counting,
+  // >1 = stricter (a rep must reach deeper to count).
+  private minFrac: number;
+
+  constructor(movement: MovementDef, repFractionScale = 1) {
     this.movement = movement;
+    this.minFrac = clamp(movement.minRepFraction * repFractionScale, 0.3, 0.95);
   }
 
   reset() {
@@ -157,7 +162,7 @@ export class RepEngine {
       if (this.inRep) this.repTut += dt;
     }
 
-    const bottomZone = Math.max(this.movement.minRepFraction * 0.9, ENTER + 0.05);
+    const bottomZone = Math.max(this.minFrac * 0.9, ENTER + 0.05);
 
     if (!this.inRep) {
       // Waiting at home; start a rep when we clearly leave rest.
@@ -185,7 +190,7 @@ export class RepEngine {
       // Rep completes when we return home.
       if (depth < HOME) {
         const endTs = timestampMs;
-        const validRange = this.peakDepth >= this.movement.minRepFraction;
+        const validRange = this.peakDepth >= this.minFrac;
         const longEnough = endTs - this.startTs >= MIN_REP_MS;
         const notBounced = endTs - this.lastRepTs >= MIN_REP_MS;
         if (this.reachedBottom && validRange && longEnough && notBounced) {
