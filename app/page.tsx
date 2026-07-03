@@ -9,6 +9,11 @@ import { usePoseTracker, type SetOutcome } from "./hooks/usePoseTracker";
 import { persistProfile, persistSetResult } from "./lib/persistence";
 import type { RepEvent } from "./lib/tracking/repEngine";
 import type { FaultTally, Phase, Profile, SetResult, View } from "./lib/types";
+import Landing from "./components/Landing";
+import AuthScreen from "./components/AuthScreen";
+
+const STORAGE_ENTERED = "repmint-entered";
+type Stage = "landing" | "auth" | "app";
 
 const STORAGE_PROFILE = "repmint-working-profile";
 const STORAGE_HISTORY = "repmint-working-history";
@@ -59,9 +64,58 @@ function loadJson<T>(key: string, fallback: T): T {
 }
 
 export default function Home() {
+  const [stage, setStage] = useState<Stage>("landing");
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [booted, setBooted] = useState(false);
+
+  useEffect(() => {
+    const entered = typeof window !== "undefined" && window.localStorage.getItem(STORAGE_ENTERED) === "1";
+    if (!supabase) {
+      setStage(entered ? "app" : "landing");
+      setBooted(true);
+      return;
+    }
+    supabase.auth.getUser().then(({ data }) => {
+      setAuthUser(data.user ?? null);
+      setStage(data.user || entered ? "app" : "landing");
+      setBooted(true);
+    });
+    const { data } = supabase.auth.onAuthStateChange((_e, session) => setAuthUser(session?.user ?? null));
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const enterApp = () => {
+    if (typeof window !== "undefined") window.localStorage.setItem(STORAGE_ENTERED, "1");
+    setStage("app");
+  };
+
+  const exitToLanding = async () => {
+    if (supabase) await supabase.auth.signOut();
+    if (typeof window !== "undefined") window.localStorage.removeItem(STORAGE_ENTERED);
+    setAuthUser(null);
+    setStage("landing");
+  };
+
+  if (!booted) {
+    return (
+      <main className="app-app">
+        <div className="loading-state">Loading RepMint…</div>
+      </main>
+    );
+  }
+
+  if (stage === "landing") {
+    return <Landing onGetStarted={() => setStage("auth")} onSignIn={() => setStage("auth")} onGuest={enterApp} />;
+  }
+  if (stage === "auth") {
+    return <AuthScreen onAuthed={enterApp} onGuest={enterApp} onBack={() => setStage("landing")} />;
+  }
+  return <TrainerApp authUser={authUser} onSignOut={exitToLanding} />;
+}
+
+function TrainerApp({ authUser, onSignOut }: { authUser: User | null; onSignOut: () => void }) {
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [history, setHistory] = useState<SetResult[]>([]);
-  const [authUser, setAuthUser] = useState<User | null>(null);
   const [coachAdvice, setCoachAdvice] = useState<{ setId: string; message: string } | null>(null);
   const [coachLoadingSetId, setCoachLoadingSetId] = useState<string | null>(null);
   const [view, setView] = useState<View>("hub");
@@ -73,13 +127,6 @@ export default function Home() {
     setProfile(loadJson(STORAGE_PROFILE, defaultProfile));
     setHistory(loadJson(STORAGE_HISTORY, sampleHistory));
     setReady(true);
-  }, []);
-
-  useEffect(() => {
-    if (!supabase) return;
-    supabase.auth.getUser().then(({ data }) => setAuthUser(data.user ?? null));
-    const { data } = supabase.auth.onAuthStateChange((_e, session) => setAuthUser(session?.user ?? null));
-    return () => data.subscription.unsubscribe();
   }, []);
 
   const movement = useMemo(() => getMovement(selectedMovement), [selectedMovement]);
@@ -220,7 +267,9 @@ export default function Home() {
           />
         )}
 
-        {view === "settings" && <SettingsView authUser={authUser} profile={profile} onSave={saveProfile} />}
+        {view === "settings" && (
+          <SettingsView authUser={authUser} profile={profile} onSave={saveProfile} onSignOut={onSignOut} />
+        )}
       </section>
     </main>
   );
@@ -601,37 +650,15 @@ function SettingsView({
   authUser,
   profile,
   onSave,
+  onSignOut,
 }: {
   authUser: User | null;
   profile: Profile;
   onSave: (profile: Profile) => void;
+  onSignOut: () => void;
 }) {
   const [draft, setDraft] = useState(profile);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [authMessage, setAuthMessage] = useState("");
   useEffect(() => setDraft(profile), [profile]);
-
-  const signIn = async (mode: "sign-in" | "sign-up") => {
-    if (!supabase) {
-      setAuthMessage("Supabase env vars are not configured on this build yet.");
-      return;
-    }
-    const action =
-      mode === "sign-up"
-        ? supabase.auth.signUp({ email, password, options: { data: { display_name: draft.name } } })
-        : supabase.auth.signInWithPassword({ email, password });
-    const { error } = await action;
-    setAuthMessage(
-      error ? error.message : mode === "sign-up" ? "Check your email to confirm your account." : "Signed in.",
-    );
-  };
-
-  const signOut = async () => {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setAuthMessage("Signed out.");
-  };
 
   return (
     <div className="screen-stack">
@@ -643,29 +670,15 @@ function SettingsView({
       </header>
       <section className="panel">
         <p className="micro-label">Account</p>
-        <h2>{authUser ? "Signed in — history and AI review sync to your profile." : "Sign in to sync RepMint history."}</h2>
+        <h2>{authUser ? "Signed in — history and AI review sync to your profile." : "Training as a guest on this device."}</h2>
         <p>
           {isSupabaseConfigured
-            ? authUser?.email ?? "Create an account to save workouts by profile across devices."
-            : "Add Supabase environment variables to enable login on this build."}
+            ? authUser?.email ?? "You're training locally. Sign out to create an account and sync across devices."
+            : "Accounts aren't configured on this build — training is saved on this device."}
         </p>
-        {!authUser ? (
-          <div className="auth-grid">
-            <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <button className="button button-primary" onClick={() => signIn("sign-in")} type="button">
-              Sign in
-            </button>
-            <button className="button button-secondary" onClick={() => signIn("sign-up")} type="button">
-              Create account
-            </button>
-          </div>
-        ) : (
-          <button className="button button-secondary" onClick={signOut} type="button">
-            Sign out
-          </button>
-        )}
-        {authMessage && <p className="coach-note">{authMessage}</p>}
+        <button className="button button-secondary" onClick={onSignOut} type="button">
+          {authUser ? "Sign out" : "Back to landing page"}
+        </button>
       </section>
       <form
         className="settings-form"
