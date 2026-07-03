@@ -25,6 +25,24 @@ export default function AuthScreen({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
+  // Pull a friendly message out of an edge-function error (Response or body).
+  const fnErrorMessage = async (error: unknown): Promise<string> => {
+    const ctx = (error as { context?: { json?: () => Promise<{ error?: string }>; body?: string } }).context;
+    try {
+      if (ctx && typeof ctx.json === "function") {
+        const b = await ctx.json();
+        if (b?.error) return b.error;
+      }
+      if (ctx?.body && typeof ctx.body === "string") {
+        const b = JSON.parse(ctx.body);
+        if (b?.error) return b.error;
+      }
+    } catch {
+      /* fall through */
+    }
+    return error instanceof Error ? error.message : "Something went wrong. Try again.";
+  };
+
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     setMessage("");
@@ -35,23 +53,19 @@ export default function AuthScreen({
     setBusy(true);
     try {
       if (mode === "sign-up") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { display_name: name || "RepMint athlete" } },
+        // Create an already-confirmed account server-side (no email step), then sign in.
+        const { data, error } = await supabase.functions.invoke("auth-signup", {
+          body: { email, password, display_name: name || "RepMint athlete" },
         });
-        if (error) throw error;
-        if (data.session) {
-          onAuthed();
-        } else {
-          setMessage("Account created. Check your email to confirm, then sign in — or continue as a guest now.");
-          setMode("sign-in");
+        const problem = error ? await fnErrorMessage(error) : (data?.error as string | undefined);
+        if (problem) {
+          setMessage(problem);
+          return;
         }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        onAuthed();
       }
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
+      onAuthed();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Something went wrong. Try again.");
     } finally {
