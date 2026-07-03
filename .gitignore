@@ -1,0 +1,15 @@
+node_modules
+.next
+.next-repwise
+.next-repmint
+.next-repmint-dev
+out
+/out
+.npm-cache
+*.log
+.env
+.env*.local
+.DS_Store
+tsconfig.tsbuildinfo
+.claude/
+.vercel

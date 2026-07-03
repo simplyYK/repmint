@@ -1,0 +1,182 @@
+[
+  {
+    "slug": "solo_start_camera_check",
+    "type": "Reel cover",
+    "headline": "Start With Camera Check",
+    "movement": "Home workout"
+  },
+  {
+    "slug": "solo_10_min_form_flow",
+    "type": "Carousel",
+    "headline": "10 Min Form Flow",
+    "movement": "Lunges + hinges"
+  },
+  {
+    "slug": "solo_pushup_setup",
+    "type": "Static post",
+    "headline": "Push-Up Setup",
+    "movement": "Push-up profile"
+  },
+  {
+    "slug": "solo_lunge_first_set",
+    "type": "Reel cover",
+    "headline": "First Lunge Set",
+    "movement": "Lunge profile"
+  },
+  {
+    "slug": "solo_hinge_practice",
+    "type": "Carousel",
+    "headline": "Practice Your Hinge",
+    "movement": "Hinge profile"
+  },
+  {
+    "slug": "solo_plank_hold_review",
+    "type": "Static post",
+    "headline": "Plank Hold Review",
+    "movement": "Plank profile"
+  },
+  {
+    "slug": "solo_mobility_reset",
+    "type": "Story",
+    "headline": "Quick Mobility Reset",
+    "movement": "Mobility drill"
+  },
+  {
+    "slug": "solo_small_space_workout",
+    "type": "Carousel",
+    "headline": "Small Space Session",
+    "movement": "Home movement mix"
+  },
+  {
+    "slug": "solo_rep_count_demo",
+    "type": "Reel cover",
+    "headline": "Reps Counted Clearly",
+    "movement": "Push-ups + lunges"
+  },
+  {
+    "slug": "solo_after_set_notes",
+    "type": "Static post",
+    "headline": "Know What To Adjust",
+    "movement": "Set review"
+  },
+  {
+    "slug": "gym_return_first_day",
+    "type": "Reel cover",
+    "headline": "Back To The Gym",
+    "movement": "Gym returner"
+  },
+  {
+    "slug": "gym_beginner_lunge_lane",
+    "type": "Static post",
+    "headline": "Lunge Lane Check",
+    "movement": "Gym lunge"
+  },
+  {
+    "slug": "gym_pushup_bench",
+    "type": "Carousel",
+    "headline": "Bench Push-Up Start",
+    "movement": "Beginner push-up"
+  },
+  {
+    "slug": "gym_hinge_with_dumbbell",
+    "type": "Reel cover",
+    "headline": "Hinge With Control",
+    "movement": "Dumbbell hinge"
+  },
+  {
+    "slug": "gym_form_cues_not_noise",
+    "type": "Static post",
+    "headline": "Cues Without Noise",
+    "movement": "Gym set notes"
+  },
+  {
+    "slug": "gym_first_program_card",
+    "type": "Carousel",
+    "headline": "Beginner Movement Mix",
+    "movement": "Gym circuit"
+  },
+  {
+    "slug": "gym_confidence_return",
+    "type": "Story",
+    "headline": "Return With A Plan",
+    "movement": "Gym checklist"
+  },
+  {
+    "slug": "gym_set_review_locker",
+    "type": "Static post",
+    "headline": "Review Before You Leave",
+    "movement": "Post-set notes"
+  },
+  {
+    "slug": "gym_mobility_before_lift",
+    "type": "Carousel",
+    "headline": "Warm Up With Feedback",
+    "movement": "Gym mobility"
+  },
+  {
+    "slug": "gym_camera_position",
+    "type": "Reel cover",
+    "headline": "Better Camera Angle",
+    "movement": "Camera setup"
+  },
+  {
+    "slug": "saver_5_cues",
+    "type": "Carousel",
+    "headline": "5 Cues Worth Saving",
+    "movement": "Saved cues"
+  },
+  {
+    "slug": "saver_rep_count_templates",
+    "type": "Static post",
+    "headline": "Rep Count Templates",
+    "movement": "App mockup"
+  },
+  {
+    "slug": "saver_movement_library",
+    "type": "Carousel",
+    "headline": "Movement Library Ideas",
+    "movement": "Exercise library"
+  },
+  {
+    "slug": "saver_phone_setup_map",
+    "type": "Static post",
+    "headline": "Phone Setup Map",
+    "movement": "Camera zones"
+  },
+  {
+    "slug": "saver_form_review_prompts",
+    "type": "Carousel",
+    "headline": "Post-Set Review Prompts",
+    "movement": "Workout notes"
+  },
+  {
+    "slug": "saver_warmup_stack",
+    "type": "Reel cover",
+    "headline": "Warmup Stack",
+    "movement": "Mobility montage"
+  },
+  {
+    "slug": "saver_common_mistakes_soft",
+    "type": "Carousel",
+    "headline": "Fix The Next Rep",
+    "movement": "Next cue"
+  },
+  {
+    "slug": "saver_session_summary",
+    "type": "Static post",
+    "headline": "Sample Set Summary",
+    "movement": "Set summary"
+  },
+  {
+    "slug": "saver_beginner_week",
+    "type": "Carousel",
+    "headline": "Beginner Week Builder",
+    "movement": "Weekly mix"
+  },
+  {
+    "slug": "saver_camera_overlay_pack",
+    "type": "Static post",
+    "headline": "Camera Overlay Pack",
+    "movement": "Camera UI"
+  }
+]

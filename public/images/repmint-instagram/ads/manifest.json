@@ -1,0 +1,62 @@
+[
+  {
+    "file": "ad_01_form_coach_pocket.png",
+    "headline": "Your form coach, in your pocket.",
+    "cta": "Start Training",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_02_stop_guessing_reps.png",
+    "headline": "Stop guessing what changed mid-set.",
+    "cta": "Review Your Set",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_03_home_workouts_feedback.png",
+    "headline": "Home workouts need feedback too.",
+    "cta": "Try A Set",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_04_saved_workout_feedback.png",
+    "headline": "Saved the workout? Practice it with feedback.",
+    "cta": "Try One Move",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_05_gym_less_guesswork.png",
+    "headline": "Cleaner reps. Less guesswork.",
+    "cta": "See Set Review",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_06_one_cue_next_set.png",
+    "headline": "One clear cue for the next set.",
+    "cta": "Start A Session",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_07_count_review_repeat.png",
+    "headline": "Count. Review. Repeat with more awareness.",
+    "cta": "Check Your Set",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_08_broader_movement_coach.png",
+    "headline": "More than a rep counter.",
+    "cta": "Open Library",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_09_phone_camera_coach.png",
+    "headline": "Your camera can coach the set.",
+    "cta": "Run A Set",
+    "size": "1080x1350"
+  },
+  {
+    "file": "ad_10_sample_summary.png",
+    "headline": "Know what to focus on next.",
+    "cta": "See RepMint",
+    "size": "1080x1350"
+  }
+]

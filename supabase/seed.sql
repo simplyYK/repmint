@@ -1,0 +1,2 @@
+-- RepMint seed file.
+-- Starter movement profiles and exercise library rows are created in migrations.
