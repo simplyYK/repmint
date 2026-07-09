@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" fill="none">
+  <rect x="0" y="8" width="56" height="56" rx="14" fill="#b7ff3c" />
+  <path d="M31 20L18 44H27L23 60L46 34H35L42 20H31Z" fill="#10141b" />
+  <text x="72" y="47" font-family="Satoshi, Geist, system-ui, sans-serif" font-size="34" font-weight="900" fill="#f4f7fb" letter-spacing="-0.5">
+    Rep<tspan fill="#b7ff3c">Mint</tspan>
+  </text>
+</svg>

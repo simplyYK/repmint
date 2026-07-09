@@ -85,3 +85,82 @@ export type MovementDef = {
   focus: string[]; // set-review focus areas
   reviewCue: string; // default next-set focus
 };
+
+// ---------------------------------------------------------------------------
+// Exercise bank metadata (BUILD_SPEC section 1).
+//
+// Every exercise in the library — whether or not it is camera-trackable — has
+// an ExerciseMeta. Tier 1/2 exercises ALSO have a MovementDef that drives the
+// tracking engine; tier 3 exercises are metadata-only (timer / manual logging).
+// The TS registry is the single source of truth; the seed exporter writes this
+// out to supabase/seed/exercises.json for the DB.
+// ---------------------------------------------------------------------------
+
+// How honestly a single camera can coach a movement.
+export type TrackingTier = 1 | 2 | 3;
+// 1 = full camera coaching: rep counting + form % + ROM + live cues
+// 2 = camera rep counting only (no reliable form judgment)
+// 3 = timer/manual logging (camera can't see the load path usefully)
+
+export type MuscleGroup =
+  | "chest"
+  | "back"
+  | "shoulders"
+  | "biceps"
+  | "triceps"
+  | "forearms"
+  | "quads"
+  | "hamstrings"
+  | "glutes"
+  | "calves"
+  | "core"
+  | "obliques"
+  | "hip_flexors"
+  | "adductors"
+  | "abductors"
+  | "traps"
+  | "lats"
+  | "lower_back"
+  | "full_body";
+
+export type Equipment =
+  | "bodyweight"
+  | "dumbbell"
+  | "barbell"
+  | "kettlebell"
+  | "cable"
+  | "machine"
+  | "band"
+  | "bench"
+  | "pull_up_bar"
+  | "box"
+  | "medicine_ball";
+
+export type Difficulty = "beginner" | "intermediate" | "advanced";
+
+export type LoadType = "bodyweight" | "external" | "both";
+
+export type ExerciseMeta = {
+  slug: string; // stable id, snake_case, == DB exercises.slug
+  name: string;
+  aliases: string[];
+  primaryMuscles: MuscleGroup[];
+  secondaryMuscles: MuscleGroup[];
+  equipment: Equipment[];
+  difficulty: Difficulty;
+  tier: TrackingTier;
+  loadType: LoadType; // drives weight-logging UI
+  instructions: string[]; // 3-6 numbered setup/execution steps
+  formPoints: string[]; // 3-5 evidence-based technique points
+  commonMistakes: string[]; // 2-4
+  safetyNote?: string; // claim-safe wording only (see AGENTS.md)
+  romGuideline: string; // human-readable target range of motion
+  tutTarget?: [number, number]; // seconds per rep band
+};
+
+// A bank entry pairs an exercise's metadata with its (optional) tracking def.
+// Tier 1/2 entries carry a MovementDef; tier 3 entries are meta-only.
+export type ExerciseEntry = {
+  meta: ExerciseMeta;
+  def?: MovementDef;
+};

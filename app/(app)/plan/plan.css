@@ -1,0 +1,288 @@
+/* /plan route styles. Scoped to the plan view + wizard + generating state.
+   Uses shared tokens from globals.css :root. Mobile-first, 44px+ touch
+   targets, no horizontal scroll at 360px, reduced-motion respected. */
+
+/* ---- Plan view: week + day grid ---- */
+.pl-week {
+  display: grid;
+  gap: 0;
+}
+
+.pl-day-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.pl-day {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 148px;
+}
+
+.pl-day-rest {
+  background: linear-gradient(180deg, rgba(20, 26, 34, 0.7), rgba(16, 20, 26, 0.7));
+  border-style: dashed;
+}
+
+.pl-day-top {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pl-day-index {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pl-day-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.pl-day-focus {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+}
+
+.pl-day-note {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  margin: 0;
+}
+
+.pl-day .btn {
+  margin-top: auto;
+}
+
+/* ---- Wizard ---- */
+.pl-fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.pl-fieldset legend {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+.pl-goal-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.pl-goal {
+  background: rgba(8, 10, 13, 0.4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--text-soft);
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  padding: 12px 14px;
+  text-align: left;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.pl-goal:hover {
+  border-color: var(--line-strong);
+}
+
+.pl-goal.active {
+  background: rgba(183, 255, 60, 0.12);
+  border-color: rgba(183, 255, 60, 0.5);
+  color: var(--text);
+}
+
+.pl-goal strong {
+  font-size: 0.98rem;
+}
+
+.pl-goal small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.pl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Chips are buttons here — ensure a comfortable touch target */
+.pl-chips button.chip {
+  min-height: 40px;
+  padding: 8px 14px;
+}
+
+.pl-steppers {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.pl-inline-set {
+  display: grid;
+}
+
+.pl-stepper-block {
+  display: grid;
+  gap: 10px;
+}
+
+.pl-stepper-label {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.pl-stepper {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.pl-stepper button {
+  align-items: center;
+  background: rgba(244, 247, 251, 0.06);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  display: flex;
+  font-size: 1.4rem;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  width: 48px;
+}
+
+.pl-stepper button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.pl-stepper button:disabled {
+  opacity: 0.4;
+}
+
+.pl-stepper-value {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  min-width: 2ch;
+  text-align: center;
+}
+
+.pl-disclaimer {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* ---- Error / empty state ---- */
+.pl-error {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.pl-error-art {
+  height: 120px;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.pl-error-body {
+  display: grid;
+  gap: 12px;
+  min-width: 240px;
+  flex: 1;
+}
+
+.pl-error-body h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+/* ---- Generating state ---- */
+.pl-generating {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 24px;
+}
+
+.pl-generating-core {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+  text-align: center;
+}
+
+.pl-generating-core h2 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.pl-status-lines {
+  color: var(--accent-2);
+  font-weight: 700;
+  min-height: 1.6em;
+}
+
+.pl-status-lines p {
+  color: var(--accent-2);
+  margin: 0;
+}
+
+.pl-generating-note {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 560px) {
+  .pl-day-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pl-goal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pl-error {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .pl-error-body {
+    justify-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pl-status-lines p {
+    transition: none;
+  }
+}

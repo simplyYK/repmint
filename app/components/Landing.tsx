@@ -8,7 +8,8 @@
 // prefers reduced motion. No video files, no heavy deps.
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { movementsByCategory } from "../lib/movements/registry";
+import { useRouter } from "next/navigation";
+import { movementsByCategory, EXERCISES } from "../lib/movements/registry";
 
 function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -209,17 +210,13 @@ const CUES = [
   "Drive your elbows back to your hips.",
 ];
 
-export default function Landing({
-  onGetStarted,
-  onSignIn,
-  onGuest,
-}: {
-  onGetStarted: () => void;
-  onSignIn: () => void;
-  onGuest: () => void;
-}) {
+export default function Landing() {
+  const router = useRouter();
+  const onGetStarted = () => router.push("/auth?mode=sign-up");
+  const onSignIn = () => router.push("/auth");
+  const onGuest = () => router.push("/auth");
   const groups = movementsByCategory();
-  const totalExercises = groups.reduce((n, g) => n + g.items.length, 0);
+  const totalExercises = Object.keys(EXERCISES).length;
 
   return (
     <main className="landing">

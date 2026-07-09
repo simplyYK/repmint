@@ -1,0 +1,232 @@
+/* /exercises/[slug] — scoped styles for the exercise detail view.
+   Uses shared design tokens. Mobile-first; two-column layout kicks in on
+   wider screens. Touch targets stay >= 44px. */
+
+.ed-top {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 780px) {
+  .ed-top {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+}
+
+.ed-map-card {
+  display: flex;
+  justify-content: center;
+}
+
+.ed-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ed-badges {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.ed-diff {
+  color: var(--text-soft);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.ed-tier {
+  align-items: center;
+  color: var(--text-soft);
+  display: inline-flex;
+  font-weight: 600;
+  gap: 8px;
+}
+
+.ed-tier-dot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 9px;
+  width: 9px;
+}
+
+.ed-tier-dot-1 {
+  background: var(--accent);
+}
+
+.ed-tier-dot-2 {
+  background: var(--accent-2);
+}
+
+.ed-tier-dot-3 {
+  background: var(--text-muted);
+}
+
+.ed-tier-blurb {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.ed-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ed-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.ed-facts dt {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ed-facts dd {
+  color: var(--text-soft);
+  line-height: 1.5;
+  margin: 4px 0 0;
+}
+
+.ed-cta {
+  margin-top: 4px;
+}
+
+.ed-cta a {
+  text-decoration: none;
+}
+
+/* --- manual log sheet (tier 3) --- */
+.ed-sheet {
+  animation: ed-sheet-in 0.18s ease;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 16px;
+}
+
+@keyframes ed-sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ed-stepper {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ed-stepper-label {
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.ed-stepper-controls {
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+
+.ed-stepper-btn {
+  align-items: center;
+  background: var(--surface-3);
+  border: 0;
+  border-radius: 50%;
+  color: var(--text);
+  display: flex;
+  font-size: 1.3rem;
+  height: 40px;
+  justify-content: center;
+  line-height: 1;
+  width: 40px;
+}
+
+.ed-stepper-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.ed-stepper-value {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  min-width: 3ch;
+  text-align: center;
+}
+
+/* --- content sections --- */
+.ed-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 780px) {
+  .ed-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ed-steps {
+  color: var(--text-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  line-height: 1.55;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.ed-steps li {
+  padding-left: 4px;
+}
+
+.ed-list {
+  color: var(--text-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  line-height: 1.5;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ed-list li {
+  padding-left: 20px;
+  position: relative;
+}
+
+.ed-list li::before {
+  color: var(--accent);
+  content: "▸";
+  left: 0;
+  position: absolute;
+}
+
+.ed-list-warn li::before {
+  color: var(--warn);
+}

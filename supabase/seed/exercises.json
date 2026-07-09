@@ -1,0 +1,5676 @@
+[
+  {
+    "slug": "arnold_press",
+    "name": "Arnold Press",
+    "aliases": [
+      "arnold press",
+      "rotating shoulder press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "traps"
+    ],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Sit or stand tall holding dumbbells in front of your shoulders, palms facing you.",
+      "Brace your core and keep your ribs stacked over your hips.",
+      "Rotate your palms out as you press the weights straight overhead to lockout.",
+      "Reverse the rotation as you lower under control, then repeat."
+    ],
+    "form_points": [
+      "Press to a full overhead lockout on each rep.",
+      "Keep your ribs down so you don't lean back to finish.",
+      "Rotate smoothly rather than flinging the weights around.",
+      "Control the weights back to the start position."
+    ],
+    "common_mistakes": [
+      "Leaning back to muscle the weight overhead.",
+      "Rushing the rotation and losing control.",
+      "Stopping short of a full lockout."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shoulders to a full overhead lockout; elbow ~60° in front to ~170° at the top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 60,
+      "active_angle": 172,
+      "min_rep_fraction": 0.75,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "barbell_curl",
+    "name": "Barbell Curl",
+    "aliases": [
+      "barbell curl",
+      "straight bar curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps"
+    ],
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall holding a barbell with an underhand, shoulder-width grip.",
+      "Keep your elbows tucked close to your sides.",
+      "Curl the bar up by bending at the elbows until your forearms are near vertical.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep your upper arms still and drive the movement from the elbows.",
+      "Straighten fully at the bottom for a consistent range each rep.",
+      "Squeeze at the top rather than swinging the bar up.",
+      "Control the lowering phase instead of letting it drop."
+    ],
+    "common_mistakes": [
+      "Rocking the torso to swing the bar up.",
+      "Letting the elbows drift forward at the top.",
+      "Bouncing out of the bottom without a full stretch."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from nearly straight to about 45-50° at the top (front/side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 158,
+      "active_angle": 48,
+      "min_rep_fraction": 0.65,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "barbell_row",
+    "name": "Barbell Row",
+    "aliases": [
+      "barbell row",
+      "bent over barbell row",
+      "pendlay row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats",
+      "traps"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "lower_back"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Hinge at your hips until your torso is close to parallel with the floor.",
+      "Hold the bar at arm's length with a soft bend in your knees.",
+      "Pull the bar toward your lower ribs, leading with your elbows.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep a flat, braced back throughout the set.",
+      "Drive your elbows back rather than shrugging the bar up.",
+      "Pull the bar to about the level of your lower ribs.",
+      "Control the way down to a full stretch."
+    ],
+    "common_mistakes": [
+      "Standing up out of the hinge as the set goes on.",
+      "Heaving with the lower back instead of the arms.",
+      "Cutting the range short at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm from about straight to a strong pull; elbow ~160° to ~68° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 68,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "bench_press",
+    "name": "Barbell Bench Press",
+    "aliases": [
+      "bench press",
+      "barbell bench press",
+      "flat bench press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Lie back on a flat bench and grip the bar a little wider than shoulder-width.",
+      "Set your feet flat and keep a steady, braced upper back.",
+      "Unrack the bar and lower it under control toward your mid-chest.",
+      "Press the bar back up to a tall lockout over your chest."
+    ],
+    "form_points": [
+      "Lower the bar to touch around your mid-chest for a consistent range.",
+      "Keep your elbows tucked at roughly 45° rather than flaring straight out.",
+      "Keep your wrists stacked over your elbows through the press.",
+      "Control the descent, then press up with intent."
+    ],
+    "common_mistakes": [
+      "Bouncing the bar off the chest.",
+      "Flaring the elbows wide at the bottom.",
+      "Cutting the range short and half-pressing."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Bar to mid-chest; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 85,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "bent_over_row",
+    "name": "Bent-Over Row",
+    "aliases": [
+      "bent over row",
+      "bent-over row",
+      "dumbbell bent over row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "traps",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell",
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Hinge at your hips until your torso is close to parallel with the floor.",
+      "Let the weights hang at arm's length with a soft bend in your knees.",
+      "Pull the weights toward your lower ribs, leading with your elbows.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep a flat, braced back throughout the set.",
+      "Drive your elbows back rather than shrugging the weight up.",
+      "Pull to about the level of your lower ribs each rep.",
+      "Control the way down to a full stretch."
+    ],
+    "common_mistakes": [
+      "Standing up out of the hinge as the set goes on.",
+      "Yanking with the lower back instead of the arms.",
+      "Cutting the range short at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm from about straight to a strong pull; elbow ~160° to ~70° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 70,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "bicep_curl",
+    "name": "Bicep Curl",
+    "aliases": [
+      "bicep curl",
+      "biceps curl",
+      "dumbbell curl",
+      "curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps"
+    ],
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": [
+      "dumbbell",
+      "barbell",
+      "band"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall with a weight in each hand, arms extended at your sides.",
+      "Keep your elbows pinned close to your sides.",
+      "Curl the weight up by bending at the elbow until your forearm is near vertical.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep your upper arms still and let only your forearms move.",
+      "Straighten fully at the bottom for a consistent range each rep.",
+      "Squeeze the biceps at the top rather than swinging the weight up.",
+      "Control the lowering phase instead of dropping the weight."
+    ],
+    "common_mistakes": [
+      "Swinging the torso to heave the weight up.",
+      "Letting the elbows drift forward at the top.",
+      "Cutting the bottom short and missing the full stretch."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from nearly straight to about 45-55° at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 158,
+      "active_angle": 50,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "bird_dog",
+    "name": "Bird Dog",
+    "aliases": [
+      "bird dog",
+      "birddog",
+      "quadruped reach"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "glutes",
+      "shoulders",
+      "back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Start on all fours with your hands under your shoulders and knees under your hips.",
+      "Brace your core so your back stays flat and steady.",
+      "Reach one arm forward and the opposite leg back until both line up with your torso.",
+      "Pause briefly, return under control, then switch sides."
+    ],
+    "form_points": [
+      "Extend the leg through a comfortable range until it lines up with your torso.",
+      "Keep your hips and shoulders level rather than twisting toward the reaching side.",
+      "Move slowly and stay balanced instead of swinging the limbs.",
+      "Keep your neck long and your gaze down at the floor."
+    ],
+    "common_mistakes": [
+      "Twisting the hips open as the leg extends.",
+      "Arching the lower back instead of staying flat.",
+      "Rushing so the reach never fully extends."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Extending leg reaches until it lines up with the torso; hip opens toward ~170°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 120,
+      "active_angle": 172,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "bulgarian_split_squat",
+    "name": "Bulgarian Split Squat",
+    "aliases": [
+      "rear foot elevated split squat",
+      "bulgarian split squat",
+      "rfess"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand a stride's length in front of a bench and rest your rear foot on it.",
+      "Keep most of your weight through the planted front foot.",
+      "Lower straight down until your front thigh is about parallel.",
+      "Drive up through the front foot, then finish your reps and switch sides."
+    ],
+    "form_points": [
+      "Keep your front shin fairly vertical and lower straight down.",
+      "Stay tall through the torso with your hips square.",
+      "Own a full range and the same depth each rep.",
+      "Let the rear leg assist balance, not drive the rep."
+    ],
+    "common_mistakes": [
+      "Pushing the front knee far past the toes.",
+      "Turning it into a shallow bounce.",
+      "Twisting the hips out of square."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Front thigh to about parallel; front knee ~90° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 92,
+      "min_rep_fraction": 0.62,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "chin_up",
+    "name": "Chin-Up",
+    "aliases": [
+      "chin up",
+      "chin-up",
+      "chinup"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "back",
+      "forearms"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "advanced",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Hang from the bar with an underhand grip about shoulder-width apart.",
+      "Start from a full hang with your arms straight.",
+      "Pull your chest toward the bar, driving your elbows down.",
+      "Bring your chin over the bar, then lower under control to a full hang."
+    ],
+    "form_points": [
+      "Begin each rep from a full dead hang.",
+      "Drive your elbows down toward your sides.",
+      "Aim to bring your chin over the bar each rep.",
+      "Lower slowly to a full hang rather than dropping."
+    ],
+    "common_mistakes": [
+      "Stopping short well below the bar.",
+      "Swinging or kipping to finish the rep.",
+      "Skipping the full hang between reps."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Full hang to chin over the bar; elbow ~168° to ~52° front view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 52,
+      "min_rep_fraction": 0.7,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "concentration_curl",
+    "name": "Concentration Curl",
+    "aliases": [
+      "concentration curl",
+      "seated concentration curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Sit on a bench and brace the back of your working arm against your inner thigh.",
+      "Let the dumbbell hang with your arm fully extended.",
+      "Curl the weight up by bending only at the elbow.",
+      "Lower under control to a full stretch, then finish your reps and switch sides."
+    ],
+    "form_points": [
+      "Keep the upper arm braced against your thigh so only the forearm moves.",
+      "Straighten fully at the bottom for the full range.",
+      "Squeeze the biceps at the top of each rep.",
+      "Control the lowering phase throughout."
+    ],
+    "common_mistakes": [
+      "Lifting the elbow off the thigh to cheat the weight up.",
+      "Cutting the bottom short and missing the stretch.",
+      "Rushing the reps rather than controlling them."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from fully straight to about 40-50° at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 45,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "crunch",
+    "name": "Crunch",
+    "aliases": [
+      "crunch",
+      "ab crunch"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "obliques",
+      "hip_flexors"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Lie on your back with knees bent and feet flat on the floor.",
+      "Rest your hands lightly by your head or across your chest.",
+      "Curl your shoulder blades up off the floor by contracting your abs.",
+      "Lower back down under control and repeat."
+    ],
+    "form_points": [
+      "Curl from the abs and peel your shoulder blades off the floor.",
+      "Keep your lower back in contact with the floor.",
+      "Move with control rather than yanking on your neck.",
+      "Exhale as you crunch up."
+    ],
+    "common_mistakes": [
+      "Pulling on the head and neck to lift up.",
+      "Bouncing off the floor instead of controlling each rep.",
+      "Barely lifting the shoulders off the ground."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shoulder blades lift clear of the floor as the trunk flexes; hip angle closes toward ~70°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 125,
+      "active_angle": 72,
+      "min_rep_fraction": 0.45,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "dead_bug",
+    "name": "Dead Bug",
+    "aliases": [
+      "dead bug",
+      "deadbug"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "hip_flexors"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Lie on your back with your arms reaching up and your knees stacked over your hips.",
+      "Press your lower back gently into the floor and brace your core.",
+      "Lower one leg toward the floor while keeping your back flat.",
+      "Return under control, then work the other side."
+    ],
+    "form_points": [
+      "Lower the leg through a comfortable range while keeping your back flat.",
+      "Move slowly and keep the motion controlled.",
+      "Keep your ribs down rather than letting your back arch up.",
+      "Breathe steadily as you extend and return."
+    ],
+    "common_mistakes": [
+      "Letting the lower back arch off the floor.",
+      "Dropping the leg quickly instead of controlling it.",
+      "Holding your breath through the reps."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Leg lowers toward the floor while the back stays flat; hip opens toward ~150°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 150,
+      "active_angle": 100,
+      "min_rep_fraction": 0.5,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "deadlift",
+    "name": "Deadlift",
+    "aliases": [
+      "conventional deadlift",
+      "deadlift"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes",
+      "hamstrings",
+      "lower_back"
+    ],
+    "secondary_muscles": [
+      "quads",
+      "traps",
+      "core",
+      "lats",
+      "forearms"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "advanced",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Set your mid-foot under the bar with shins close and feet hip-width.",
+      "Hinge down, grip the bar, and set a flat back with your chest up.",
+      "Take the slack out, then drive your feet into the floor to stand tall.",
+      "Lock out with hips and knees straight, then hinge the bar back down under control."
+    ],
+    "form_points": [
+      "Keep the bar close to your body through the whole pull.",
+      "Brace your core and hold a flat back off the floor.",
+      "Push the floor away rather than yanking with your back.",
+      "Finish tall, then control the bar back down."
+    ],
+    "common_mistakes": [
+      "Letting the hips shoot up before the bar moves.",
+      "Rounding the back under the load.",
+      "Letting the bar drift out in front of the shins."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Bar from floor to a tall standing lockout; hips travel from ~90° to straight.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 92,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "decline_push_up",
+    "name": "Decline Push-Up",
+    "aliases": [
+      "decline push up",
+      "feet-elevated push up"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight",
+      "bench",
+      "box"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set your hands on the floor a little wider than shoulder-width.",
+      "Rest your feet on a bench or box so your body forms a straight decline.",
+      "Brace your core and lower your chest toward the floor under control.",
+      "Press back up to a tall lockout, keeping your hips level."
+    ],
+    "form_points": [
+      "Hold a straight line from your shoulders to your feet on the bench.",
+      "Lower until your elbows bend to about 90° for a full range.",
+      "Guide your elbows back rather than flaring them wide.",
+      "Control the tempo down and up."
+    ],
+    "common_mistakes": [
+      "Letting the hips pike up toward the ceiling.",
+      "Short reps that skip the bottom.",
+      "Rushing the descent."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Chest toward the floor; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "diamond_push_up",
+    "name": "Diamond Push-Up",
+    "aliases": [
+      "diamond push up",
+      "triangle push up",
+      "close grip push up"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [
+      "chest",
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set your hands close together under your chest so your index fingers and thumbs form a diamond.",
+      "Brace your core and hold a straight line from your shoulders to your ankles.",
+      "Lower your chest toward your hands under control.",
+      "Press back up to a tall lockout, keeping your elbows tracking close."
+    ],
+    "form_points": [
+      "Keep your elbows tucked close to your body as you lower.",
+      "Hold a straight line from your shoulders through your hips to your ankles.",
+      "Lower with control until your chest is near your hands.",
+      "Press up with intent to a full lockout."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag or pike out of line.",
+      "Flaring the elbows wide instead of keeping them close.",
+      "Cutting the range short at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Chest toward your hands; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 85,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "dip",
+    "name": "Dip",
+    "aliases": [
+      "dips",
+      "chest dip",
+      "triceps dip",
+      "parallel bar dip"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [
+      "chest",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Grip parallel bars and press up to a tall lockout with your arms straight.",
+      "Keep your core braced and your shoulders down away from your ears.",
+      "Lower under control until your elbows reach about 90°.",
+      "Press back up to a tall lockout, then repeat."
+    ],
+    "form_points": [
+      "Lower until your elbows bend to about 90° for a full range.",
+      "Keep your shoulders down and your torso steady as you lower.",
+      "Control the descent rather than dropping into the bottom.",
+      "Press up to a tall lockout on each rep."
+    ],
+    "common_mistakes": [
+      "Short reps that skip the bottom range.",
+      "Shrugging the shoulders up toward the ears.",
+      "Dropping fast and bouncing out of the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbows to about 90° at the bottom; tall lockout at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 85,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "dumbbell_bench_press",
+    "name": "Dumbbell Bench Press",
+    "aliases": [
+      "dumbbell bench press",
+      "db bench press",
+      "flat db press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Lie back on a flat bench holding a dumbbell in each hand at chest level.",
+      "Set your feet flat and keep a steady, braced upper back.",
+      "Press the dumbbells up over your chest until your arms are tall.",
+      "Lower them under control until your elbows reach about 90°, then repeat."
+    ],
+    "form_points": [
+      "Lower until your elbows bend to about 90° for a full range.",
+      "Keep your elbows tucked at roughly 45° rather than flaring straight out.",
+      "Press the dumbbells over your chest and stack your wrists.",
+      "Control the descent, then press up with intent."
+    ],
+    "common_mistakes": [
+      "Cutting the range short at the top.",
+      "Flaring the elbows wide at the bottom.",
+      "Letting the dumbbells drift out of control."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbows to about 90° at the bottom; arms tall at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "dumbbell_chest_press",
+    "name": "Dumbbell Chest Press",
+    "aliases": [
+      "dumbbell chest press",
+      "db chest press",
+      "db press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Lie back on a flat bench holding a dumbbell in each hand.",
+      "Start with the dumbbells pressed tall over your chest.",
+      "Lower them under control out to the sides until your elbows reach about 90°.",
+      "Press back up over your chest to a tall finish, then repeat."
+    ],
+    "form_points": [
+      "Lower until your elbows bend to about 90° for a full range.",
+      "Keep your elbows tucked at roughly 45° rather than flaring straight out.",
+      "Press the dumbbells over your chest and stack your wrists.",
+      "Control the descent, then press up with intent."
+    ],
+    "common_mistakes": [
+      "Cutting the range short at the top.",
+      "Flaring the elbows wide at the bottom.",
+      "Letting the dumbbells wobble out of control."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbows to about 90° at the bottom; arms tall at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "dumbbell_shoulder_press",
+    "name": "Dumbbell Shoulder Press",
+    "aliases": [
+      "dumbbell shoulder press",
+      "seated dumbbell press",
+      "db shoulder press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "traps"
+    ],
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Sit on a bench with dumbbells racked at your shoulders, palms facing forward.",
+      "Brace your core and keep your ribs stacked over your hips.",
+      "Press the weights straight overhead until your arms are locked out.",
+      "Lower under control back to your shoulders, then repeat."
+    ],
+    "form_points": [
+      "Press to a full overhead lockout each rep.",
+      "Keep your ribs down and your back supported rather than arching.",
+      "Move at a steady pace up and down.",
+      "Finish with the weights balanced over your shoulders."
+    ],
+    "common_mistakes": [
+      "Arching the back to push the weight up.",
+      "Cutting the lockout short at the top.",
+      "Letting the weights drop on the way down."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shoulders to a full overhead lockout; elbow ~78° racked to ~170° at the top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 78,
+      "active_angle": 172,
+      "min_rep_fraction": 0.78,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "forward_lunge",
+    "name": "Forward Lunge",
+    "aliases": [
+      "forward lunge",
+      "lunge"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand tall with feet hip-width apart.",
+      "Step one foot forward and lower until your front thigh is about parallel.",
+      "Keep your torso upright and your front knee over your foot.",
+      "Push back to standing, then alternate legs."
+    ],
+    "form_points": [
+      "Take a full stride so both knees bend to about 90°.",
+      "Keep your chest tall and your weight balanced.",
+      "Push back off the front foot with control.",
+      "Match your range side to side."
+    ],
+    "common_mistakes": [
+      "Letting the front knee drift far past the toes.",
+      "Falling forward instead of stepping under control.",
+      "Shallow, rushed reps."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Front thigh to about parallel; front knee ~90° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 92,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "front_plank",
+    "name": "Front Plank",
+    "aliases": [
+      "plank",
+      "front plank",
+      "forearm plank"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "obliques",
+      "shoulders",
+      "glutes"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set your forearms on the floor under your shoulders.",
+      "Extend your legs back and rise onto your toes.",
+      "Form one straight line from your shoulders through your hips to your ankles.",
+      "Brace your core and hold the position for time."
+    ],
+    "form_points": [
+      "Hold a straight line — hips level with your shoulders, not sagging or piked.",
+      "Squeeze your glutes and brace your midsection.",
+      "Keep your neck long and your gaze just ahead of your hands.",
+      "Breathe steadily rather than holding your breath."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag toward the floor.",
+      "Piking the hips up to make it easier.",
+      "Dropping the head or shrugging the shoulders."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hold a straight shoulder-hip-ankle line (roughly 160-180°) for the target time.",
+    "tut_target": "[20,60]",
+    "tracking": {
+      "rest_angle": 180,
+      "active_angle": 150,
+      "min_rep_fraction": 1,
+      "view": "side",
+      "mode": "hold",
+      "unilateral": false,
+      "hold_band": [
+        158,
+        182
+      ]
+    }
+  },
+  {
+    "slug": "front_raise",
+    "name": "Front Raise",
+    "aliases": [
+      "front raise",
+      "dumbbell front raise",
+      "anterior raise"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall with a dumbbell in each hand resting in front of your thighs.",
+      "Keep a slight bend in your elbows and your torso steady.",
+      "Raise your arms straight in front of you to about shoulder height.",
+      "Lower under control back to the start, then repeat."
+    ],
+    "form_points": [
+      "Lift to about shoulder height rather than swinging higher.",
+      "Keep your torso still so the front delts do the work.",
+      "Move at a steady pace both up and down.",
+      "Own a consistent range on every rep."
+    ],
+    "common_mistakes": [
+      "Rocking the torso to swing the weight up.",
+      "Lifting well past shoulder height.",
+      "Letting the weight drop quickly on the way down."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms to about shoulder height in front; raise from ~12° at rest to ~88° at the top.",
+    "tut_target": "[1,3]",
+    "tracking": {
+      "rest_angle": 12,
+      "active_angle": 88,
+      "min_rep_fraction": 0.6,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "front_squat",
+    "name": "Front Squat",
+    "aliases": [
+      "front squat",
+      "barbell front squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "core",
+      "traps",
+      "lower_back"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Rack the bar across the front of your shoulders with high elbows.",
+      "Set your feet about shoulder-width, toes slightly turned out.",
+      "Brace and squat straight down, keeping your elbows and chest up.",
+      "Reach about parallel, then drive up to a tall lockout."
+    ],
+    "form_points": [
+      "Keep your elbows high so the bar stays supported on your shoulders.",
+      "Sit straight down with an upright torso rather than hinging forward.",
+      "Track your knees out over your toes through the full rep.",
+      "Match the same depth on every rep."
+    ],
+    "common_mistakes": [
+      "Elbows dropping and the chest folding forward.",
+      "Heels rising as the torso pitches over.",
+      "Cutting depth short under heavier loads."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Thighs to about parallel with an upright torso; knee ~85-95° side view.",
+    "tut_target": "[3,5]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 90,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "glute_bridge",
+    "name": "Glute Bridge",
+    "aliases": [
+      "glute bridge",
+      "floor bridge"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Lie on your back with knees bent and feet flat, hip-width apart.",
+      "Push through your heels to lift your hips toward a straight line.",
+      "Squeeze your glutes at the top with your ribs down.",
+      "Lower your hips under control and repeat."
+    ],
+    "form_points": [
+      "Reach a straight line from shoulders to knees at the top.",
+      "Drive through your heels and squeeze your glutes.",
+      "Keep your ribs down instead of arching your lower back.",
+      "Control the lowering phase each rep."
+    ],
+    "common_mistakes": [
+      "Stopping short of full hip extension.",
+      "Overarching the lower back at the top.",
+      "Pushing through the toes instead of the heels."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hips rise to a straight shoulder-hip-knee line at the top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 120,
+      "active_angle": 173,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "goblet_squat",
+    "name": "Goblet Squat",
+    "aliases": [
+      "goblet squat",
+      "kb goblet squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "core",
+      "adductors",
+      "hamstrings"
+    ],
+    "equipment": [
+      "dumbbell",
+      "kettlebell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Hold a dumbbell or kettlebell against your chest with both hands.",
+      "Set your feet a little wider than shoulder-width, toes slightly out.",
+      "Sit down between your hips, keeping the weight close and your chest tall.",
+      "Reach about parallel, then stand up and squeeze your glutes at the top."
+    ],
+    "form_points": [
+      "Keep the weight tight to your chest so your torso stays upright.",
+      "Let your elbows travel down between your knees at the bottom.",
+      "Track your knees out in line with your toes.",
+      "Own a consistent depth on every rep."
+    ],
+    "common_mistakes": [
+      "Letting the weight drift away from the body.",
+      "Heels lifting off the floor at depth.",
+      "Rushing the bottom instead of controlling it."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Thighs to about parallel; knee bends to roughly 85-95° side view.",
+    "tut_target": "[3,5]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 90,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "good_morning",
+    "name": "Good Morning",
+    "aliases": [
+      "good morning",
+      "barbell good morning"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hamstrings",
+      "glutes",
+      "lower_back"
+    ],
+    "secondary_muscles": [
+      "core",
+      "traps"
+    ],
+    "equipment": [
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Rest a bar across your upper back with feet about hip-width.",
+      "With soft knees, push your hips back and hinge your torso forward.",
+      "Keep your back flat and lower until you feel your hamstrings load.",
+      "Drive your hips forward to return to standing tall."
+    ],
+    "form_points": [
+      "Lead the movement with your hips traveling back.",
+      "Keep a flat, braced back throughout.",
+      "Only lower as far as you can keep good position.",
+      "Stand up by driving the hips, not by rounding up."
+    ],
+    "common_mistakes": [
+      "Bending mostly at the knees instead of hinging.",
+      "Rounding the back at the bottom.",
+      "Chasing depth beyond a controlled range."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Torso hinges toward parallel-ish; hip angle ~95-110° side view.",
+    "tut_target": "[3,5]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 100,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "hammer_curl",
+    "name": "Hammer Curl",
+    "aliases": [
+      "hammer curl",
+      "neutral grip curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps",
+      "forearms"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall with a dumbbell in each hand, palms facing your body.",
+      "Keep your elbows tucked close to your sides.",
+      "Curl the weights up while holding the neutral, thumbs-up grip.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Hold the neutral grip throughout so your palms stay facing in.",
+      "Keep your upper arms still and move only at the elbow.",
+      "Straighten fully at the bottom for a consistent range.",
+      "Control the lowering phase on every rep."
+    ],
+    "common_mistakes": [
+      "Swinging the body to lift the weight.",
+      "Letting the elbows drift forward.",
+      "Rushing the reps and cutting the range short."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from nearly straight to about 45-55° at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 158,
+      "active_angle": 50,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "hip_thrust",
+    "name": "Barbell Hip Thrust",
+    "aliases": [
+      "hip thrust",
+      "barbell hip thrust"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "quads",
+      "core"
+    ],
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Sit on the floor with your upper back against a bench and the bar over your hips.",
+      "Plant your feet flat, roughly under your knees when bridged.",
+      "Drive through your heels to lift your hips until your body is level.",
+      "Squeeze your glutes at the top, then lower under control."
+    ],
+    "form_points": [
+      "Finish with your hips fully extended to a flat torso.",
+      "Keep your chin tucked and ribs down at the top.",
+      "Drive through your heels rather than your toes.",
+      "Control the lowering rather than dropping the hips."
+    ],
+    "common_mistakes": [
+      "Stopping short of full hip extension.",
+      "Overarching the lower back at the top.",
+      "Feet set too far forward or back."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hips travel from a lowered position to a level, fully extended top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 100,
+      "active_angle": 172,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "incline_bench_press",
+    "name": "Incline Barbell Bench Press",
+    "aliases": [
+      "incline bench press",
+      "incline barbell press",
+      "incline press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest",
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": [
+      "barbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Set a bench to a moderate incline and grip the bar a little wider than your shoulders.",
+      "Set your feet flat and keep a steady, braced upper back.",
+      "Unrack the bar and lower it under control toward your upper chest.",
+      "Press the bar back up to a tall lockout over your upper chest."
+    ],
+    "form_points": [
+      "Lower the bar toward your upper chest for a consistent range.",
+      "Keep your elbows tucked at roughly 45° rather than flaring straight out.",
+      "Keep your wrists stacked over your elbows through the press.",
+      "Control the descent, then press up with intent."
+    ],
+    "common_mistakes": [
+      "Bouncing the bar off the chest.",
+      "Flaring the elbows wide at the bottom.",
+      "Half-pressing and cutting the range short."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Bar to upper chest; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "incline_push_up",
+    "name": "Incline Push-Up",
+    "aliases": [
+      "incline push up",
+      "hands-elevated push up",
+      "bench push up"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight",
+      "bench",
+      "box"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Place your hands on a bench, box, or sturdy surface a little wider than your shoulders.",
+      "Walk your feet back so your body forms a straight line on an incline.",
+      "Lower your chest toward the surface under control.",
+      "Press back up to a tall lockout, keeping your hips level."
+    ],
+    "form_points": [
+      "Keep a straight line from your shoulders to your ankles the whole time.",
+      "Lower until your chest is close to the surface for a full range.",
+      "Guide your elbows back rather than letting them flare wide.",
+      "Control the tempo down and up."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag toward the surface.",
+      "Short reps that skip the bottom.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Chest toward the surface; elbow bends to roughly 90-100° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 95,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "inverted_row",
+    "name": "Inverted Row",
+    "aliases": [
+      "inverted row",
+      "bodyweight row",
+      "australian pull up"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "traps"
+    ],
+    "equipment": [
+      "bodyweight",
+      "barbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set a bar at about waist height and lie underneath it.",
+      "Grip the bar a little wider than your shoulders with your body in a straight line.",
+      "Pull your chest toward the bar, driving your elbows back.",
+      "Lower under control until your arms are straight, then repeat."
+    ],
+    "form_points": [
+      "Keep your body in a straight line from shoulders to heels.",
+      "Drive your elbows back and pull your chest to the bar.",
+      "Squeeze your shoulder blades together at the top.",
+      "Lower slowly to full arm extension each rep."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag out of the straight line.",
+      "Short reps that stop well short of the bar.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Straight arms to chest near the bar; elbow ~168° to ~65° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 65,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "kettlebell_swing",
+    "name": "Kettlebell Swing",
+    "aliases": [
+      "kb swing",
+      "kettlebell swing",
+      "russian swing"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "core",
+      "lower_back",
+      "shoulders",
+      "lats"
+    ],
+    "equipment": [
+      "kettlebell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand with feet about shoulder-width and the kettlebell a step in front.",
+      "Hinge to grip the bell, then hike it back between your legs.",
+      "Snap your hips forward to float the bell up to about chest height.",
+      "Let it swing back down as you hinge, and flow into the next rep."
+    ],
+    "form_points": [
+      "Power the swing with a sharp hip snap, not your arms.",
+      "Keep a flat, braced back on every hinge.",
+      "Let the bell float — your hips do the work.",
+      "Stand fully tall at the top of each swing."
+    ],
+    "common_mistakes": [
+      "Squatting the swing instead of hinging.",
+      "Lifting the bell with the arms and shoulders.",
+      "Rounding the back at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hips hinge to ~90-100° and snap to a tall, fully extended finish.",
+    "tut_target": "[1,2]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 108,
+      "min_rep_fraction": 0.5,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "knee_push_up",
+    "name": "Knee Push-Up",
+    "aliases": [
+      "knee push up",
+      "kneeling push up",
+      "modified push up"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Kneel down and set your hands a little wider than shoulder-width.",
+      "Keep a straight line from your shoulders through your hips to your knees.",
+      "Lower your chest toward the floor under control until your elbows reach about 90°.",
+      "Press back up to a tall lockout, keeping your hips from sagging."
+    ],
+    "form_points": [
+      "Hold a straight line from your shoulders to your knees.",
+      "Lower until your elbows bend to about 90° for a full range.",
+      "Guide your elbows back rather than letting them flare wide.",
+      "Move at a steady, controlled pace."
+    ],
+    "common_mistakes": [
+      "Letting the hips drop or push up out of line.",
+      "Shallow reps that skip the bottom.",
+      "Rushing the descent."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Chest toward the floor; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 90,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "lateral_lunge",
+    "name": "Lateral Lunge",
+    "aliases": [
+      "side lunge",
+      "lateral lunge"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes",
+      "adductors"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "abductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand tall with feet together and room to step out to the side.",
+      "Take a wide step sideways and sit back into that hip.",
+      "Keep the trailing leg fairly straight and your chest up.",
+      "Push back to the middle, then work the other side."
+    ],
+    "form_points": [
+      "Sit back into the bent-leg hip rather than pushing the knee forward.",
+      "Keep both feet flat and pointing forward.",
+      "Stay tall through the chest as you load the side.",
+      "Match the depth and range on both legs."
+    ],
+    "common_mistakes": [
+      "Short steps with little hip loading.",
+      "Rounding forward over the working leg.",
+      "Letting the working knee cave inward."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Bent knee to roughly 90-110° as you sit into the hip (side/front view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 108,
+      "min_rep_fraction": 0.55,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "lateral_raise",
+    "name": "Lateral Raise",
+    "aliases": [
+      "lateral raise",
+      "side raise",
+      "dumbbell lateral raise",
+      "side lateral"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall with a dumbbell in each hand at your sides.",
+      "Keep a slight bend in your elbows and lead with them.",
+      "Raise your arms out to the sides until they reach about shoulder height.",
+      "Lower under control back to your sides, then repeat."
+    ],
+    "form_points": [
+      "Lift out to about shoulder height rather than swinging higher.",
+      "Lead with your elbows so the delts do the work.",
+      "Keep your torso still instead of rocking the weight up.",
+      "Control the lowering phase on every rep."
+    ],
+    "common_mistakes": [
+      "Swinging the torso to throw the weight up.",
+      "Lifting well past shoulder height and shrugging.",
+      "Dropping the weights quickly instead of lowering them."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms to about shoulder height; abduction from ~14° at rest to ~88° at the top.",
+    "tut_target": "[1,3]",
+    "tracking": {
+      "rest_angle": 14,
+      "active_angle": 88,
+      "min_rep_fraction": 0.62,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "lying_leg_raise",
+    "name": "Lying Leg Raise",
+    "aliases": [
+      "leg raise",
+      "lying leg raise",
+      "straight leg raise"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core",
+      "hip_flexors"
+    ],
+    "secondary_muscles": [
+      "quads"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Lie on your back with legs straight and hands by your sides or under your hips.",
+      "Keeping your legs fairly straight, raise them toward vertical.",
+      "Lift until your hips flex and your feet point up.",
+      "Lower under control without letting your feet touch the floor, then repeat."
+    ],
+    "form_points": [
+      "Keep your lower back pressed into the floor.",
+      "Raise your legs with control rather than swinging them.",
+      "Lower slowly to keep tension on the abs.",
+      "Keep your legs fairly straight throughout."
+    ],
+    "common_mistakes": [
+      "Arching the lower back off the floor.",
+      "Using momentum to swing the legs up.",
+      "Dropping the legs down quickly."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Legs raise from the floor toward vertical; hip angle closes toward ~90°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 95,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "mountain_climber",
+    "name": "Mountain Climber",
+    "aliases": [
+      "mountain climber",
+      "mountain climbers"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core",
+      "hip_flexors"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "quads",
+      "obliques"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Start in a high plank with hands under your shoulders.",
+      "Drive one knee toward your chest, then switch legs.",
+      "Keep alternating knees at a steady pace.",
+      "Hold a strong plank line the whole time."
+    ],
+    "form_points": [
+      "Keep your hips level with your shoulders as you drive your knees.",
+      "Drive each knee well forward for a full range.",
+      "Keep a steady rhythm rather than bouncing.",
+      "Brace your core throughout."
+    ],
+    "common_mistakes": [
+      "Letting the hips pike up high.",
+      "Short, choppy knee drives.",
+      "Losing the plank line as you speed up."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Each knee drives from extended toward the chest; hip closes toward ~90°.",
+    "tut_target": "[1,2]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 95,
+      "min_rep_fraction": 0.5,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "overhead_press",
+    "name": "Overhead Press",
+    "aliases": [
+      "overhead press",
+      "shoulder press",
+      "ohp",
+      "military press",
+      "strict press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "traps"
+    ],
+    "equipment": [
+      "barbell",
+      "dumbbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall with the weight racked at your shoulders and your feet about hip-width.",
+      "Brace your core and keep your ribs stacked over your hips.",
+      "Press the weight straight overhead until your arms are locked out.",
+      "Lower under control back to your shoulders, then repeat."
+    ],
+    "form_points": [
+      "Press in a straight line to a full overhead lockout each rep.",
+      "Keep your ribs down so you don't lean back to finish the press.",
+      "Move at a steady pace up and down rather than heaving the weight.",
+      "Finish with the weight balanced over your shoulders."
+    ],
+    "common_mistakes": [
+      "Leaning back and turning the press into an incline push.",
+      "Cutting the lockout short at the top.",
+      "Using leg drive to bounce the weight up."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shoulders to a full overhead lockout; elbow ~80° racked to ~170° at the top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 82,
+      "active_angle": 172,
+      "min_rep_fraction": 0.8,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "overhead_tricep_extension",
+    "name": "Overhead Tricep Extension",
+    "aliases": [
+      "overhead tricep extension",
+      "overhead triceps extension",
+      "french press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "dumbbell",
+      "cable"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Hold a weight overhead with your arms extended and elbows close to your head.",
+      "Keep your upper arms still and pointing up.",
+      "Lower the weight behind your head by bending at the elbows.",
+      "Extend back up until your arms are straight, then repeat."
+    ],
+    "form_points": [
+      "Keep your elbows pointing up and close to your head throughout.",
+      "Lower to a full stretch behind your head for the full range.",
+      "Extend fully to a straight-arm lockout at the top.",
+      "Control the movement rather than letting the weight fall."
+    ],
+    "common_mistakes": [
+      "Letting the elbows flare wide on the way up.",
+      "Cutting the lockout short at the top.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from a deep bend behind the head to a straight lockout overhead (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 60,
+      "active_angle": 168,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "pike_push_up",
+    "name": "Pike Push-Up",
+    "aliases": [
+      "pike push up",
+      "pike push-up",
+      "pike press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "traps"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Start in a push-up position, then walk your feet in and lift your hips into an inverted V.",
+      "Set your hands a little wider than your shoulders with your head between your arms.",
+      "Bend your elbows to lower the top of your head toward the floor.",
+      "Press back up until your arms are straight, then repeat."
+    ],
+    "form_points": [
+      "Keep your hips high so the shoulders take the load.",
+      "Lower your head under control toward the floor between your hands.",
+      "Press back to straight arms on each rep.",
+      "Move at a steady pace rather than dropping down."
+    ],
+    "common_mistakes": [
+      "Letting the hips drop so it becomes a regular push-up.",
+      "Cutting the range short at the bottom.",
+      "Rushing the descent instead of controlling it."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Head toward the floor between the hands; elbow ~85° at the bottom to straight at the top.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "preacher_curl",
+    "name": "Preacher Curl",
+    "aliases": [
+      "preacher curl",
+      "preacher bench curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "dumbbell",
+      "barbell",
+      "machine",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Rest the backs of your upper arms flat on the preacher pad.",
+      "Let the weight hang with your arms fully extended.",
+      "Curl the weight up by bending at the elbows.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep the backs of your arms flat on the pad throughout.",
+      "Straighten fully at the bottom for the full range each rep.",
+      "Squeeze at the top rather than swinging the weight up.",
+      "Control the lowering phase and resist letting it drop."
+    ],
+    "common_mistakes": [
+      "Lifting the arms off the pad at the top.",
+      "Bouncing out of the bottom without a full stretch.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from fully straight to about 40-50° at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 45,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "pull_up",
+    "name": "Pull-Up",
+    "aliases": [
+      "pull up",
+      "pull-up",
+      "pullup"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "back",
+      "forearms"
+    ],
+    "equipment": [
+      "pull_up_bar"
+    ],
+    "difficulty": "advanced",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Hang from the bar with an overhand grip a little wider than your shoulders.",
+      "Start from a full hang with your arms straight.",
+      "Pull your chest toward the bar, driving your elbows down and back.",
+      "Bring your chin over the bar, then lower under control to a full hang."
+    ],
+    "form_points": [
+      "Begin each rep from a full dead hang.",
+      "Lead with your elbows down toward your ribs.",
+      "Aim to bring your chin over the bar each rep.",
+      "Lower slowly rather than dropping into the hang."
+    ],
+    "common_mistakes": [
+      "Short reps that stop well below the bar.",
+      "Kipping or swinging to get up.",
+      "Not returning to a full hang between reps."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Full hang to chin over the bar; elbow ~168° to ~55° front view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 55,
+      "min_rep_fraction": 0.7,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "renegade_row",
+    "name": "Renegade Row",
+    "aliases": [
+      "renegade row",
+      "plank row",
+      "renegade dumbbell row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "core"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "advanced",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Set up in a high plank with a hand on each dumbbell, feet wide for balance.",
+      "Brace your core and keep your hips square to the floor.",
+      "Row one dumbbell toward your hip, leading with your elbow.",
+      "Lower under control, then row the other side, alternating each rep."
+    ],
+    "form_points": [
+      "Keep your hips square and steady rather than rotating.",
+      "Set your feet wide for a stable base.",
+      "Drive your elbow back and toward your hip on each row.",
+      "Lower each dumbbell under control."
+    ],
+    "common_mistakes": [
+      "Twisting the hips as you row.",
+      "Feet too narrow, making the plank wobble.",
+      "Rushing the reps and losing the plank position."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm from about straight to a strong pull; elbow ~165° to ~70° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 70,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "reverse_lunge",
+    "name": "Reverse Lunge",
+    "aliases": [
+      "reverse lunge",
+      "backward lunge"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand tall with feet hip-width apart.",
+      "Step one foot back and lower into a lunge until your front thigh is about parallel.",
+      "Keep your torso upright and your front knee tracking over your foot.",
+      "Drive through the front foot to return to standing, then alternate."
+    ],
+    "form_points": [
+      "Step back far enough that both knees bend to about 90°.",
+      "Keep your weight in the front heel and stay tall.",
+      "Lower with control rather than dropping the back knee.",
+      "Use the same range on each side."
+    ],
+    "common_mistakes": [
+      "Short steps that jam the front knee forward.",
+      "Leaning the torso far over the front leg.",
+      "Rushing the reps and losing balance."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Front thigh to about parallel; front knee ~90° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 92,
+      "min_rep_fraction": 0.62,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "romanian_deadlift",
+    "name": "Romanian Deadlift",
+    "aliases": [
+      "rdl",
+      "romanian deadlift",
+      "hip hinge",
+      "stiff-leg deadlift"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "lower_back",
+      "core",
+      "traps"
+    ],
+    "equipment": [
+      "barbell",
+      "dumbbell",
+      "kettlebell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall holding the weight in front of your thighs.",
+      "With soft knees, push your hips back and let the weight travel down your legs.",
+      "Keep your back flat and lower until you feel a stretch in your hamstrings.",
+      "Drive your hips forward to stand tall and finish with a glute squeeze."
+    ],
+    "form_points": [
+      "Lead with your hips moving back, not your knees bending.",
+      "Keep the weight close to your legs the whole way down.",
+      "Hold a flat, braced back rather than rounding.",
+      "Lower to a comfortable hamstring stretch, usually around mid-shin."
+    ],
+    "common_mistakes": [
+      "Turning it into a squat by bending the knees too much.",
+      "Rounding the back as the weight drifts away.",
+      "Overreaching for depth beyond a controlled stretch."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hinge until the torso is roughly parallel-ish; hip angle ~90-100° side view.",
+    "tut_target": "[3,5]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 95,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "side_plank",
+    "name": "Side Plank",
+    "aliases": [
+      "side plank",
+      "side bridge"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "obliques",
+      "core"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "glutes",
+      "abductors"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Lie on your side with your forearm under your shoulder.",
+      "Stack your feet and lift your hips off the floor.",
+      "Form a straight line from your head through your hips to your feet.",
+      "Hold for time, then switch sides."
+    ],
+    "form_points": [
+      "Keep your hips lifted and stacked in a straight line.",
+      "Support yourself with your forearm directly under your shoulder.",
+      "Brace your obliques to hold the position.",
+      "Keep your neck neutral and breathe steadily."
+    ],
+    "common_mistakes": [
+      "Letting the hips drift down toward the floor.",
+      "Rotating the torso forward or back.",
+      "Holding your breath through the set."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hold a straight head-hip-foot line with hips lifted for the target time.",
+    "tut_target": "[15,45]",
+    "tracking": {
+      "rest_angle": 180,
+      "active_angle": 150,
+      "min_rep_fraction": 1,
+      "view": "front",
+      "mode": "hold",
+      "unilateral": true,
+      "hold_band": [
+        158,
+        182
+      ]
+    }
+  },
+  {
+    "slug": "single_arm_dumbbell_row",
+    "name": "Single-Arm Dumbbell Row",
+    "aliases": [
+      "one arm dumbbell row",
+      "single arm dumbbell row",
+      "one-arm row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "lats",
+      "back"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "traps"
+    ],
+    "equipment": [
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Brace one hand and knee on a bench with your back flat and near parallel.",
+      "Let the dumbbell hang at arm's length from your working side.",
+      "Pull the dumbbell toward your hip, leading with your elbow.",
+      "Lower under control to a full stretch, finish your reps, then switch sides."
+    ],
+    "form_points": [
+      "Keep a flat, steady back with your hips square through the set.",
+      "Drive your elbow back and toward your hip rather than shrugging.",
+      "Pull to about hip height for a full contraction.",
+      "Lower slowly to a full stretch each rep."
+    ],
+    "common_mistakes": [
+      "Twisting the torso to heave the weight up.",
+      "Rounding the back out of the braced position.",
+      "Short reps that skip the stretch at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm from about straight to a strong pull; elbow ~162° to ~68° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 162,
+      "active_angle": 68,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "sit_up",
+    "name": "Sit-up",
+    "aliases": [
+      "sit up",
+      "situp",
+      "full sit-up"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "hip_flexors",
+      "obliques"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Lie on your back with knees bent and feet flat.",
+      "Cross your arms over your chest or reach toward your knees.",
+      "Curl and sit all the way up until your torso is upright.",
+      "Lower back down under control and repeat."
+    ],
+    "form_points": [
+      "Curl up segment by segment rather than jerking off the floor.",
+      "Keep your feet planted and your chin tucked slightly.",
+      "Come to a tall seated position at the top.",
+      "Lower with control instead of dropping back."
+    ],
+    "common_mistakes": [
+      "Yanking the neck to initiate the movement.",
+      "Using momentum to swing up.",
+      "Only doing a partial range."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Torso curls from the floor up to about vertical; hip angle closes toward ~55°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 155,
+      "active_angle": 60,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "skull_crusher",
+    "name": "Skull Crusher",
+    "aliases": [
+      "skull crusher",
+      "lying tricep extension",
+      "lying triceps extension"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "barbell",
+      "dumbbell",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Lie on a bench holding the weight with your arms extended over your chest.",
+      "Keep your upper arms pointing up and fairly still.",
+      "Lower the weight toward your forehead by bending at the elbows.",
+      "Extend back up to a straight-arm lockout, then repeat."
+    ],
+    "form_points": [
+      "Keep your upper arms pointing up and still so only the forearms move.",
+      "Lower under control to a full stretch.",
+      "Extend fully to a straight-arm lockout at the top.",
+      "Keep the tempo smooth on both phases."
+    ],
+    "common_mistakes": [
+      "Letting the elbows flare wide.",
+      "Cutting the lockout short at the top.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from a deep bend near the forehead to a straight lockout (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 172,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "split_squat",
+    "name": "Split Squat",
+    "aliases": [
+      "static lunge",
+      "split squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Set up in a staggered stance, one foot forward and one back.",
+      "Keep most of your weight through the front foot.",
+      "Lower straight down until your front thigh is about parallel.",
+      "Drive through the front foot to return to the start, then swap sides."
+    ],
+    "form_points": [
+      "Drop straight down rather than drifting your front knee far forward.",
+      "Keep your torso tall and stacked over your hips.",
+      "Use a full, matched range on both legs.",
+      "Control the descent and stay balanced."
+    ],
+    "common_mistakes": [
+      "Leaning the torso forward onto the front thigh.",
+      "Short, shallow reps that skip the bottom.",
+      "Wobbling instead of owning a stable stance."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Front thigh to about parallel; front knee ~90° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 92,
+      "min_rep_fraction": 0.62,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "squat",
+    "name": "Bodyweight Squat",
+    "aliases": [
+      "air squat",
+      "bodyweight squat",
+      "squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell",
+      "barbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand with feet about shoulder-width apart, toes turned slightly out.",
+      "Brace your core and keep your chest up as you sit your hips back and down.",
+      "Lower until your thighs reach about parallel, keeping your heels planted.",
+      "Drive through the whole foot to stand back up to a tall finish."
+    ],
+    "form_points": [
+      "Track your knees out over your toes rather than letting them collapse inward.",
+      "Aim for thighs about parallel to the floor on each rep for a consistent range.",
+      "Keep your torso proud and your weight balanced over the middle of your foot.",
+      "Control the way down, then drive up with intent."
+    ],
+    "common_mistakes": [
+      "Cutting depth short and bouncing at the top.",
+      "Letting the knees cave inward under load.",
+      "Rounding forward and losing the tall chest position."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hips crease to about knee height; knee bends to roughly 85-95° side view.",
+    "tut_target": "[3,5]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 88,
+      "min_rep_fraction": 0.72,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "standing_calf_raise",
+    "name": "Standing Calf Raise",
+    "aliases": [
+      "calf raise",
+      "standing calf raise",
+      "heel raise"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "calves"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "bodyweight",
+      "dumbbell",
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand tall with the balls of your feet on the floor or a small step.",
+      "Push through the balls of your feet to lift your heels as high as you can.",
+      "Pause briefly at the top with a strong calf squeeze.",
+      "Lower your heels under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Rise up onto the balls of your feet through a full range each rep.",
+      "Pause at the top rather than bouncing.",
+      "Lower slowly to feel a stretch at the bottom.",
+      "Keep your knees mostly straight so the calves do the work."
+    ],
+    "common_mistakes": [
+      "Short, bouncy reps with little range.",
+      "Rushing the lowering phase.",
+      "Bending the knees to cheat the movement."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Full heel lift at the top to a controlled stretch at the bottom (side view ankle range).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 130,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "standing_toe_touch",
+    "name": "Standing Toe Touch",
+    "aliases": [
+      "standing toe touch",
+      "toe touch",
+      "standing forward fold"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "lower_back",
+      "glutes"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Stand tall with your feet about hip-width apart.",
+      "Hinge at your hips and reach your hands down toward your toes.",
+      "Go only as far as feels comfortable, letting your upper body relax down.",
+      "Rise back up with control to a tall stand, then repeat."
+    ],
+    "form_points": [
+      "Reach down through a comfortable range rather than forcing the stretch.",
+      "Let your hips lead the hinge as your hands travel toward your toes.",
+      "Keep the movement smooth and controlled in both directions.",
+      "Rise back up steadily to a tall finish."
+    ],
+    "common_mistakes": [
+      "Bouncing at the bottom to reach further.",
+      "Rushing back up instead of controlling the return.",
+      "Rounding sharply rather than hinging from the hips."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hinge forward through a comfortable range as the hands travel toward the toes.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 172,
+      "active_angle": 95,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "strict_push_up",
+    "name": "Push-Up",
+    "aliases": [
+      "push up",
+      "push-up",
+      "strict push up",
+      "press up"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set your hands a little wider than shoulder-width with your body in a straight line.",
+      "Brace your core and squeeze your glutes so your hips stay level.",
+      "Lower your chest toward the floor under control until your elbows reach about 90°.",
+      "Press back up to a tall lockout, keeping your body in one line."
+    ],
+    "form_points": [
+      "Keep a straight line from your shoulders through your hips to your ankles.",
+      "Lower until your elbows bend to about 90° for a consistent range.",
+      "Let your elbows travel back at roughly 45° rather than flaring straight out.",
+      "Move at a steady, controlled tempo on the way down and up."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag or pike out of the body line.",
+      "Cutting the range short with shallow reps.",
+      "Rushing the descent and bouncing off the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Chest toward the floor; elbow bends to roughly 85-95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 88,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "t_bar_row",
+    "name": "T-Bar Row",
+    "aliases": [
+      "t bar row",
+      "t-bar row",
+      "landmine row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps",
+      "traps"
+    ],
+    "equipment": [
+      "barbell",
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Straddle the bar and hinge at your hips with a flat back.",
+      "Take the handles and let the weight hang at arm's length.",
+      "Pull the handles toward your torso, leading with your elbows.",
+      "Lower under control to a full stretch, then repeat."
+    ],
+    "form_points": [
+      "Keep a flat, braced back throughout the set.",
+      "Drive your elbows back rather than shrugging the weight up.",
+      "Pull to about the level of your torso each rep.",
+      "Control the way down to a full stretch."
+    ],
+    "common_mistakes": [
+      "Standing up out of the hinge as the set goes on.",
+      "Jerking with the lower back instead of the arms.",
+      "Cutting the range short at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm from about straight to a strong pull; elbow ~160° to ~70° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 70,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "tricep_dip_bench",
+    "name": "Bench Tricep Dip",
+    "aliases": [
+      "bench dip",
+      "tricep dip",
+      "bench tricep dip"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "chest"
+    ],
+    "equipment": [
+      "bodyweight",
+      "bench"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Sit on the edge of a bench and place your hands beside your hips.",
+      "Slide your hips off the bench with your legs out in front.",
+      "Lower your body by bending your elbows until they reach about 90°.",
+      "Press back up until your arms are straight, then repeat."
+    ],
+    "form_points": [
+      "Keep your elbows pointing back rather than flaring out to the sides.",
+      "Lower until your elbows reach about a right angle for a full range.",
+      "Keep your hips close to the bench as you lower.",
+      "Press up to a straight-arm finish each rep."
+    ],
+    "common_mistakes": [
+      "Short reps that barely bend the elbows.",
+      "Letting the elbows flare wide.",
+      "Drifting the hips far away from the bench."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow bends to about 90° at the bottom, straight at the top (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 88,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "tricep_kickback",
+    "name": "Tricep Kickback",
+    "aliases": [
+      "tricep kickback",
+      "triceps kickback",
+      "dumbbell kickback"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "dumbbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 1,
+    "load_type": "external",
+    "instructions": [
+      "Hinge forward with a flat back and pin your upper arm to your side.",
+      "Start with your elbow bent and the weight hanging down.",
+      "Extend at the elbow to straighten your arm behind you.",
+      "Return under control to the bent-elbow start, then switch sides."
+    ],
+    "form_points": [
+      "Keep your upper arm still and level so only the forearm moves.",
+      "Extend fully to a straight-arm finish behind you.",
+      "Hold a steady flat-back position throughout.",
+      "Control the return rather than letting the weight swing."
+    ],
+    "common_mistakes": [
+      "Dropping the upper arm instead of keeping it pinned.",
+      "Short reps that never reach full extension.",
+      "Swinging the weight instead of controlling it."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Elbow from a bent start to a straight lockout behind you (side view).",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 172,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "walking_lunge",
+    "name": "Walking Lunge",
+    "aliases": [
+      "walking lunge",
+      "alternating lunge"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "core",
+      "adductors",
+      "calves"
+    ],
+    "equipment": [
+      "bodyweight",
+      "dumbbell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 1,
+    "load_type": "both",
+    "instructions": [
+      "Stand tall with space ahead of you to move forward.",
+      "Step one foot forward into a lunge until the front thigh is about parallel.",
+      "Drive up and forward, bringing the back foot through into the next lunge.",
+      "Continue walking forward, alternating legs each step."
+    ],
+    "form_points": [
+      "Take even, full-length strides so each knee bends to about 90°.",
+      "Stay tall and keep each step balanced before pushing off.",
+      "Track your front knee over your foot.",
+      "Keep a steady rhythm rather than rushing."
+    ],
+    "common_mistakes": [
+      "Short strides that push the knee forward.",
+      "Losing balance between steps.",
+      "Uneven depth from side to side."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Front thigh to about parallel; front knee ~90° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 94,
+      "min_rep_fraction": 0.58,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "assisted_pull_up_machine",
+    "name": "Assisted Pull-Up Machine",
+    "aliases": [
+      "assisted pull up",
+      "assisted pull-up machine",
+      "gravitron"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "lats",
+      "back"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "both",
+    "instructions": [
+      "Set the assistance weight and kneel or stand on the platform.",
+      "Grab the handles a little wider than shoulder-width.",
+      "Pull yourself up until your chin approaches the handles.",
+      "Lower yourself back down under control until your arms are long."
+    ],
+    "form_points": [
+      "Drive your elbows down and back as you pull.",
+      "Keep your body fairly still rather than swinging.",
+      "Pull to about chin height for a full, repeatable range.",
+      "Lower yourself with control instead of dropping."
+    ],
+    "common_mistakes": [
+      "Swinging or kicking to gain momentum.",
+      "Stopping short of a full pull.",
+      "Dropping quickly on the way down."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms long at the bottom up to chin near the handles; elbow flexes to roughly 58°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 58,
+      "min_rep_fraction": 0.65,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "cable_chest_fly",
+    "name": "Cable Chest Fly",
+    "aliases": [
+      "cable fly",
+      "cable crossover",
+      "cable chest fly"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the pulleys and grab a handle in each hand, one foot staggered forward.",
+      "Start with your arms open wide and a soft, fixed bend in your elbows.",
+      "Bring your hands together in front of your chest in a smooth arc.",
+      "Let your arms open back out under control to the starting stretch."
+    ],
+    "form_points": [
+      "Sweep your arms in an arc, keeping the elbow angle steady.",
+      "Bring your hands together and squeeze your chest at the front.",
+      "Stay tall and stable rather than lunging into the movement.",
+      "Match the same range on each rep."
+    ],
+    "common_mistakes": [
+      "Bending the elbows to press instead of flying.",
+      "Letting the handles yank the arms back too far.",
+      "Using the whole body to fling the handles together."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms wide in to hands together in front; measured angle closes to roughly 20°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 80,
+      "active_angle": 20,
+      "min_rep_fraction": 0.55,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "cable_lat_pushdown",
+    "name": "Straight-Arm Pulldown",
+    "aliases": [
+      "straight arm pulldown",
+      "cable lat pushdown",
+      "lat pushdown"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "lats"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set a high pulley and stand facing the stack, hips hinged slightly.",
+      "Grab the bar with fairly straight arms out in front of you.",
+      "Sweep the bar down toward your thighs, keeping your arms long.",
+      "Let the bar rise back up in front of you under control."
+    ],
+    "form_points": [
+      "Keep your arms fairly straight and move at the shoulders.",
+      "Sweep the bar down to your thighs and feel your lats work.",
+      "Keep your torso still rather than bobbing up and down.",
+      "Control the bar back up on the same path."
+    ],
+    "common_mistakes": [
+      "Bending the elbows and turning it into a pushdown.",
+      "Using the torso to drive the bar down.",
+      "Cutting the sweep short at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms forward and high sweeping down toward the thighs; measured angle closes to roughly 10°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 40,
+      "active_angle": 10,
+      "min_rep_fraction": 0.5,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "cable_row_single_arm",
+    "name": "Single-Arm Cable Row",
+    "aliases": [
+      "single arm cable row",
+      "one arm cable row",
+      "unilateral cable row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set a low or mid pulley and grab the handle in one hand.",
+      "Sit or stand tall with that arm extended toward the stack.",
+      "Pull the handle to your side, driving your elbow back past your torso.",
+      "Let the handle travel forward under control, then finish and switch hands."
+    ],
+    "form_points": [
+      "Lead with your elbow and draw it past your torso.",
+      "Keep your torso square and stable rather than twisting for reach.",
+      "Pull to about your side for a full, consistent range.",
+      "Control the return and match your work on both arms."
+    ],
+    "common_mistakes": [
+      "Rotating the torso to yank the handle back.",
+      "Shrugging the shoulder up toward the ear.",
+      "Uneven range or effort between arms."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arm extended to the handle at the side; elbow flexes to roughly 75°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 75,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": true
+    }
+  },
+  {
+    "slug": "chest_fly",
+    "name": "Chest Fly",
+    "aliases": [
+      "dumbbell fly",
+      "chest fly",
+      "flye"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "dumbbell",
+      "cable",
+      "machine",
+      "bench"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Lie back on a bench holding a weight in each hand over your chest.",
+      "Keep a soft, fixed bend in your elbows throughout.",
+      "Open your arms out to the sides in a wide arc until you feel a stretch.",
+      "Bring your hands back together over your chest under control."
+    ],
+    "form_points": [
+      "Move at the shoulders in a smooth arc, keeping the elbow angle fixed.",
+      "Open only as far as you can control comfortably.",
+      "Squeeze your chest as your hands come together at the top.",
+      "Keep the same arc on every rep for a consistent range."
+    ],
+    "common_mistakes": [
+      "Turning it into a press by bending and straightening the elbows.",
+      "Dropping the arms too far and losing control.",
+      "Rushing the reps instead of controlling the arc."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms wide at the stretch in to hands together; measured angle closes to roughly 20°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 20,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "chest_press_machine",
+    "name": "Chest Press Machine",
+    "aliases": [
+      "chest press machine",
+      "machine chest press",
+      "seated chest press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the seat so the handles line up with about the middle of your chest.",
+      "Sit back against the pad and grab the handles.",
+      "Press the handles forward until your arms are nearly long.",
+      "Let the handles return toward your chest under control."
+    ],
+    "form_points": [
+      "Press smoothly and stop just short of locking the elbows.",
+      "Keep your back and shoulders settled against the pad.",
+      "Let the handles return to about chest level for a full range.",
+      "Control the return rather than letting it snap back."
+    ],
+    "common_mistakes": [
+      "Pressing only partway out.",
+      "Flaring the shoulders forward off the pad.",
+      "Letting the stack pull the handles back too fast."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Handles at the chest out to near-extended arms; elbow opens to roughly 168°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 168,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "face_pull",
+    "name": "Face Pull",
+    "aliases": [
+      "face pull",
+      "cable face pull",
+      "band face pull"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "shoulders",
+      "traps"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "cable",
+      "band"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set a cable or band at about face height and grip each end.",
+      "Step back to take the slack out and keep your chest up.",
+      "Pull the handles toward your face, leading with your elbows out wide.",
+      "Return under control to the start, then repeat."
+    ],
+    "form_points": [
+      "Lead with your elbows and pull toward your face.",
+      "Keep your torso tall rather than leaning back.",
+      "Pause briefly at the end of the pull.",
+      "Return under control on every rep."
+    ],
+    "common_mistakes": [
+      "Leaning back to yank the handles in.",
+      "Dropping the elbows so it turns into a row.",
+      "Rushing through with a short range."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Handles drawn toward the face with the elbows leading out wide.",
+    "tut_target": "[1,3]",
+    "tracking": {
+      "rest_angle": 160,
+      "active_angle": 75,
+      "min_rep_fraction": 0.55,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "hack_squat",
+    "name": "Hack Squat",
+    "aliases": [
+      "hack squat",
+      "machine hack squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set your shoulders under the pads and your feet on the platform.",
+      "Release the safeties and brace with your back against the pad.",
+      "Bend your knees to lower under control until your thighs are about parallel.",
+      "Drive through your whole foot to press back up to a tall finish."
+    ],
+    "form_points": [
+      "Keep your back flat against the pad throughout.",
+      "Lower until your thighs reach about parallel for a full range.",
+      "Track your knees out in line with your feet.",
+      "Drive up through your whole foot with control."
+    ],
+    "common_mistakes": [
+      "Cutting depth short and only doing partial reps.",
+      "Letting the knees cave inward under load.",
+      "Coming off the pad at the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Thighs to about parallel; knee to roughly 95° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 95,
+      "min_rep_fraction": 0.62,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "incline_chest_press_machine",
+    "name": "Incline Chest Press Machine",
+    "aliases": [
+      "incline chest press machine",
+      "incline press machine",
+      "incline machine press"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the seat so the handles line up with your upper chest.",
+      "Sit back against the inclined pad and grab the handles.",
+      "Press the handles up and forward until your arms are nearly long.",
+      "Let the handles return toward your upper chest under control."
+    ],
+    "form_points": [
+      "Press smoothly and stop just short of locking the elbows.",
+      "Keep your back and shoulders settled against the pad.",
+      "Let the handles return to about upper-chest level for a full range.",
+      "Control the return rather than letting it snap back."
+    ],
+    "common_mistakes": [
+      "Pressing only partway out.",
+      "Lifting the hips or shoulders off the pad.",
+      "Letting the stack pull the handles back too fast."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Handles at the upper chest out to near-extended arms; elbow opens to roughly 168°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 90,
+      "active_angle": 168,
+      "min_rep_fraction": 0.7,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "lat_pulldown",
+    "name": "Lat Pulldown",
+    "aliases": [
+      "lat pulldown",
+      "pulldown",
+      "wide grip pulldown"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "lats",
+      "back"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "cable",
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the thigh pad and grab the bar a little wider than shoulder-width.",
+      "Sit tall with your chest up and a slight lean back through your torso.",
+      "Pull the bar down toward the top of your chest, leading with your elbows.",
+      "Let the bar rise back up under control until your arms are long again."
+    ],
+    "form_points": [
+      "Drive your elbows down and back rather than just bending them.",
+      "Keep your chest tall and avoid swinging your torso for momentum.",
+      "Pull to roughly upper-chest height for a full, repeatable range.",
+      "Control the bar back up instead of letting it snap your arms straight."
+    ],
+    "common_mistakes": [
+      "Heaving with the whole body to move heavier weight.",
+      "Stopping short and only doing half the range.",
+      "Letting the bar yank the arms straight on the way up."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms long at the top down to the bar near the chest; elbow flexes to roughly 60°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 60,
+      "min_rep_fraction": 0.6,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "leg_press",
+    "name": "Leg Press",
+    "aliases": [
+      "leg press",
+      "machine leg press"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set your feet about shoulder-width on the platform and release the safeties.",
+      "Keep your back and hips settled against the pad.",
+      "Bend your knees to lower the platform under control toward you.",
+      "Press back up through your whole foot until your legs are nearly long."
+    ],
+    "form_points": [
+      "Lower to a range where your hips stay settled on the pad.",
+      "Push through your whole foot rather than just your toes.",
+      "Track your knees in line with your feet.",
+      "Stop just short of fully locking the knees at the top."
+    ],
+    "common_mistakes": [
+      "Bouncing the platform at the bottom.",
+      "Letting the hips round up off the pad on deep reps.",
+      "Slamming the knees straight and locked at the top."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Legs near-extended at the top down to a controlled bend; knee to roughly 95°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 168,
+      "active_angle": 95,
+      "min_rep_fraction": 0.6,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "pec_deck",
+    "name": "Pec Deck",
+    "aliases": [
+      "pec deck",
+      "machine fly",
+      "butterfly machine"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "chest"
+    ],
+    "secondary_muscles": [
+      "shoulders"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the seat so the handles sit at about chest height.",
+      "Sit back with your forearms or hands against the pads.",
+      "Bring the pads together in front of your chest in a smooth arc.",
+      "Let the pads travel back out under control to a comfortable stretch."
+    ],
+    "form_points": [
+      "Keep your back against the pad and drive with your chest.",
+      "Bring the pads fully together and pause briefly at the front.",
+      "Open only as far as you can control comfortably.",
+      "Use the same range on every rep."
+    ],
+    "common_mistakes": [
+      "Letting the stack pull the arms back too far and fast.",
+      "Shrugging the shoulders up toward the ears.",
+      "Short reps that never bring the pads together."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Pads open at the stretch in to together at the front; measured angle closes to roughly 25°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 85,
+      "active_angle": 25,
+      "min_rep_fraction": 0.55,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "reverse_pec_deck",
+    "name": "Reverse Pec Deck",
+    "aliases": [
+      "reverse pec deck",
+      "rear delt machine",
+      "reverse fly machine"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "back"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the seat and handles so your arms start out in front at chest height.",
+      "Sit facing the pad with your chest against it and grab the handles.",
+      "Sweep your arms out and back in a wide arc, leading with the elbows.",
+      "Return your arms to the front under control."
+    ],
+    "form_points": [
+      "Lead with your elbows and sweep your arms back in an arc.",
+      "Keep your chest against the pad and your torso still.",
+      "Open until your arms are roughly in line with your shoulders.",
+      "Control the return rather than letting the stack snap the arms in."
+    ],
+    "common_mistakes": [
+      "Shrugging the shoulders up toward the ears.",
+      "Using momentum to fling the arms back.",
+      "Cutting the range short at the back."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms forward at the start out to level with the shoulders; measured angle opens to roughly 80°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 20,
+      "active_angle": 80,
+      "min_rep_fraction": 0.55,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "seated_cable_row",
+    "name": "Seated Cable Row",
+    "aliases": [
+      "seated row",
+      "cable row",
+      "seated cable row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "lats"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "cable",
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Sit with your feet braced and a slight bend in your knees.",
+      "Grab the handle and sit tall with your arms extended in front.",
+      "Pull the handle to your midsection, driving your elbows back.",
+      "Let the handle travel forward under control until your arms are long."
+    ],
+    "form_points": [
+      "Lead with your elbows and draw them past your torso.",
+      "Keep your chest up and your torso fairly still through the pull.",
+      "Pull to about your belly for a full, consistent range.",
+      "Control the return rather than letting the stack pull you forward."
+    ],
+    "common_mistakes": [
+      "Rocking the torso back and forth for momentum.",
+      "Shrugging the shoulders up toward the ears.",
+      "Cutting the range short at either end."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Arms extended to the handle at the torso; elbow flexes to roughly 75°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 165,
+      "active_angle": 75,
+      "min_rep_fraction": 0.55,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "seated_shoulder_press_machine",
+    "name": "Seated Shoulder Press Machine",
+    "aliases": [
+      "shoulder press machine",
+      "machine shoulder press",
+      "seated press machine"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "triceps"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the seat so the handles start at about shoulder height.",
+      "Sit tall with your back against the pad and grab the handles.",
+      "Press the handles up overhead until your arms are nearly long.",
+      "Lower the handles back to shoulder height under control."
+    ],
+    "form_points": [
+      "Press up smoothly and stop just short of locking the elbows.",
+      "Keep your back settled against the pad.",
+      "Lower to about shoulder height for a full, repeatable range.",
+      "Control the descent rather than dropping the handles."
+    ],
+    "common_mistakes": [
+      "Only pressing partway and skipping the top.",
+      "Arching the back to push heavier weight.",
+      "Letting the handles drop fast on the way down."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Handles at shoulder height up to near-extended arms; elbow opens to roughly 170°.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 80,
+      "active_angle": 170,
+      "min_rep_fraction": 0.75,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "shrug",
+    "name": "Shrug",
+    "aliases": [
+      "shrug",
+      "barbell shrug",
+      "dumbbell shrug",
+      "trap shrug"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "traps"
+    ],
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": [
+      "dumbbell",
+      "barbell"
+    ],
+    "difficulty": "beginner",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall holding the weight at arm's length by your sides or in front.",
+      "Keep your arms straight and your chest up.",
+      "Lift your shoulders straight up toward your ears as high as you can.",
+      "Lower under control back to the start, then repeat."
+    ],
+    "form_points": [
+      "Lift the shoulders straight up rather than rolling them.",
+      "Keep your arms straight so the traps do the work.",
+      "Pause briefly at the top for a strong squeeze.",
+      "Lower under control on every rep."
+    ],
+    "common_mistakes": [
+      "Rolling the shoulders instead of lifting straight up.",
+      "Bending the elbows to help lift the weight.",
+      "Rushing the reps with little range."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shoulders lifted straight up toward the ears through a short, controlled range.",
+    "tut_target": "[1,3]",
+    "tracking": {
+      "rest_angle": 150,
+      "active_angle": 160,
+      "min_rep_fraction": 0.5,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "smith_machine_squat",
+    "name": "Smith Machine Squat",
+    "aliases": [
+      "smith machine squat",
+      "smith squat"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Set the bar across your upper back and unrack by rotating it free.",
+      "Set your feet about shoulder-width, slightly ahead of the bar path.",
+      "Brace and squat down until your thighs are about parallel.",
+      "Drive up through your whole foot to a tall finish."
+    ],
+    "form_points": [
+      "Lower until your thighs reach about parallel for a full range.",
+      "Track your knees out in line with your feet.",
+      "Keep your whole foot planted and drive up with control.",
+      "Match the same depth on every rep."
+    ],
+    "common_mistakes": [
+      "Cutting depth short under heavier loads.",
+      "Letting the knees cave inward.",
+      "Bouncing out of the bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Thighs to about parallel; knee to roughly 92° side view.",
+    "tut_target": "[2,4]",
+    "tracking": {
+      "rest_angle": 170,
+      "active_angle": 92,
+      "min_rep_fraction": 0.65,
+      "view": "side",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "upright_row",
+    "name": "Upright Row",
+    "aliases": [
+      "upright row",
+      "barbell upright row",
+      "cable upright row"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "shoulders",
+      "traps"
+    ],
+    "secondary_muscles": [
+      "biceps"
+    ],
+    "equipment": [
+      "barbell",
+      "dumbbell",
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 2,
+    "load_type": "external",
+    "instructions": [
+      "Stand tall holding the weight at arm's length in front of your thighs.",
+      "Keep the weight close to your body as you pull.",
+      "Lead with your elbows to draw the weight up toward your upper chest.",
+      "Lower under control back to the start, then repeat."
+    ],
+    "form_points": [
+      "Lead with the elbows and keep the weight close to your body.",
+      "Pull to about upper-chest height on each rep.",
+      "Keep your torso tall rather than swinging back.",
+      "Lower under control every rep."
+    ],
+    "common_mistakes": [
+      "Letting the weight drift away from the body.",
+      "Swinging the torso to help the pull.",
+      "Rushing the reps with a short range."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Weight pulled to about upper-chest height with the elbows leading.",
+    "tut_target": "[1,3]",
+    "tracking": {
+      "rest_angle": 14,
+      "active_angle": 70,
+      "min_rep_fraction": 0.6,
+      "view": "front",
+      "mode": "rep",
+      "unilateral": false
+    }
+  },
+  {
+    "slug": "ab_wheel_rollout",
+    "name": "Ab Wheel Rollout",
+    "aliases": [
+      "ab wheel",
+      "ab rollout",
+      "ab wheel rollout",
+      "wheel rollout"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "obliques",
+      "lats",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "advanced",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Kneel and grip the ab wheel on the floor under your shoulders.",
+      "Brace your core hard and set your ribs down toward your hips.",
+      "Roll the wheel forward, letting your body extend into a long line.",
+      "Roll out only as far as you can stay braced, then pull back to the start."
+    ],
+    "form_points": [
+      "Keep your core braced so your hips and ribs move as one unit.",
+      "Roll out only to a range where you can keep a flat, stable midsection.",
+      "Pull back by drawing the wheel in, not by piking at the hips.",
+      "Start from your knees and extend range as your control improves."
+    ],
+    "common_mistakes": [
+      "Letting the low back sag as the wheel rolls out.",
+      "Rolling out farther than you can control and collapsing.",
+      "Piking at the hips instead of pulling with a braced trunk."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Roll out to a comfortably long, braced position, then return to a tucked start.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "ankle_mobility_drill",
+    "name": "Ankle Mobility Drill",
+    "aliases": [
+      "ankle mobility",
+      "ankle mobility drill",
+      "knee-to-wall"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "calves"
+    ],
+    "secondary_muscles": [
+      "quads"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set up in a half-kneeling or split stance facing a wall.",
+      "Keep your front heel planted and drive your knee forward toward the wall.",
+      "Move through a comfortable range, letting the ankle bend.",
+      "Return and repeat, then switch sides."
+    ],
+    "form_points": [
+      "Drive the knee forward over the toes through a comfortable range.",
+      "Keep your front heel flat on the floor throughout.",
+      "Move slowly and control each rep.",
+      "Track your knee over the middle of your foot."
+    ],
+    "common_mistakes": [
+      "Letting the heel lift as the knee travels forward.",
+      "Rushing the reps instead of moving with control."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Drive the knee forward over the toes with the heel down through a comfortable range.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "arm_circles",
+    "name": "Arm Circles",
+    "aliases": [
+      "arm circles",
+      "shoulder circles"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Stand tall and reach both arms out to your sides.",
+      "Draw small circles with your hands and gradually make them larger.",
+      "Move through a comfortable range in one direction.",
+      "Reverse the direction and repeat to warm up the shoulders."
+    ],
+    "form_points": [
+      "Start small and build to a comfortable range as you warm up.",
+      "Keep your torso tall and steady while your arms move.",
+      "Move smoothly rather than swinging hard.",
+      "Circle in both directions for even coverage."
+    ],
+    "common_mistakes": [
+      "Starting with big, fast circles before warming up.",
+      "Shrugging the shoulders up toward the ears."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Circle the arms through a growing, comfortable range in both directions.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "assault_bike",
+    "name": "Assault Bike",
+    "aliases": [
+      "assault bike",
+      "air bike",
+      "fan bike",
+      "echo bike"
+    ],
+    "category": "full_body",
+    "primary_muscles": [
+      "full_body",
+      "quads"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "back",
+      "core"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set the seat height so your knees have a slight bend at the bottom.",
+      "Take the moving handles and settle into an upright posture.",
+      "Push and pull the handles while driving the pedals.",
+      "Hold a steady cadence for the set time or intervals."
+    ],
+    "form_points": [
+      "Coordinate the arm push-pull with the leg drive for a smooth rhythm.",
+      "Sit tall and keep your core engaged rather than slumping.",
+      "Hold a cadence you can sustain for the target effort.",
+      "Set seat height so your legs move through a comfortable range."
+    ],
+    "common_mistakes": [
+      "Slumping over the handles as fatigue sets in.",
+      "Going out too hard and cadence crashing.",
+      "Setting the seat so high or low the legs feel cramped."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hold a steady cadence for the set time, distance, or intervals.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "back_extension",
+    "name": "Back Extension",
+    "aliases": [
+      "back extension",
+      "hyperextension",
+      "45 degree back extension"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "lower_back",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "both",
+    "instructions": [
+      "Set the pad just below your hip crease and anchor your feet.",
+      "Cross your arms over your chest or hold a light weight to your chest.",
+      "Start bent forward at the hips with a long spine.",
+      "Extend up until your torso lines up with your legs, then lower under control."
+    ],
+    "form_points": [
+      "Set the pad below the hip crease so you can hinge freely.",
+      "Extend up to a straight line rather than arching well past it.",
+      "Lead the rise with your glutes and hamstrings.",
+      "Lower slowly with a long spine rather than dropping down."
+    ],
+    "common_mistakes": [
+      "Cranking into a big backward arch at the top.",
+      "Bouncing at the bottom of each rep.",
+      "Rounding hard and yanking up with the low back."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From a forward hinge up to torso in line with the legs, then controlled back down.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "battle_ropes",
+    "name": "Battle Ropes",
+    "aliases": [
+      "battle ropes",
+      "battle rope",
+      "rope waves",
+      "battling ropes"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders",
+      "core",
+      "full_body"
+    ],
+    "secondary_muscles": [
+      "forearms",
+      "back"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Grip one rope end in each hand and step back to take up the slack.",
+      "Set a shoulder-width stance with a slight knee bend and braced core.",
+      "Drive waves down the ropes by moving your arms up and down.",
+      "Keep the waves going for the set time or intervals."
+    ],
+    "form_points": [
+      "Keep a braced athletic stance with a slight knee bend throughout.",
+      "Drive the waves from your shoulders and core, not just the wrists.",
+      "Hold a rhythm you can sustain for the target interval.",
+      "Keep your torso stable rather than rocking wildly with each wave."
+    ],
+    "common_mistakes": [
+      "Standing upright with locked knees and losing power.",
+      "Going all-out and stalling before the interval ends.",
+      "Only flicking the wrists so the waves die out."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Drive continuous waves for the set time or intervals from a braced stance.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "box_jump",
+    "name": "Box Jump",
+    "aliases": [
+      "box jump",
+      "box jumps",
+      "plyo box jump"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "calves",
+      "hamstrings",
+      "core"
+    ],
+    "equipment": [
+      "box"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Stand a short step back from a stable box at a height you can clear comfortably.",
+      "Dip into a quarter squat and swing your arms back.",
+      "Drive up and forward, landing softly on top of the box in a partial squat.",
+      "Stand tall on the box, then step down one foot at a time and reset."
+    ],
+    "form_points": [
+      "Pick a box height you can land on softly and in control.",
+      "Land quietly in a partial squat with your whole foot on the box.",
+      "Use your arm swing to help drive the jump.",
+      "Step down rather than jumping down to reset each rep."
+    ],
+    "common_mistakes": [
+      "Choosing a box too tall to land on cleanly.",
+      "Landing with stiff, straight legs.",
+      "Jumping back down and rushing the next rep."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From a quarter-squat dip to a soft landing on the box, resetting between reps.",
+    "tut_target": "[1,3]",
+    "tracking": null
+  },
+  {
+    "slug": "burpee",
+    "name": "Burpee",
+    "aliases": [
+      "burpee",
+      "burpees",
+      "squat thrust"
+    ],
+    "category": "full_body",
+    "primary_muscles": [
+      "full_body"
+    ],
+    "secondary_muscles": [
+      "chest",
+      "quads",
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Start standing, then squat down and place your hands on the floor.",
+      "Jump or step your feet back into a plank position.",
+      "Lower your chest to the floor, then press back up.",
+      "Jump or step your feet back in and stand or hop up to finish the rep."
+    ],
+    "form_points": [
+      "Keep your core braced so your hips stay in line during the plank.",
+      "Move through a smooth sequence rather than collapsing to the floor.",
+      "Land softly on the hop up with a slight knee bend.",
+      "Step the feet in and out if hopping feels too much for the set."
+    ],
+    "common_mistakes": [
+      "Letting the hips sag when the feet kick back.",
+      "Belly-flopping to the floor instead of lowering with control.",
+      "Landing stiff-legged on the jump up."
+    ],
+    "safety_note": null,
+    "rom_guideline": "One full cycle: stand, floor contact, plank, and back to a standing finish.",
+    "tut_target": "[1,3]",
+    "tracking": null
+  },
+  {
+    "slug": "cable_bicep_curl",
+    "name": "Cable Bicep Curl",
+    "aliases": [
+      "cable curl",
+      "cable bicep curl",
+      "cable biceps curl"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "biceps"
+    ],
+    "secondary_muscles": [
+      "forearms"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Attach a bar or handle to a low pulley and stand facing the stack.",
+      "Hold the attachment with palms up and let your arms hang.",
+      "Set your elbows near your sides and brace your torso.",
+      "Curl the attachment up toward your shoulders, then lower slowly to full extension."
+    ],
+    "form_points": [
+      "Keep your elbows tucked near your sides as fixed pivots.",
+      "Curl with a smooth squeeze and pause briefly near the top.",
+      "Lower all the way to a straight-arm stretch each rep.",
+      "Keep your torso upright rather than swinging to help."
+    ],
+    "common_mistakes": [
+      "Swinging the torso to fling the weight up.",
+      "Letting the elbows drift forward and out.",
+      "Cutting the lowering phase short."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From arms straight to a full curl toward the shoulders, then controlled back down.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "cable_crunch",
+    "name": "Cable Crunch",
+    "aliases": [
+      "cable crunch",
+      "kneeling cable crunch",
+      "rope crunch"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core"
+    ],
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Attach a rope to a high pulley and kneel facing the stack.",
+      "Hold the rope ends near your head or by your ears.",
+      "Set your hips back slightly and brace your core.",
+      "Crunch your ribs toward your pelvis, then return slowly to the tall start."
+    ],
+    "form_points": [
+      "Drive the movement by curling your ribs toward your hips, not by bending at the hips.",
+      "Keep your hips roughly fixed so the abs do the work.",
+      "Return slowly to a tall spine rather than letting the stack yank you up.",
+      "Hold the rope steady near your head so your arms stay out of it."
+    ],
+    "common_mistakes": [
+      "Turning it into a hip hinge instead of a spinal crunch.",
+      "Pulling with the arms rather than the abs.",
+      "Letting the weight pull you back up too fast."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From a tall kneeling spine to a rounded crunch, then controlled back up.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "cable_lateral_raise",
+    "name": "Cable Lateral Raise",
+    "aliases": [
+      "cable lateral raise",
+      "cable side raise",
+      "cable lateral"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "traps"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set a low pulley and stand side-on with the handle in the far hand.",
+      "Let the working arm hang across the front of your body.",
+      "Set a slight bend in the elbow and brace your torso.",
+      "Raise the handle out to about shoulder height, then lower slowly across your body."
+    ],
+    "form_points": [
+      "Lead with your elbow and wrist rising together to about shoulder height.",
+      "Keep a soft, fixed elbow bend rather than curling the arm.",
+      "Lower slowly across the body to keep tension on the side delt.",
+      "Stay tall and avoid shrugging the shoulder up toward your ear."
+    ],
+    "common_mistakes": [
+      "Swinging the torso to launch the arm up.",
+      "Shrugging the trap to lift instead of the shoulder.",
+      "Dropping the arm quickly and losing tension."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From arm hanging across the body up to about shoulder height, then controlled back.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "cable_tricep_pushdown",
+    "name": "Cable Tricep Pushdown",
+    "aliases": [
+      "tricep pushdown",
+      "cable pushdown",
+      "rope pushdown",
+      "triceps pushdown"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "triceps"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Attach a bar or rope to a high pulley and stand facing the stack.",
+      "Grip the attachment and pull it down until your elbows sit at your sides.",
+      "Set a slight forward lean and brace your core.",
+      "Press the attachment down to straight arms, then let it rise back under control."
+    ],
+    "form_points": [
+      "Pin your elbows at your sides so only the forearms move.",
+      "Press down to full extension and squeeze briefly at the bottom.",
+      "Let the weight rise under control to a stretched start.",
+      "Keep a stable, slightly forward torso rather than leaning into each rep."
+    ],
+    "common_mistakes": [
+      "Letting the elbows flare out and drift up.",
+      "Leaning heavily to push the weight with body weight.",
+      "Cutting the range short at the top or bottom."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From elbows bent near 90° down to fully straight arms, then controlled back up.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "cable_woodchop",
+    "name": "Cable Woodchop",
+    "aliases": [
+      "cable woodchop",
+      "woodchopper",
+      "cable chop"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "obliques",
+      "core"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "glutes"
+    ],
+    "equipment": [
+      "cable"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set the pulley high and stand side-on with a handle in both hands.",
+      "Step out so there is tension and set a shoulder-width stance.",
+      "Brace your core and start with arms up toward the pulley.",
+      "Pull the handle down and across your body to the opposite hip, then return under control."
+    ],
+    "form_points": [
+      "Rotate through your trunk and hips together rather than only yanking with the arms.",
+      "Keep your arms fairly straight so the torso drives the motion.",
+      "Pivot the back foot as you rotate to let the hips follow.",
+      "Control the return so it doesn't snap you back around."
+    ],
+    "common_mistakes": [
+      "Bending the elbows and turning it into an arm pull.",
+      "Keeping the feet locked so the low back does the twisting.",
+      "Rushing the return and losing tension."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From high on one side down and across to the opposite hip, then controlled back.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "cat_cow",
+    "name": "Cat-Cow",
+    "aliases": [
+      "cat cow",
+      "cat-cow",
+      "cat camel"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core",
+      "lower_back"
+    ],
+    "secondary_muscles": [
+      "obliques"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Start on all fours with your hands under your shoulders and knees under your hips.",
+      "Round your back gently toward the ceiling and let your head drop.",
+      "Reverse the motion, dropping your belly and lifting your chest and gaze.",
+      "Alternate smoothly between the two positions in time with your breath."
+    ],
+    "form_points": [
+      "Move through a comfortable range in both directions.",
+      "Let each position flow into the next rather than forcing the end range.",
+      "Keep the pace slow and matched to your breathing.",
+      "Spread the motion across your whole spine, not just one spot."
+    ],
+    "common_mistakes": [
+      "Rushing through the range instead of moving smoothly.",
+      "Only moving the low back and skipping the upper spine."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Alternate gentle spinal rounding and arching through a comfortable range.",
+    "tut_target": "[2,5]",
+    "tracking": null
+  },
+  {
+    "slug": "farmer_carry",
+    "name": "Farmer Carry",
+    "aliases": [
+      "farmer carry",
+      "farmer's walk",
+      "farmers walk",
+      "loaded carry"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "forearms",
+      "traps",
+      "core"
+    ],
+    "secondary_muscles": [
+      "full_body",
+      "glutes",
+      "quads"
+    ],
+    "equipment": [
+      "dumbbell",
+      "kettlebell"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set a matched weight at each side and stand between them.",
+      "Hinge down, grip both handles firmly, and stand up tall.",
+      "Set your shoulders back and brace your core.",
+      "Walk for the set distance or time with smooth, even steps, then set the weights down."
+    ],
+    "form_points": [
+      "Stand tall with shoulders back rather than hunching over the load.",
+      "Keep your core braced so your torso stays steady as you walk.",
+      "Take controlled, even steps instead of rushing.",
+      "Grip firmly and keep the weights from swinging into your legs."
+    ],
+    "common_mistakes": [
+      "Rounding the upper back under the load.",
+      "Letting the weights sway and knock the legs.",
+      "Shuffling too fast and losing an upright posture."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Carry for the set distance or time keeping a tall, braced torso.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "glute_kickback_machine",
+    "name": "Glute Kickback Machine",
+    "aliases": [
+      "glute kickback",
+      "kickback machine",
+      "cable kickback"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set up on the machine with your torso supported and one foot on the platform.",
+      "Line your working hip up with the machine's pivot.",
+      "Brace your core and hold the support handles.",
+      "Press your working leg back and up to extend the hip, then return under control."
+    ],
+    "form_points": [
+      "Drive the movement from the glute by extending the hip.",
+      "Squeeze briefly at the top rather than swinging past your range.",
+      "Return slowly so the glute stays loaded on the way back.",
+      "Keep your torso and low back stable instead of arching to reach."
+    ],
+    "common_mistakes": [
+      "Arching the low back to push the leg higher.",
+      "Swinging the leg with momentum.",
+      "Rushing the return phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From hip flexed at the start to a controlled hip extension, then back down.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "hamstring_stretch",
+    "name": "Hamstring Stretch",
+    "aliases": [
+      "hamstring stretch",
+      "seated hamstring stretch",
+      "standing hamstring stretch"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "calves",
+      "lower_back"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Sit or stand with one leg extended fairly straight.",
+      "Hinge from your hips and reach toward the toes of the straight leg.",
+      "Go only as far as feels comfortable behind the thigh.",
+      "Hold the position, then switch legs."
+    ],
+    "form_points": [
+      "Hinge from the hips and reach through a comfortable range.",
+      "Keep the working leg fairly straight without locking it hard.",
+      "Let your upper body relax down rather than forcing the reach.",
+      "Breathe steadily through the hold."
+    ],
+    "common_mistakes": [
+      "Bouncing to reach further.",
+      "Rounding hard through the back instead of hinging from the hips."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hinge forward over a straight leg to a comfortable stretch behind the thigh.",
+    "tut_target": "[2,5]",
+    "tracking": null
+  },
+  {
+    "slug": "hip_abduction_machine",
+    "name": "Hip Abduction Machine",
+    "aliases": [
+      "hip abduction",
+      "abductor machine",
+      "outer thigh machine"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "abductors",
+      "glutes"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Sit in the machine with the outside of your knees against the pads.",
+      "Set the starting width so your knees begin close together.",
+      "Hold the handles and sit tall against the backrest.",
+      "Press your knees outward against the pads, then return slowly to the middle."
+    ],
+    "form_points": [
+      "Sit tall and keep your back against the pad through the whole rep.",
+      "Push out to a controlled end range rather than forcing it wide.",
+      "Resist the return so the outer hips stay working on the way in.",
+      "Keep your feet and knees moving together as one unit."
+    ],
+    "common_mistakes": [
+      "Leaning forward to throw the weight open.",
+      "Letting the pads snap shut on the return.",
+      "Using a jerky, fast tempo."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From knees together to a comfortable spread, then controlled back to center.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "hip_adduction_machine",
+    "name": "Hip Adduction Machine",
+    "aliases": [
+      "hip adduction",
+      "adductor machine",
+      "inner thigh machine"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "adductors"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Sit in the machine with the inside of your knees against the pads.",
+      "Set the starting width so your knees begin comfortably apart.",
+      "Hold the handles and sit tall against the backrest.",
+      "Squeeze your knees together against the pads, then return slowly to the open position."
+    ],
+    "form_points": [
+      "Set a start width you can control rather than the widest setting.",
+      "Squeeze the knees together with a smooth, even effort.",
+      "Resist the pads on the way back out to stay under load.",
+      "Keep your torso settled against the backrest throughout."
+    ],
+    "common_mistakes": [
+      "Starting from too wide a stretch and snapping shut.",
+      "Letting the pads pull your legs open quickly on the return.",
+      "Rocking the torso to help move the weight."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From knees apart to fully squeezed together, then controlled back out.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "hip_flexor_stretch",
+    "name": "Hip Flexor Stretch",
+    "aliases": [
+      "hip flexor stretch",
+      "kneeling hip flexor stretch",
+      "couch stretch"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hip_flexors"
+    ],
+    "secondary_muscles": [
+      "quads"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Kneel on one knee with the other foot planted flat in front of you.",
+      "Keep your torso tall and your hips square to the front.",
+      "Gently shift your weight forward until you feel a comfortable stretch at the front of the hip.",
+      "Hold, then switch to the other side."
+    ],
+    "form_points": [
+      "Shift forward only to a comfortable range at the front of the hip.",
+      "Keep your torso tall rather than leaning forward.",
+      "Squeeze the glute on the kneeling side to settle into the position.",
+      "Breathe steadily and stay relaxed through the hold."
+    ],
+    "common_mistakes": [
+      "Leaning the torso forward instead of staying tall.",
+      "Letting the front knee drift far past the toes."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Shift the hips forward to a comfortable stretch at the front of the hip and hold.",
+    "tut_target": "[2,5]",
+    "tracking": null
+  },
+  {
+    "slug": "jump_rope",
+    "name": "Jump Rope",
+    "aliases": [
+      "jump rope",
+      "skipping",
+      "skip rope",
+      "jumping rope"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "calves",
+      "full_body"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "forearms",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set the rope length so the handles reach about armpit height when stood on.",
+      "Hold the handles at your sides with your elbows close in.",
+      "Turn the rope with your wrists and hop just enough to clear it.",
+      "Keep a steady rhythm for the set time or rounds."
+    ],
+    "form_points": [
+      "Turn the rope with your wrists rather than big arm circles.",
+      "Hop just high enough to clear the rope and stay light on your feet.",
+      "Land softly through the balls of your feet.",
+      "Keep a relaxed, upright posture and a steady rhythm."
+    ],
+    "common_mistakes": [
+      "Jumping much higher than needed and tiring quickly.",
+      "Swinging from the shoulders instead of the wrists.",
+      "Landing heavily flat-footed."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Maintain a steady skipping rhythm for the set time or rounds.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "kettlebell_turkish_getup",
+    "name": "Kettlebell Turkish Get-Up",
+    "aliases": [
+      "turkish get-up",
+      "turkish getup",
+      "get up",
+      "tgu",
+      "kettlebell get-up"
+    ],
+    "category": "full_body",
+    "primary_muscles": [
+      "full_body",
+      "core"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "glutes",
+      "obliques"
+    ],
+    "equipment": [
+      "kettlebell"
+    ],
+    "difficulty": "advanced",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Lie on your back and press the kettlebell up with one arm locked out.",
+      "Bend the same-side knee and roll onto your opposite forearm, then hand.",
+      "Bridge your hips up, sweep your straight leg through, and come to a kneel.",
+      "Stand up keeping the bell locked overhead, then reverse each step to lie back down."
+    ],
+    "form_points": [
+      "Keep your eyes on the bell and the arm locked out through the early steps.",
+      "Move through one position at a time rather than rushing the sequence.",
+      "Keep the loaded shoulder packed and stable at every stage.",
+      "Reverse the steps in order to return under control."
+    ],
+    "common_mistakes": [
+      "Bending the loaded arm and letting the bell drift.",
+      "Rushing between positions and losing the stacked shoulder.",
+      "Skipping steps in the sequence."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Move from lying to standing and back through each get-up position, one side at a time.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "leg_curl",
+    "name": "Leg Curl",
+    "aliases": [
+      "leg curl",
+      "hamstring curl",
+      "seated leg curl",
+      "lying leg curl"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "calves"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set up seated or lying so the roller pad sits just above your heels.",
+      "Line your knees up with the machine's pivot and settle into the pads.",
+      "Grip the handles and brace your torso to stay anchored.",
+      "Curl your heels toward your glutes, then return slowly to the start."
+    ],
+    "form_points": [
+      "Match the pad position to your leg length so the pivot tracks your knee.",
+      "Curl with a smooth squeeze rather than a jerk off the bottom.",
+      "Control the return so the hamstrings stay loaded on the way back.",
+      "Keep your hips pressed down instead of arching up off the bench."
+    ],
+    "common_mistakes": [
+      "Bouncing the weight out of the bottom position.",
+      "Letting the hips lift to help pull the weight.",
+      "Rushing the lowering phase."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From near-straight legs to a full heel-toward-glute curl, then controlled back.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "leg_extension",
+    "name": "Leg Extension",
+    "aliases": [
+      "leg extension",
+      "knee extension",
+      "seated leg extension"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Sit in the machine with your back against the pad and knees lined up with the pivot point.",
+      "Tuck your shins behind the roller pad so it rests just above your ankles.",
+      "Grip the side handles and brace your torso against the seat.",
+      "Extend your knees to straighten your legs, then lower under control back to the start."
+    ],
+    "form_points": [
+      "Line the machine pivot up with your knee joint before you start.",
+      "Extend smoothly and pause briefly at the top rather than snapping into lockout.",
+      "Lower with control instead of letting the weight drop back down.",
+      "Keep your hips and back settled into the pad throughout."
+    ],
+    "common_mistakes": [
+      "Using momentum to swing the weight up.",
+      "Slamming the stack down on the lowering phase.",
+      "Sliding the hips off the seat to gain leverage."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From about 90° of knee bend to near-full extension, then back down.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "leg_swings",
+    "name": "Leg Swings",
+    "aliases": [
+      "leg swings",
+      "dynamic leg swings"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hip_flexors",
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "glutes",
+      "adductors"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Stand next to a wall or support and hold on for balance.",
+      "Swing one leg forward and back through a comfortable range.",
+      "Keep your torso tall and let the leg move freely.",
+      "Repeat for reps, then switch to the other leg."
+    ],
+    "form_points": [
+      "Swing through a comfortable range that grows as you warm up.",
+      "Keep your torso tall and steady while the leg moves.",
+      "Let the swing stay smooth rather than forcing height.",
+      "Hold a support so you can stay balanced."
+    ],
+    "common_mistakes": [
+      "Swinging hard before the hips are warm.",
+      "Leaning the torso far to counter the swing."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Swing the leg through a growing, comfortable range while the torso stays tall.",
+    "tut_target": "[1,3]",
+    "tracking": null
+  },
+  {
+    "slug": "medicine_ball_slam",
+    "name": "Medicine Ball Slam",
+    "aliases": [
+      "medicine ball slam",
+      "med ball slam",
+      "ball slam",
+      "slam ball"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "core",
+      "shoulders",
+      "full_body"
+    ],
+    "secondary_muscles": [
+      "back",
+      "lats"
+    ],
+    "equipment": [
+      "medicine_ball"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Stand with feet about shoulder-width apart holding a slam ball.",
+      "Reach the ball overhead as you extend your body tall.",
+      "Slam the ball down in front of you, hinging at the hips.",
+      "Pick the ball back up and reset for the next rep."
+    ],
+    "form_points": [
+      "Reach tall overhead, then drive the slam with your core and hips.",
+      "Hinge at the hips as you bring the ball down rather than only rounding.",
+      "Follow the ball down with your eyes and stay balanced.",
+      "Reset your stance and grip before the next rep."
+    ],
+    "common_mistakes": [
+      "Slamming with the arms only and skipping the hip drive.",
+      "Rounding hard at the low back instead of hinging.",
+      "Rushing to grab the ball and losing balance."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From a tall overhead reach to a full downward slam, resetting between reps.",
+    "tut_target": "[1,2]",
+    "tracking": null
+  },
+  {
+    "slug": "overhead_carry",
+    "name": "Overhead Carry",
+    "aliases": [
+      "overhead carry",
+      "waiter carry",
+      "overhead walk"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders",
+      "core"
+    ],
+    "secondary_muscles": [
+      "traps",
+      "full_body"
+    ],
+    "equipment": [
+      "dumbbell",
+      "kettlebell"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Press one or two weights overhead to a locked, stable position.",
+      "Set your ribs down and brace your core under the load.",
+      "Keep the weight stacked over your shoulder and midfoot.",
+      "Walk for the set distance or time with steady steps, then lower under control."
+    ],
+    "form_points": [
+      "Keep the weight stacked over your shoulder rather than drifting forward.",
+      "Brace your core and keep your ribs down instead of arching the low back.",
+      "Take smooth steps and keep the overhead arm steady.",
+      "Lower the weight with control once the carry is done."
+    ],
+    "common_mistakes": [
+      "Letting the low back arch to hold the weight up.",
+      "Allowing the weight to drift out of a stacked position.",
+      "Losing balance by walking too quickly."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Carry overhead for the set distance or time keeping the arm stacked and torso braced.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "rowing_machine",
+    "name": "Rowing Machine",
+    "aliases": [
+      "rowing machine",
+      "erg",
+      "rower",
+      "indoor rowing"
+    ],
+    "category": "full_body",
+    "primary_muscles": [
+      "full_body",
+      "back"
+    ],
+    "secondary_muscles": [
+      "quads",
+      "hamstrings",
+      "biceps"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Strap your feet in and take the handle with an overhand grip.",
+      "Start at the catch with shins vertical and arms reaching forward.",
+      "Drive with your legs, then swing the torso back and pull the handle to your ribs.",
+      "Reverse the order — arms, torso, then legs — to return to the catch."
+    ],
+    "form_points": [
+      "Sequence the drive legs, then back, then arms for a smooth stroke.",
+      "Return in reverse order so the recovery stays relaxed and even.",
+      "Keep a steady stroke rate rather than rushing the slide forward.",
+      "Finish each stroke by drawing the handle to your lower ribs."
+    ],
+    "common_mistakes": [
+      "Yanking with the arms before the legs drive.",
+      "Rounding the back hard at the finish.",
+      "Rushing the recovery back to the catch."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Repeat full strokes at a steady stroke rate for the set time or distance.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "seated_calf_raise",
+    "name": "Seated Calf Raise",
+    "aliases": [
+      "seated calf raise",
+      "seated calf",
+      "soleus raise"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "calves"
+    ],
+    "secondary_muscles": [],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Sit in the machine and place the balls of your feet on the platform.",
+      "Rest the thigh pad snugly across your lower thighs.",
+      "Release the safety catch and let your heels drop for a stretch.",
+      "Press up onto the balls of your feet, then lower under control."
+    ],
+    "form_points": [
+      "Let the heels drop for a full stretch at the bottom of each rep.",
+      "Press all the way up onto the balls of your feet at the top.",
+      "Move at a steady tempo rather than bouncing off the stretch.",
+      "Keep the balls of your feet planted so your foot doesn't roll outward."
+    ],
+    "common_mistakes": [
+      "Cutting the range short at the top or bottom.",
+      "Bouncing quickly through partial reps.",
+      "Letting the feet roll to the outside edge."
+    ],
+    "safety_note": null,
+    "rom_guideline": "From a full heel-dropped stretch up to a tall press on the balls of the feet.",
+    "tut_target": "[2,3]",
+    "tracking": null
+  },
+  {
+    "slug": "shoulder_dislocate_band",
+    "name": "Band Shoulder Pass-Through",
+    "aliases": [
+      "shoulder dislocate",
+      "band pass-through",
+      "band shoulder dislocate"
+    ],
+    "category": "push",
+    "primary_muscles": [
+      "shoulders"
+    ],
+    "secondary_muscles": [
+      "chest",
+      "traps"
+    ],
+    "equipment": [
+      "band"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Hold a band with a wide grip in front of your hips.",
+      "Keep your arms fairly straight and raise the band overhead.",
+      "Continue the arc behind you as far as feels comfortable.",
+      "Reverse the path smoothly back to the front and repeat."
+    ],
+    "form_points": [
+      "Move through a comfortable range and widen your grip if the arc feels tight.",
+      "Keep your arms fairly straight throughout the pass.",
+      "Move smoothly rather than forcing the band behind you.",
+      "Keep your ribs down and your torso tall."
+    ],
+    "common_mistakes": [
+      "Gripping too narrow and straining at the back of the arc.",
+      "Arching the back to force the band around."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Pass the band overhead and behind through a comfortable range with straight arms.",
+    "tut_target": "[2,4]",
+    "tracking": null
+  },
+  {
+    "slug": "sled_pull",
+    "name": "Sled Pull",
+    "aliases": [
+      "sled pull",
+      "sled drag",
+      "backward sled drag"
+    ],
+    "category": "pull",
+    "primary_muscles": [
+      "back",
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "full_body",
+      "quads",
+      "biceps"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Attach a strap or handles to the sled and take up the slack.",
+      "Set your stance and brace your core against the load.",
+      "Pull the sled toward you with your back and arms, or walk it backward.",
+      "Keep working for the set distance or time with steady effort."
+    ],
+    "form_points": [
+      "Drive through your legs while pulling with your back and arms together.",
+      "Keep your core braced so the torso stays steady under tension.",
+      "Take controlled steps and keep tension on the strap.",
+      "Keep your chest up rather than rounding hard against the load."
+    ],
+    "common_mistakes": [
+      "Rounding the back and yanking with the arms alone.",
+      "Losing tension by letting the strap go slack.",
+      "Rushing and stumbling on the footing."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Pull or drag for the set distance or time keeping a braced, upright torso.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "sled_push",
+    "name": "Sled Push",
+    "aliases": [
+      "sled push",
+      "prowler push",
+      "prowler"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "full_body",
+      "calves",
+      "core"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Load the sled and grip the high or low handles.",
+      "Set a strong forward lean with arms extended and core braced.",
+      "Drive one leg back into the floor and step forward.",
+      "Push for the set distance or time with powerful, driving steps."
+    ],
+    "form_points": [
+      "Set a forward lean and keep your arms extended so your legs drive the sled.",
+      "Push through the whole foot with each driving step.",
+      "Keep your core braced and your torso in a straight line.",
+      "Aim for steady, powerful steps over the set distance."
+    ],
+    "common_mistakes": [
+      "Standing too upright and losing driving leverage.",
+      "Taking tiny choppy steps instead of full leg drives.",
+      "Letting the hips sag or the back round."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Push for the set distance or time with a braced torso and driving leg steps.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "stair_climber",
+    "name": "Stair Climber",
+    "aliases": [
+      "stair climber",
+      "stairmaster",
+      "stepmill",
+      "stair machine"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "glutes",
+      "quads",
+      "calves"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "full_body"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Step on and set a pace you can hold with an upright posture.",
+      "Rest your hands lightly on the rails for balance only.",
+      "Step through the full height of each stair.",
+      "Hold a steady cadence for the set time or intervals."
+    ],
+    "form_points": [
+      "Stand tall and use the rails only for light balance.",
+      "Take full steps and drive through the whole foot.",
+      "Keep a cadence you can sustain rather than sprinting the steps.",
+      "Let the glutes and quads drive each step up."
+    ],
+    "common_mistakes": [
+      "Leaning heavily on the rails to offload the legs.",
+      "Taking tiny partial steps.",
+      "Hunching forward over the console."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Step through the full stair height at a steady cadence for the set time.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "stationary_bike",
+    "name": "Stationary Bike",
+    "aliases": [
+      "stationary bike",
+      "exercise bike",
+      "spin bike",
+      "indoor cycling"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "glutes"
+    ],
+    "secondary_muscles": [
+      "hamstrings",
+      "calves"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set the seat height so your knee has a slight bend at the bottom of the stroke.",
+      "Adjust the handlebars to a comfortable reach.",
+      "Set a resistance level you can pedal smoothly against.",
+      "Hold a steady cadence for the set time or intervals."
+    ],
+    "form_points": [
+      "Set seat height so your knee stays slightly bent at the bottom.",
+      "Pedal in smooth, even circles rather than mashing straight down.",
+      "Keep a relaxed grip and an upright, steady torso.",
+      "Choose resistance and cadence you can hold for the target effort."
+    ],
+    "common_mistakes": [
+      "Setting the seat too low and cramping the knees.",
+      "Rocking the hips side to side under high resistance.",
+      "Gripping the bars tightly and tensing the upper body."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hold a steady cadence and resistance for the set time or intervals.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "suitcase_carry",
+    "name": "Suitcase Carry",
+    "aliases": [
+      "suitcase carry",
+      "single arm carry",
+      "unilateral carry"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "obliques",
+      "forearms",
+      "core"
+    ],
+    "secondary_muscles": [
+      "traps",
+      "glutes"
+    ],
+    "equipment": [
+      "dumbbell",
+      "kettlebell"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Set one weight beside you and stand next to it.",
+      "Hinge down, grip the handle, and stand up tall.",
+      "Brace your core and level your shoulders and hips.",
+      "Walk for the set distance or time resisting the lean, then switch sides."
+    ],
+    "form_points": [
+      "Keep your shoulders and hips level rather than leaning toward the weight.",
+      "Brace hard on the side opposite the load to stay upright.",
+      "Take smooth, even steps and keep your ribs stacked over your hips.",
+      "Carry each side for a matched distance or time."
+    ],
+    "common_mistakes": [
+      "Leaning sideways toward the loaded hand.",
+      "Letting the shoulder hike up under the weight.",
+      "Rushing and tipping off balance."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Carry for the set distance or time keeping shoulders and hips level.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "thoracic_rotation",
+    "name": "Thoracic Rotation",
+    "aliases": [
+      "thoracic rotation",
+      "t-spine rotation",
+      "open book"
+    ],
+    "category": "core",
+    "primary_muscles": [
+      "obliques",
+      "back"
+    ],
+    "secondary_muscles": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Set up on all fours or lie on your side with your arms out in front.",
+      "Place one hand behind your head or reach it across your body.",
+      "Rotate your upper back to open your chest toward the ceiling.",
+      "Return under control and repeat, then switch sides."
+    ],
+    "form_points": [
+      "Rotate through your upper back to a comfortable range.",
+      "Keep your hips steady so the motion comes from your torso.",
+      "Follow your moving hand with your eyes to encourage the rotation.",
+      "Move smoothly rather than snapping into the turn."
+    ],
+    "common_mistakes": [
+      "Rotating from the hips instead of the upper back.",
+      "Forcing the end range instead of moving smoothly."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Rotate the upper back open through a comfortable range while the hips stay steady.",
+    "tut_target": "[2,5]",
+    "tracking": null
+  },
+  {
+    "slug": "treadmill_run",
+    "name": "Treadmill Run",
+    "aliases": [
+      "treadmill run",
+      "treadmill",
+      "running",
+      "treadmill jog"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "quads",
+      "hamstrings",
+      "calves"
+    ],
+    "secondary_muscles": [
+      "full_body",
+      "glutes",
+      "core"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "beginner",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Clip the safety key and start the belt at an easy walking speed.",
+      "Bring the pace up gradually to your target running speed.",
+      "Run tall with a relaxed upper body and steady arm swing.",
+      "Hold your pace for the set time or distance, then cool down at a walk."
+    ],
+    "form_points": [
+      "Run tall with a relaxed torso and easy arm swing.",
+      "Aim for a steady cadence rather than long, heavy strides.",
+      "Land with your feet under you instead of reaching far ahead.",
+      "Ease into and out of the run with a warm-up and cool-down."
+    ],
+    "common_mistakes": [
+      "Holding the rails and altering your natural stride.",
+      "Starting too fast and fading early.",
+      "Overstriding and landing heavily."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Hold a steady running cadence for the set time or distance.",
+    "tut_target": null,
+    "tracking": null
+  },
+  {
+    "slug": "world_greatest_stretch",
+    "name": "World's Greatest Stretch",
+    "aliases": [
+      "world's greatest stretch",
+      "worlds greatest stretch",
+      "wgs"
+    ],
+    "category": "legs",
+    "primary_muscles": [
+      "hip_flexors",
+      "hamstrings"
+    ],
+    "secondary_muscles": [
+      "core",
+      "shoulders"
+    ],
+    "equipment": [
+      "bodyweight"
+    ],
+    "difficulty": "intermediate",
+    "tier": 3,
+    "load_type": "bodyweight",
+    "instructions": [
+      "Step into a long forward lunge with your front foot flat.",
+      "Place both hands on the floor inside your front foot.",
+      "Rotate your inside arm up toward the ceiling, opening through your chest.",
+      "Return your hand to the floor, step back, and repeat on the other side."
+    ],
+    "form_points": [
+      "Open through your upper back and reach through a comfortable range.",
+      "Keep your front foot flat as you settle into the lunge.",
+      "Move smoothly between the reach-down and the rotation.",
+      "Warm up gradually rather than forcing the end position."
+    ],
+    "common_mistakes": [
+      "Rushing the rotation instead of controlling it.",
+      "Letting the front heel lift off the floor.",
+      "Skipping the reach and only holding the lunge."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Settle into a lunge and rotate the torso open through a comfortable range.",
+    "tut_target": "[2,5]",
+    "tracking": null
+  },
+  {
+    "slug": "yoke_carry",
+    "name": "Yoke Carry",
+    "aliases": [
+      "yoke carry",
+      "yoke walk",
+      "yoke"
+    ],
+    "category": "full_body",
+    "primary_muscles": [
+      "full_body"
+    ],
+    "secondary_muscles": [
+      "core",
+      "traps",
+      "quads",
+      "glutes"
+    ],
+    "equipment": [
+      "machine"
+    ],
+    "difficulty": "advanced",
+    "tier": 3,
+    "load_type": "external",
+    "instructions": [
+      "Step under the yoke and set the crossbar across your upper back.",
+      "Grip the frame, brace your whole torso, and stand it up.",
+      "Set your shoulders back and take a stable stance.",
+      "Walk for the set distance or time with short, controlled steps, then set it down."
+    ],
+    "form_points": [
+      "Brace your whole torso before you lift the yoke off the pins.",
+      "Take short, controlled steps to keep the load stable.",
+      "Keep your chest up and shoulders back under the crossbar.",
+      "Set it down under control once you finish the distance."
+    ],
+    "common_mistakes": [
+      "Taking long strides that let the yoke sway.",
+      "Rounding forward under the crossbar.",
+      "Losing the brace and letting the load bounce."
+    ],
+    "safety_note": null,
+    "rom_guideline": "Carry for the set distance or time with short, controlled steps and a braced torso.",
+    "tut_target": null,
+    "tracking": null
+  }
+]

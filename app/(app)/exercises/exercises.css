@@ -1,0 +1,207 @@
+/* /exercises — scoped styles for the exercise library grid and filters.
+   Uses the shared design tokens from globals.css. Mobile-first, works at
+   360px with no horizontal scroll; touch targets stay >= 44px. */
+
+.ex-search {
+  width: 100%;
+}
+
+.ex-search-input {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  min-height: 48px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.ex-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.ex-search-input:focus-visible {
+  border-color: var(--accent);
+}
+
+.ex-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ex-filter-group {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.ex-filter-legend {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+.ex-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ex-resultbar {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.ex-count {
+  color: var(--text-soft);
+  font-weight: 600;
+  margin: 0;
+}
+
+.ex-empty {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.ex-empty p {
+  margin: 0;
+}
+
+/* --- results grid --- */
+.ex-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 560px) {
+  .ex-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .ex-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.ex-card {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  height: 100%;
+  min-height: 44px;
+  padding: 14px;
+  text-decoration: none;
+  transition:
+    border-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.ex-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+
+.ex-card:focus-visible {
+  border-color: var(--accent);
+}
+
+.ex-card-glyph {
+  align-items: center;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex: 0 0 auto;
+  height: 56px;
+  justify-content: center;
+  width: 56px;
+}
+
+.ex-card-glyph svg {
+  height: 40px;
+  width: 40px;
+}
+
+.ex-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ex-card-name {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.ex-card-muscles {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ex-card-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 2px;
+}
+
+.ex-tier-badge {
+  align-items: center;
+  color: var(--text-soft);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.ex-tier-dot {
+  border-radius: 50%;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+}
+
+.ex-tier-dot-1 {
+  background: var(--accent);
+}
+
+.ex-tier-dot-2 {
+  background: var(--accent-2);
+}
+
+.ex-tier-dot-3 {
+  background: var(--text-muted);
+}
+
+.ex-diff {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}

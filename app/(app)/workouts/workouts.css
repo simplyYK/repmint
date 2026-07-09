@@ -1,0 +1,456 @@
+/* /workouts route styles. Scoped to this page + the builder. Uses shared
+   tokens from globals.css :root. Mobile-first, 44px+ touch targets, no
+   horizontal scroll at 360px. */
+
+/* ---- List: template cards ---- */
+.wk-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.wk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wk-card-top {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+}
+
+.wk-card-glyph {
+  align-items: center;
+  background: rgba(183, 255, 60, 0.08);
+  border: 1px solid rgba(183, 255, 60, 0.2);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-shrink: 0;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.wk-card-glyph .movement-glyph {
+  height: 26px;
+  width: 26px;
+}
+
+.wk-card-title {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wk-card-title strong {
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.wk-card-title small {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wk-card-meta {
+  align-items: center;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  gap: 8px;
+}
+
+.wk-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.wk-confirm {
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wk-confirm-text {
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+/* ---- Empty states ---- */
+.wk-empty {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.wk-empty-art {
+  height: 150px;
+  width: 100%;
+  max-width: 240px;
+}
+
+.wk-empty h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.wk-empty p {
+  margin: 0;
+  max-width: 42ch;
+}
+
+.wk-inline-empty {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.wk-inline-empty p {
+  margin: 0;
+}
+
+/* ---- Builder ---- */
+.wb-head {
+  align-items: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.wb-head h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  line-height: 1.02;
+  margin: 0;
+}
+
+.wb-count {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.wb-fields {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wb-field-wide {
+  grid-column: 1 / -1;
+}
+
+/* Reuse the shared .field look for builder inputs */
+.wb .field span {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.wb .field input,
+.wb .field select {
+  background: rgba(8, 10, 13, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  min-height: 46px;
+  padding: 0 14px;
+  width: 100%;
+}
+
+/* ---- Exercise picker ---- */
+.wb-picker {
+  display: grid;
+  gap: 12px;
+}
+
+.wb-search {
+  background: rgba(8, 10, 13, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  min-height: 48px;
+  padding: 0 14px;
+  width: 100%;
+}
+
+.wb-results {
+  display: grid;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.wb-result {
+  align-items: center;
+  background: rgba(8, 10, 13, 0.34);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  text-align: left;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.wb-result:hover {
+  background: rgba(183, 255, 60, 0.08);
+  border-color: rgba(183, 255, 60, 0.4);
+}
+
+.wb-result .movement-glyph {
+  flex-shrink: 0;
+  height: 30px;
+  width: 30px;
+}
+
+.wb-result-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.wb-result-text strong {
+  font-size: 0.95rem;
+}
+
+.wb-result-text small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wb-result-add {
+  color: var(--accent);
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-left: auto;
+}
+
+.wb-empty,
+.wb-hint {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ---- Exercise rows ---- */
+.wb-row {
+  display: grid;
+  gap: 14px;
+}
+
+.wb-row-head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.wb-row-title {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.wb-row-title .movement-glyph {
+  flex-shrink: 0;
+  height: 28px;
+  width: 28px;
+}
+
+.wb-row-title strong {
+  display: block;
+  font-size: 0.98rem;
+}
+
+.wb-row-title small {
+  color: var(--text-muted);
+  display: block;
+  font-size: 0.78rem;
+}
+
+.wb-row-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.wb-icon-btn {
+  align-items: center;
+  background: rgba(244, 247, 251, 0.06);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--text);
+  display: flex;
+  font-size: 1rem;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.wb-icon-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.wb-icon-btn:disabled {
+  opacity: 0.4;
+}
+
+.wb-icon-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: #ff9a90;
+}
+
+.wb-row-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.wb-mini {
+  display: grid;
+  gap: 6px;
+}
+
+.wb-mini-label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.wb-toggle-row {
+  display: grid;
+  gap: 8px;
+}
+
+/* Segmented reps/hold toggle */
+.wb-seg {
+  background: rgba(8, 10, 13, 0.5);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+}
+
+.wb-seg button {
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  color: var(--text-muted);
+  flex: 1;
+  font-weight: 800;
+  font-size: 0.82rem;
+  min-height: 38px;
+  padding: 0 10px;
+}
+
+.wb-seg button.active {
+  background: var(--accent);
+  color: #10141b;
+}
+
+/* Stepper */
+.wb-stepper {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.wb-stepper button {
+  align-items: center;
+  background: rgba(244, 247, 251, 0.06);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  color: var(--text);
+  display: flex;
+  font-size: 1.3rem;
+  height: 44px;
+  justify-content: center;
+  line-height: 1;
+  width: 44px;
+}
+
+.wb-stepper button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.wb-stepper button:disabled {
+  opacity: 0.4;
+}
+
+.wb-stepper-value {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 800;
+  min-width: 3.5ch;
+  text-align: center;
+}
+
+.wb-num {
+  background: rgba(8, 10, 13, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  min-height: 44px;
+  padding: 0 12px;
+  width: 100%;
+}
+
+.wb-notes input {
+  width: 100%;
+}
+
+.wb-equip {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  margin: 0;
+}
+
+.wb-foot {
+  align-items: center;
+}
+
+.wb-foot .btn-full {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 560px) {
+  .wb-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .wk-grid {
+    grid-template-columns: 1fr;
+  }
+}

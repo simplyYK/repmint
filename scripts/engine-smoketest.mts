@@ -28,6 +28,17 @@ const cases: Case[] = [
   { name: "curl x10", movementId: "bicep-curl", angles: reps(158, 48, 10), expect: 10 },
   { name: "overhead press x6 (inverted: angle grows under load)", movementId: "overhead-press", angles: reps(82, 172, 6), expect: 6 },
   { name: "glute bridge x12 (inverted)", movementId: "glute-bridge", angles: reps(118, 172, 12), expect: 12 },
+
+  // ---- New tier-1 movements (slug-resolved via the rebuilt registry) --------
+  { name: "goblet squat x6", movementId: "goblet_squat", angles: reps(172, 84, 6), expect: 6 },
+  { name: "reverse lunge x8", movementId: "reverse_lunge", angles: reps(170, 88, 8), expect: 8 },
+  { name: "RDL / hip hinge x10", movementId: "romanian_deadlift", angles: reps(172, 90, 10), expect: 10 },
+  { name: "deadlift x5", movementId: "deadlift", angles: reps(172, 86, 5), expect: 5 },
+  { name: "hip thrust x10 (inverted: angle grows to lockout)", movementId: "hip_thrust", angles: reps(100, 172, 10), expect: 10 },
+  { name: "bench press x8 (side view)", movementId: "bench_press", angles: reps(165, 80, 8), expect: 8 },
+  { name: "pull-up x6", movementId: "pull_up", angles: reps(168, 50, 6), expect: 6 },
+  { name: "hammer curl x12", movementId: "hammer_curl", angles: reps(158, 44, 12), expect: 12 },
+  { name: "overhead tricep extension x10 (inverted)", movementId: "overhead_tricep_extension", angles: reps(60, 172, 10), expect: 10 },
 ];
 
 let pass = 0;

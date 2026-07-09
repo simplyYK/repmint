@@ -1,5 +1,17 @@
 # RepMint Supabase Backend Setup
 
+> **STALE — pre-rebuild.** This doc describes the original schema
+> (`workout_sessions`, `set_results`, `movement_profiles`, `gemini-coach`,
+> `001_repmint_backend.sql`), all of which were replaced in the 2026-07-09
+> rebuild (see `BUILD_SPEC.md` §2–3 and `DECISIONS.md`). The live schema is
+> `profiles` / `exercises` / `workout_templates` / `template_exercises` /
+> `plans` / `plan_days` / `sessions` / `session_sets` / `coach_messages` /
+> `user_settings`, migrated via `supabase/migrations/0001_schema.sql` through
+> `0004_seed_exercises.sql`, with edge functions `ai-coach` and
+> `generate-plan` (OpenRouter + Gemini-fallback, not Gemini-only). Kept here
+> for historical reference; needs a full rewrite against the current schema
+> before it should be treated as a setup guide.
+
 This setup gives RepMint authenticated user profiles, onboarding data, training plans, workout history, set history, rep events, form-signal summaries, private optional media storage, and a Gemini-powered coach endpoint.
 
 ## 1. Create The Supabase Project

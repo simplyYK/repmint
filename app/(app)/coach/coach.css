@@ -1,0 +1,148 @@
+/* /coach — chat UI. Reuses the global .ai-* chat classes from globals.css;
+   this file adds only what those don't cover: the scrollable chat shell,
+   the session-context chip, markdown rendering inside assistant bubbles,
+   and the empty/welcome layout. Uses :root tokens only. */
+
+.coach-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.coach-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Give the message scroll area room but keep the input in view on mobile. */
+.coach-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: min(62vh, 620px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 2px 8px;
+  scrollbar-width: thin;
+}
+
+/* Welcome bubble when there's no history yet. */
+.coach-welcome-art {
+  display: block;
+  height: auto;
+  margin: 0 auto 4px;
+  max-width: 200px;
+  width: 60%;
+}
+
+/* Model name shown subtly under an assistant bubble. */
+.coach-model {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin: 4px 0 0 44px;
+  text-transform: lowercase;
+}
+
+/* Session-context chip row above the input. */
+.coach-context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.coach-context-chip {
+  align-items: center;
+  background: rgba(72, 229, 194, 0.1);
+  border: 1px solid rgba(72, 229, 194, 0.28);
+  border-radius: var(--radius-pill);
+  color: var(--accent-2);
+  display: inline-flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  max-width: 100%;
+  min-height: 34px;
+  padding: 6px 12px;
+}
+
+.coach-context-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coach-context-chip button {
+  background: transparent;
+  border: 0;
+  color: var(--accent-2);
+  font-size: 1rem;
+  line-height: 1;
+  margin-left: 2px;
+  min-height: 24px;
+  min-width: 24px;
+  opacity: 0.8;
+  padding: 0;
+}
+
+.coach-context-chip button:hover {
+  opacity: 1;
+}
+
+/* Light markdown rendering inside assistant bubbles. */
+.coach-md {
+  color: var(--text);
+  display: grid;
+  gap: 8px;
+}
+
+.coach-md > p {
+  color: var(--text);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.coach-md strong {
+  color: var(--text);
+  font-weight: 850;
+}
+
+.coach-md ul {
+  display: grid;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.coach-md li {
+  color: var(--text-soft);
+  padding-left: 18px;
+  position: relative;
+}
+
+.coach-md li::before {
+  color: var(--accent);
+  content: "→";
+  left: 0;
+  position: absolute;
+}
+
+/* An error / notice rendered as an assistant-styled message. */
+.coach-msg-notice {
+  margin: 0;
+}
+
+@media (max-width: 620px) {
+  .coach-scroll {
+    max-height: 58vh;
+  }
+
+  .coach-model {
+    margin-left: 44px;
+  }
+}

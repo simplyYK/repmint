@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <radialGradient id="glow1" cx="82%" cy="10%" r="45%">
+      <stop offset="0%" stop-color="#b7ff3c" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#b7ff3c" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glow2" cx="10%" cy="85%" r="45%">
+      <stop offset="0%" stop-color="#48e5c2" stop-opacity="0.14" />
+      <stop offset="100%" stop-color="#48e5c2" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1218" />
+      <stop offset="100%" stop-color="#080a0d" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow1)" />
+  <rect width="1200" height="630" fill="url(#glow2)" />
+
+  <!-- faint pose-tracking motif on the right -->
+  <g opacity="0.5" stroke="#b7ff3c" stroke-width="2" stroke-linecap="round" fill="none">
+    <path d="M960 190 L960 260 M960 220 L905 250 M960 220 L1015 246 M905 250 L890 300 M1015 246 L1032 296 M960 260 L930 330 M960 260 L992 326 M930 330 L920 410 M992 326 L1002 406" />
+  </g>
+  <g fill="#f4f7fb" stroke="#b7ff3c" stroke-width="1.5">
+    <circle cx="960" cy="190" r="4" />
+    <circle cx="960" cy="220" r="4" />
+    <circle cx="960" cy="260" r="4" />
+    <circle cx="905" cy="250" r="4" />
+    <circle cx="1015" cy="246" r="4" />
+    <circle cx="890" cy="300" r="4" />
+    <circle cx="1032" cy="296" r="4" />
+    <circle cx="930" cy="330" r="4" />
+    <circle cx="992" cy="326" r="4" />
+    <circle cx="920" cy="410" r="4" />
+    <circle cx="1002" cy="406" r="4" />
+  </g>
+
+  <!-- logomark -->
+  <rect x="100" y="150" width="88" height="88" rx="22" fill="#b7ff3c" />
+  <path d="M147 172L118 208H136L129 232L166 194H148L158 172H147Z" fill="#10141b" />
+
+  <!-- wordmark -->
+  <text x="100" y="300" font-family="Satoshi, Geist, system-ui, sans-serif" font-size="64" font-weight="900" fill="#f4f7fb" letter-spacing="-1">
+    Rep<tspan fill="#b7ff3c">Mint</tspan>
+  </text>
+
+  <!-- tagline -->
+  <text x="100" y="345" font-family="Geist, system-ui, sans-serif" font-size="26" font-weight="600" fill="#c8d2df">
+    Your AI camera personal trainer.
+  </text>
+
+  <!-- micro trust row -->
+  <text x="100" y="400" font-family="JetBrains Mono, ui-monospace, monospace" font-size="16" font-weight="700" fill="#8794a4" letter-spacing="2">
+    REP COUNTING · FORM SCORING · AI COACHING
+  </text>
+</svg>

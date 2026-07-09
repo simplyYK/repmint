@@ -187,6 +187,57 @@ export function hingeKneeCheck(cue: string): FormCheck {
   };
 }
 
+// ---- Flat back hold (bent rows / hinges): keep a steady torso angle -------
+// Side view. The shoulder->hip segment should stay within a lean band relative
+// to horizontal while the working limb moves. Fires if the torso rounds up or
+// dumps down out of the braced position, judged only while the rep is loaded.
+export function flatBackCheck(
+  cue: string,
+  band: [number, number] = [20, 70],
+  gate = 0.2,
+): FormCheck {
+  return {
+    id: "flat_back",
+    when: "always",
+    evaluate: (ctx) => {
+      if (ctx.depth < gate) return { ok: true };
+      const sh = jointPoint(ctx.pose, ctx.side, "shoulder");
+      const hip = jointPoint(ctx.pose, ctx.side, "hip");
+      if (visibilityOf(sh) < VIS || visibilityOf(hip) < VIS) return null;
+      const lean = angleFromVertical(sh, hip);
+      if (lean === null) return null;
+      // lean is measured from vertical, so a hinged torso reads high.
+      if (lean < band[0] || lean > band[1]) {
+        return { ok: false, cue, severity: 1, signal: "torso_angle_drift" };
+      }
+      return { ok: true };
+    },
+  };
+}
+
+// ---- Elbow flare (bench / overhead press, side view): keep the elbow from
+// drifting far behind the wrist stack at the bottom of the press. Uses the
+// horizontal gap between elbow and wrist normalized by forearm length.
+export function elbowFlareCheck(cue: string, maxRatio = 0.55): FormCheck {
+  return {
+    id: "elbow_flare",
+    when: "bottom",
+    evaluate: (ctx) => {
+      if (ctx.quality < 0.5) return null;
+      const el = jointPoint(ctx.pose, ctx.side, "elbow");
+      const wr = jointPoint(ctx.pose, ctx.side, "wrist");
+      if (visibilityOf(el) < VIS || visibilityOf(wr) < VIS) return null;
+      const forearm = distance(el, wr);
+      if (!forearm || forearm < 0.05) return null;
+      const drift = Math.abs(el!.x - wr!.x) / forearm;
+      if (drift > maxRatio) {
+        return { ok: false, cue, severity: 1, signal: "elbow_flare" };
+      }
+      return { ok: true };
+    },
+  };
+}
+
 // ---- Overhead height cap (lateral raise): don't lift past shoulder -------
 export function topHeightCheck(
   cue: string,
