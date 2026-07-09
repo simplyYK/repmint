@@ -77,6 +77,11 @@
 /* ------------------------------- MovementGlyph ------------------------------- */
 
 .rmviz-glyph {
+  /* Intrinsic size: an SVG with only a viewBox is unbounded and will fill
+     whatever flex row it lands in. Contexts may override, never depend on. */
+  height: 32px;
+  width: 32px;
+  flex-shrink: 0;
   overflow: visible;
 }
 

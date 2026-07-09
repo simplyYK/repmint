@@ -43,7 +43,7 @@ export function MovementGlyph({ category, animated, className }: MovementGlyphPr
   return (
     <svg
       viewBox="0 0 64 64"
-      className={`rmviz-root rmviz-glyph rmviz-glyph-${key} ${animCls} ${className ?? ""}`}
+      className={`rmviz-root rmviz-glyph movement-glyph rmviz-glyph-${key} ${animCls} ${className ?? ""}`}
       role="img"
       aria-label={`${key} movement icon`}
     >
