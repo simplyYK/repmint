@@ -64,17 +64,27 @@ function AuthInner() {
         if (error) throw error;
         setMessage({ tone: "info", text: "Check your email for a sign-in link." });
       } else if (mode === "sign-up") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { display_name: displayName || "RepMint athlete" } },
+        // Server-side signup (auth-signup edge function) creates an already-
+        // confirmed account — no confirmation email, no Supabase email rate
+        // limit — then we sign straight in for an immediate session.
+        const { data: created, error: fnError } = await supabase.functions.invoke("auth-signup", {
+          body: { email, password, display_name: displayName },
         });
-        if (error) throw error;
-        // If email confirmation is on, there won't be a session yet.
-        const { data: sess } = await supabase.auth.getSession();
-        if (!sess.session) {
-          setMessage({ tone: "info", text: "Account created. Check your email to confirm, then sign in." });
+        if (fnError) {
+          // FunctionsHttpError carries the response; surface the server's message.
+          let text = "Could not create the account. Try again.";
+          const ctx = (fnError as { context?: Response }).context;
+          if (ctx && typeof ctx.json === "function") {
+            const payload = await ctx.json().catch(() => null);
+            if (payload?.error) text = payload.error;
+          }
+          throw new Error(text);
         }
+        if ((created as { error?: string } | null)?.error) {
+          throw new Error((created as { error: string }).error);
+        }
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

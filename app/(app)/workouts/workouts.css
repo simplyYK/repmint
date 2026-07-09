@@ -120,6 +120,15 @@
   text-overflow: ellipsis;
 }
 
+/* Provenance line on shared/saved cards: "shared by @jack" / "from @jack". */
+.wk-card-title .wk-attribution {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .wk-card-meta {
   align-items: center;
   color: var(--text-muted);

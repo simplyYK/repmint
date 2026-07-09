@@ -15,6 +15,7 @@ import {
   SectionTitle,
 } from "../../components/ui/primitives";
 import { getProfile } from "../../lib/db";
+import { getMeta } from "../../lib/library";
 import {
   loadSocialGraph,
   searchAthletes,
@@ -24,25 +25,28 @@ import {
   setDiscoverable,
   listPublicTemplatesOf,
   saveSharedTemplate,
+  getFriendStats,
   listChallenges,
   createChallenge,
   joinChallenge,
   leaveChallenge,
   deleteChallenge,
-  getLeaderboard,
+  getScoreboard,
   type SocialGraph,
   type FriendEntry,
   type ChallengeEntry,
   type ChallengeMetric,
   type DbChallenge,
-  type LeaderboardRow,
+  type ScoreRow,
+  type FriendStats,
+  type SharedTemplateSummary,
 } from "../../lib/social";
 import type { DbProfile } from "../../lib/types";
 import "./social.css";
 
 type Notice = { tone: "info" | "warn" | "danger"; text: string } | null;
 
-/** Minimal shape Avatar needs — satisfied by both DbProfile and LeaderboardRow. */
+/** Minimal shape Avatar needs — satisfied by both DbProfile and ScoreRow. */
 type AvatarSource = {
   avatar_url?: string | null;
   display_name?: string | null;
@@ -338,7 +342,17 @@ export default function SocialPage() {
   );
 }
 
-/** A friend's profile: identity, training identity, and their public workouts. */
+/** "3 days ago" style label for the last-trained stamp. */
+function agoLabel(iso: string | null): string {
+  if (!iso) return "—";
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days <= 0) return "today";
+  if (days === 1) return "yesterday";
+  if (days < 28) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
+/** A friend's profile: identity, privacy-safe training stats, shared workouts. */
 function FriendProfile({
   entry,
   onBack,
@@ -349,9 +363,11 @@ function FriendProfile({
   onUnfriend: () => void;
 }) {
   const p = entry.profile;
-  const [workouts, setWorkouts] = useState<{ id: string; title: string; description: string | null }[] | null>(null);
+  const [workouts, setWorkouts] = useState<SharedTemplateSummary[] | null>(null);
+  const [stats, setStats] = useState<FriendStats | null | "loading">("loading");
   const [confirming, setConfirming] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [notice, setNotice] = useState<Notice>(null);
   const otherId = entry.outgoing ? entry.friendship.friend_id : entry.friendship.user_id;
 
@@ -360,7 +376,8 @@ function FriendProfile({
     setNotice(null);
     try {
       await saveSharedTemplate(templateId);
-      setNotice({ tone: "info", text: "Saved — find it in Workouts." });
+      setSavedIds((s) => new Set(s).add(templateId));
+      setNotice({ tone: "info", text: "Saved — find it in Workouts under “Saved from friends”." });
     } catch (err) {
       setNotice({ tone: "danger", text: err instanceof Error ? err.message : "Could not save that workout." });
     } finally {
@@ -373,10 +390,18 @@ function FriendProfile({
     listPublicTemplatesOf(otherId)
       .then((w) => active && setWorkouts(w))
       .catch(() => active && setWorkouts([]));
+    getFriendStats(otherId)
+      .then((s) => active && setStats(s))
+      .catch(() => active && setStats(null));
     return () => {
       active = false;
     };
   }, [otherId]);
+
+  const topExercises =
+    stats && stats !== "loading"
+      ? stats.top_exercises.map((t) => getMeta(t.slug)?.name ?? t.slug.replace(/_/g, " "))
+      : [];
 
   return (
     <div className="stack">
@@ -416,6 +441,57 @@ function FriendProfile({
       {notice && <InlineNotice tone={notice.tone}>{notice.text}</InlineNotice>}
 
       <section>
+        <SectionTitle>Training</SectionTitle>
+        {stats === "loading" ? (
+          <Spinner label="Loading stats…" />
+        ) : stats === null ? (
+          <Card className="soc-empty-card">
+            <p>Training stats aren&apos;t available right now.</p>
+          </Card>
+        ) : (
+          <>
+            <div className="soc-stat-grid">
+              <Card className="soc-stat">
+                <small>This week</small>
+                <strong>{stats.sessions_7d}</strong>
+                <span>session{stats.sessions_7d === 1 ? "" : "s"}</span>
+              </Card>
+              <Card className="soc-stat">
+                <small>Last 4 weeks</small>
+                <strong>{stats.active_days_28d}</strong>
+                <span>active days</span>
+              </Card>
+              <Card className="soc-stat">
+                <small>Reps · 4 weeks</small>
+                <strong>{stats.reps_28d.toLocaleString()}</strong>
+                <span>counted</span>
+              </Card>
+              <Card className="soc-stat">
+                <small>Time · 4 weeks</small>
+                <strong>{stats.minutes_28d}</strong>
+                <span>minutes</span>
+              </Card>
+              <Card className="soc-stat">
+                <small>All time</small>
+                <strong>{stats.total_sessions}</strong>
+                <span>workouts</span>
+              </Card>
+              <Card className="soc-stat">
+                <small>Last trained</small>
+                <strong>{agoLabel(stats.last_trained_at)}</strong>
+                <span>{stats.last_trained_at ? "keep them honest" : "no sessions yet"}</span>
+              </Card>
+            </div>
+            {topExercises.length > 0 && (
+              <p className="soc-top-moves">
+                <span>Favorite moves lately:</span> {topExercises.join(" · ")}
+              </p>
+            )}
+          </>
+        )}
+      </section>
+
+      <section>
         <SectionTitle>Shared workouts</SectionTitle>
         {workouts === null ? (
           <Spinner label="Loading workouts…" />
@@ -429,11 +505,19 @@ function FriendProfile({
               <Card key={w.id} className="soc-row">
                 <div className="soc-row-text">
                   <strong>{w.title}</strong>
-                  {w.description && <small>{w.description}</small>}
+                  <small>
+                    {w.exercise_count} exercise{w.exercise_count === 1 ? "" : "s"}
+                    {w.est_duration_min ? ` · ~${w.est_duration_min} min` : ""}
+                    {w.description ? ` · ${w.description}` : ""}
+                  </small>
                 </div>
-                <Button size="sm" variant="secondary" disabled={savingId === w.id} onClick={() => handleSave(w.id)}>
-                  {savingId === w.id ? "Saving…" : "Save to my workouts"}
-                </Button>
+                {savedIds.has(w.id) ? (
+                  <span className="soc-tag">Saved ✓</span>
+                ) : (
+                  <Button size="sm" variant="secondary" disabled={savingId === w.id} onClick={() => handleSave(w.id)}>
+                    {savingId === w.id ? "Saving…" : "Save to my workouts"}
+                  </Button>
+                )}
               </Card>
             ))}
           </div>
@@ -476,9 +560,34 @@ function metricLabel(metric: ChallengeMetric): string {
   return METRIC_OPTIONS.find((o) => o.key === metric)?.label ?? metric;
 }
 
+function metricValueOf(row: ScoreRow, metric: ChallengeMetric): number {
+  return metric === "sessions"
+    ? row.sessions
+    : metric === "total_reps"
+      ? row.total_reps
+      : metric === "total_sets"
+        ? row.total_sets
+        : row.active_minutes;
+}
+
 function formatMetricValue(value: number, metric: ChallengeMetric): string {
   const n = Math.round(Number(value));
   return metric === "active_minutes" ? `${n} min` : String(n);
+}
+
+/**
+ * Combined standing across the challenge's metrics: each metric contributes
+ * your value as a fraction of the current leader's, so every metric carries
+ * equal weight regardless of scale (10 sessions vs 2,000 reps).
+ */
+function rankScoreboard(rows: ScoreRow[], metrics: ChallengeMetric[]): { row: ScoreRow; score: number }[] {
+  const maxima = metrics.map((m) => Math.max(...rows.map((r) => metricValueOf(r, m)), 0));
+  return rows
+    .map((row) => ({
+      row,
+      score: metrics.reduce((sum, m, i) => sum + (maxima[i] > 0 ? metricValueOf(row, m) / maxima[i] : 0), 0),
+    }))
+    .sort((a, b) => b.score - a.score);
 }
 
 type ChallengePhase = "live" | "upcoming" | "recent" | "old";
@@ -518,11 +627,12 @@ function Crown() {
   );
 }
 
-function Leaderboard({ rows, me, metric }: { rows: LeaderboardRow[]; me: string; metric: ChallengeMetric }) {
-  const top = rows[0]?.value ?? 0;
+function Leaderboard({ rows, me, metrics }: { rows: ScoreRow[]; me: string; metrics: ChallengeMetric[] }) {
+  const ranked = rankScoreboard(rows, metrics);
+  const top = ranked[0]?.score ?? 0;
   return (
     <ol className="soc-lb">
-      {rows.map((r, i) => (
+      {ranked.map(({ row: r, score }, i) => (
         <li key={r.user_id} className={`soc-lb-row${r.user_id === me ? " is-me" : ""}`}>
           <span className="soc-lb-rank">{i === 0 ? <Crown /> : i + 1}</span>
           <Avatar profile={r} size={32} />
@@ -532,10 +642,17 @@ function Leaderboard({ rows, me, metric }: { rows: LeaderboardRow[]; me: string;
               {r.user_id === me ? " (you)" : ""}
             </span>
             <span className="soc-lb-bar">
-              <span style={{ width: `${top > 0 ? Math.max(4, (Number(r.value) / Number(top)) * 100) : 4}%` }} />
+              <span style={{ width: `${top > 0 ? Math.max(4, (score / top) * 100) : 4}%` }} />
+            </span>
+            <span className="soc-lb-metrics">
+              {metrics.map((m) => (
+                <em key={m}>
+                  {formatMetricValue(metricValueOf(r, m), m)}
+                  <i> {metricLabel(m).toLowerCase()}</i>
+                </em>
+              ))}
             </span>
           </div>
-          <span className="soc-lb-value">{formatMetricValue(r.value, metric)}</span>
         </li>
       ))}
     </ol>
@@ -544,16 +661,26 @@ function Leaderboard({ rows, me, metric }: { rows: LeaderboardRow[]; me: string;
 
 function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice: (n: Notice) => void }) {
   const [data, setData] = useState<{ me: string; challenges: ChallengeEntry[] } | null>(null);
-  const [boards, setBoards] = useState<Map<string, LeaderboardRow[]>>(new Map());
+  const [boards, setBoards] = useState<Map<string, ScoreRow[]>>(new Map());
   const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   // Create form
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("Push Week");
-  const [metric, setMetric] = useState<ChallengeMetric>("sessions");
+  const [metrics, setMetrics] = useState<ChallengeMetric[]>(["sessions"]);
   const [days, setDays] = useState<3 | 5 | 7>(7);
   const [submitting, setSubmitting] = useState(false);
+
+  function toggleMetric(m: ChallengeMetric) {
+    setMetrics((cur) => {
+      if (cur.includes(m)) {
+        // Never drop below one metric — a race has to count something.
+        return cur.length > 1 ? cur.filter((x) => x !== m) : cur;
+      }
+      return [...cur, m];
+    });
+  }
 
   async function load() {
     try {
@@ -565,9 +692,9 @@ function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice:
         return e.joined && (phase === "live" || phase === "recent");
       });
       const results = await Promise.all(
-        boardable.map((e) => getLeaderboard(e.challenge.id).catch(() => [] as LeaderboardRow[])),
+        boardable.map((e) => getScoreboard(e.challenge.id).catch(() => [] as ScoreRow[])),
       );
-      const map = new Map<string, LeaderboardRow[]>();
+      const map = new Map<string, ScoreRow[]>();
       boardable.forEach((e, i) => map.set(e.challenge.id, results[i]));
       setBoards(map);
       setData(res);
@@ -600,10 +727,10 @@ function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice:
     setSubmitting(true);
     onNotice(null);
     try {
-      await createChallenge({ name, metric, days });
+      await createChallenge({ name, metrics, days });
       setCreating(false);
       setName("Push Week");
-      setMetric("sessions");
+      setMetrics(["sessions"]);
       setDays(7);
       onNotice({ tone: "info", text: "Competition started — it's live now." });
       await load();
@@ -625,14 +752,25 @@ function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice:
     const c = entry.challenge;
     const board = boards.get(c.id);
     const showBoard = entry.joined && board !== undefined && board.length > 0;
+    // Time progress through a live challenge window.
+    const spanMs = new Date(c.ends_at).getTime() - new Date(c.starts_at).getTime();
+    const elapsedPct =
+      phase === "live" && spanMs > 0
+        ? Math.min(100, Math.max(2, ((Date.now() - new Date(c.starts_at).getTime()) / spanMs) * 100))
+        : null;
     return (
       <Card key={c.id} className="soc-comp-card">
         <div className="soc-comp-head">
           <div className="soc-comp-title">
             <strong>{c.name}</strong>
+            <span className="soc-comp-metric-chips">
+              {c.metrics.map((m) => (
+                <span key={m} className="soc-comp-metric">
+                  {metricLabel(m)}
+                </span>
+              ))}
+            </span>
             <small>
-              <span className="soc-comp-metric">{metricLabel(c.metric)}</span>
-              {" · "}
               {phase === "live"
                 ? untilLabel(c.ends_at, "ends in")
                 : phase === "upcoming"
@@ -680,8 +818,13 @@ function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice:
               ))}
           </div>
         </div>
+        {elapsedPct !== null && (
+          <div className="soc-comp-progress" aria-hidden>
+            <span style={{ width: `${elapsedPct}%` }} />
+          </div>
+        )}
         {phase === "recent" && showBoard && <p className="soc-comp-standings">Final standings</p>}
-        {showBoard && data && <Leaderboard rows={board} me={data.me} metric={c.metric} />}
+        {showBoard && data && <Leaderboard rows={board} me={data.me} metrics={c.metrics} />}
         {phase !== "recent" && entry.joined && board !== undefined && board.length <= 1 && (
           <p className="soc-comp-hint">Just you so far — friends can join right from this page.</p>
         )}
@@ -714,19 +857,28 @@ function Competitions({ hasFriends, onNotice }: { hasFriends: boolean; onNotice:
             />
           </label>
           <div className="soc-field">
-            <span className="soc-field-label">Metric</span>
+            <span className="soc-field-label">
+              What counts <em className="soc-field-sub">pick 1–4 — standings combine them equally</em>
+            </span>
             <div className="soc-metric-grid">
-              {METRIC_OPTIONS.map((o) => (
-                <button
-                  key={o.key}
-                  type="button"
-                  className={`soc-metric-option${metric === o.key ? " selected" : ""}`}
-                  onClick={() => setMetric(o.key)}
-                >
-                  <strong>{o.label}</strong>
-                  <small>{o.hint}</small>
-                </button>
-              ))}
+              {METRIC_OPTIONS.map((o) => {
+                const selected = metrics.includes(o.key);
+                return (
+                  <button
+                    key={o.key}
+                    type="button"
+                    className={`soc-metric-option${selected ? " selected" : ""}`}
+                    aria-pressed={selected}
+                    onClick={() => toggleMetric(o.key)}
+                  >
+                    <strong>
+                      {o.label}
+                      {selected && <span className="soc-metric-check" aria-hidden> ✓</span>}
+                    </strong>
+                    <small>{o.hint}</small>
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div className="soc-field">

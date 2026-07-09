@@ -143,6 +143,8 @@ export type DbWorkoutTemplate = {
   goal: string | null;
   est_duration_min: number | null;
   is_public: boolean;
+  /** Username of the friend this template was saved from (copies only). */
+  saved_from_username: string | null;
   created_at: string;
 };
 

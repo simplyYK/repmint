@@ -31,7 +31,7 @@ import {
 } from "../../lib/db";
 import type { DbSession } from "../../lib/types";
 import { generateWorkout } from "../../lib/ai";
-import { setTemplatePublic } from "../../lib/social";
+import { setTemplatePublic, saveSharedTemplate, fetchOwnerProfiles } from "../../lib/social";
 import { WorkoutBuilder } from "./WorkoutBuilder";
 import { athleteImageFor } from "../../lib/athleteImage";
 import "./workouts.css";
@@ -195,6 +195,9 @@ export default function WorkoutsPage() {
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterKey>("all");
   const [justCreated, setJustCreated] = useState<string | null>(null);
+  const [meId, setMeId] = useState<string | null>(null);
+  const [owners, setOwners] = useState<Map<string, { username: string | null; display_name: string | null }>>(new Map());
+  const [savingShared, setSavingShared] = useState<string | null>(null);
 
   async function refresh() {
     setLoading(true);
@@ -205,8 +208,14 @@ export default function WorkoutsPage() {
         getProfile().catch(() => null),
       ]);
       setTemplates(tpls);
-      const u = (prof as { units?: "kg" | "lb" } | null)?.units;
-      if (u === "kg" || u === "lb") setUnits(u);
+      const p = prof as { id?: string; units?: "kg" | "lb" } | null;
+      if (p?.id) setMeId(p.id);
+      if (p?.units === "kg" || p?.units === "lb") setUnits(p.units);
+      // Attribution for friends' shared workouts in the list.
+      const friendOwnerIds = tpls
+        .filter((t) => t.owner_id && p?.id && t.owner_id !== p.id)
+        .map((t) => t.owner_id as string);
+      setOwners(await fetchOwnerProfiles(friendOwnerIds).catch(() => new Map()));
       setResume(await findResume(tpls).catch(() => null));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load your workouts.");
@@ -219,10 +228,30 @@ export default function WorkoutsPage() {
     void refresh();
   }, []);
 
-  const mine = useMemo(() => templates.filter((t) => t.source === "user"), [templates]);
+  // Ownership-scoped sections. A friend's shared workout is visible via RLS
+  // but is NOT mine — it gets its own "Friends are sharing" section with a
+  // Save action instead of Edit/Delete.
+  const mine = useMemo(
+    () => templates.filter((t) => t.source === "user" && (!meId || t.owner_id === meId) && !t.saved_from_username),
+    [templates, meId],
+  );
+  const savedFromFriends = useMemo(
+    () => templates.filter((t) => (!meId || t.owner_id === meId) && Boolean(t.saved_from_username)),
+    [templates, meId],
+  );
+  const friendShared = useMemo(
+    () => (meId ? templates.filter((t) => t.owner_id && t.owner_id !== meId) : []),
+    [templates, meId],
+  );
   const curated = useMemo(
-    () => templates.filter((t) => t.source === "system" || t.source === "ai"),
-    [templates],
+    () =>
+      templates.filter(
+        (t) =>
+          (t.source === "system" || t.source === "ai") &&
+          (t.owner_id === null || !meId || t.owner_id === meId) &&
+          !t.saved_from_username,
+      ),
+    [templates, meId],
   );
   const filteredMine = useMemo(() => mine.filter((t) => matchesFilter(t, filter)), [mine, filter]);
   const filteredCurated = useMemo(
@@ -241,7 +270,7 @@ export default function WorkoutsPage() {
     }
   }
 
-  /** Toggle a template's community visibility (shows on your profile for friends). */
+  /** Toggle a template's community visibility (accepted friends only). */
   async function handleShareToggle(t: TemplateWithExercises) {
     setError(null);
     try {
@@ -249,6 +278,20 @@ export default function WorkoutsPage() {
       await refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not update sharing for this workout.");
+    }
+  }
+
+  /** Copy a friend's shared workout into my library. */
+  async function handleSaveShared(t: TemplateWithExercises) {
+    setError(null);
+    setSavingShared(t.id);
+    try {
+      await saveSharedTemplate(t.id);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save that workout.");
+    } finally {
+      setSavingShared(null);
     }
   }
 
@@ -459,6 +502,54 @@ export default function WorkoutsPage() {
             </section>
           </Reveal>
 
+          {savedFromFriends.length > 0 && (
+            <Reveal delay={0.11}>
+              <section>
+                <SectionTitle>Saved from friends</SectionTitle>
+                <div className="wk-grid">
+                  {savedFromFriends.map((t) => (
+                    <TemplateCard
+                      key={t.id}
+                      template={t}
+                      owned
+                      attribution={t.saved_from_username ? `from @${t.saved_from_username}` : null}
+                      pendingDelete={pendingDelete === t.id}
+                      onEdit={() => setView({ kind: "build", editing: t })}
+                      onAskDelete={() => setPendingDelete(t.id)}
+                      onCancelDelete={() => setPendingDelete(null)}
+                      onConfirmDelete={() => handleDelete(t.id)}
+                      onShareToggle={() => handleShareToggle(t)}
+                    />
+                  ))}
+                </div>
+              </section>
+            </Reveal>
+          )}
+
+          {friendShared.length > 0 && (
+            <Reveal delay={0.12}>
+              <section>
+                <SectionTitle>Friends are sharing</SectionTitle>
+                <div className="wk-grid">
+                  {friendShared.map((t) => {
+                    const owner = t.owner_id ? owners.get(t.owner_id) : undefined;
+                    const who = owner?.username ? `@${owner.username}` : owner?.display_name || "a friend";
+                    return (
+                      <TemplateCard
+                        key={t.id}
+                        template={t}
+                        owned={false}
+                        attribution={`shared by ${who}`}
+                        saving={savingShared === t.id}
+                        onSave={() => handleSaveShared(t)}
+                      />
+                    );
+                  })}
+                </div>
+              </section>
+            </Reveal>
+          )}
+
           {curated.length > 0 && (
             <Reveal delay={0.12}>
               <section>
@@ -643,25 +734,32 @@ function AiWorkoutForm({ onDone, onBack }: { onDone: (title: string) => void; on
 function TemplateCard({
   template,
   owned,
+  attribution,
   pendingDelete,
   duplicating,
+  saving,
   onEdit,
   onAskDelete,
   onCancelDelete,
   onConfirmDelete,
   onDuplicate,
   onShareToggle,
+  onSave,
 }: {
   template: TemplateWithExercises;
   owned: boolean;
+  /** Small provenance line: "from @user" (saved copy) / "shared by @user". */
+  attribution?: string | null;
   pendingDelete?: boolean;
   duplicating?: boolean;
+  saving?: boolean;
   onEdit?: () => void;
   onAskDelete?: () => void;
   onCancelDelete?: () => void;
   onConfirmDelete?: () => void;
   onDuplicate?: () => void;
   onShareToggle?: () => void;
+  onSave?: () => void;
 }) {
   const count = template.exercises.length;
   // Use the first exercise's category to pick a representative glyph.
@@ -678,9 +776,11 @@ function TemplateCard({
         </div>
         <div className="wk-card-title">
           <strong>{template.title}</strong>
+          {attribution && <small className="wk-attribution">{attribution}</small>}
           {template.description && <small>{template.description}</small>}
         </div>
-        {!owned && <Chip tone="accent">{sourceLabel}</Chip>}
+        {!owned && !onSave && <Chip tone="accent">{sourceLabel}</Chip>}
+        {owned && template.is_public && <Chip tone="accent">Shared</Chip>}
       </div>
 
       <div className="wk-card-badges">
@@ -716,13 +816,18 @@ function TemplateCard({
               </Button>
               {onShareToggle && (
                 <Button size="sm" variant="ghost" onClick={onShareToggle}>
-                  {template.is_public ? "Unshare" : "Share"}
+                  {template.is_public ? "Stop sharing" : "Share with friends"}
                 </Button>
               )}
               <Button size="sm" variant="ghost" onClick={onAskDelete}>
                 Delete
               </Button>
             </>
+          )}
+          {!owned && onSave && (
+            <Button size="sm" variant="secondary" onClick={onSave} disabled={saving}>
+              {saving ? "Saving…" : "Save to my workouts"}
+            </Button>
           )}
           {!owned && onDuplicate && (
             <Button size="sm" variant="secondary" onClick={onDuplicate} disabled={duplicating}>

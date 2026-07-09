@@ -148,6 +148,50 @@
   justify-content: flex-start;
 }
 
+/* --- Friend training stats ---------------------------------------------- */
+
+.soc-stat-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.soc-stat {
+  display: grid;
+  gap: 2px;
+  padding: 14px 16px;
+}
+
+.soc-stat small {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.soc-stat strong {
+  font-family: var(--font-display, inherit);
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.soc-stat span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.soc-top-moves {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 10px 0 0;
+}
+
+.soc-top-moves span {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* --- Competitions ------------------------------------------------------- */
 
 .soc-comp-list {
@@ -191,12 +235,38 @@
   color: var(--text-muted);
 }
 
+.soc-comp-metric-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0;
+}
+
 .soc-comp-metric {
+  background: rgba(183, 255, 60, 0.08);
+  border: 1px solid rgba(183, 255, 60, 0.35);
+  border-radius: 999px;
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   letter-spacing: 0.08em;
+  padding: 2px 9px;
   text-transform: uppercase;
+}
+
+/* Thin time-elapsed track under a live challenge's header. */
+.soc-comp-progress {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.soc-comp-progress span {
+  background: linear-gradient(90deg, rgba(72, 229, 194, 0.5), rgba(72, 229, 194, 0.9));
+  border-radius: 999px;
+  display: block;
+  height: 100%;
 }
 
 .soc-comp-actions {
@@ -296,6 +366,28 @@
   font-size: 0.78rem;
 }
 
+/* Per-metric values under each leaderboard bar. */
+.soc-lb-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+.soc-lb-metrics em {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-style: normal;
+}
+
+.soc-lb-metrics em i {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-style: normal;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* Create form */
 
 .soc-comp-form {
@@ -354,6 +446,19 @@
 .soc-day-option.selected {
   background: rgba(183, 255, 60, 0.07);
   border-color: rgba(183, 255, 60, 0.6);
+}
+
+.soc-metric-check {
+  color: var(--accent);
+}
+
+.soc-field-sub {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  font-style: normal;
+  font-weight: 400;
+  margin-left: 8px;
+  text-transform: none;
 }
 
 .soc-day-option {

@@ -139,18 +139,78 @@ export async function setTemplatePublic(templateId: string, on: boolean): Promis
   if (error) throw error;
 }
 
-/** A friend's public workout templates (is_public=true), for their profile page. */
-export async function listPublicTemplatesOf(ownerId: string): Promise<{ id: string; title: string; description: string | null }[]> {
+export type SharedTemplateSummary = {
+  id: string;
+  title: string;
+  description: string | null;
+  est_duration_min: number | null;
+  exercise_count: number;
+};
+
+/** A friend's shared workout templates (visible to friends only via RLS). */
+export async function listPublicTemplatesOf(ownerId: string): Promise<SharedTemplateSummary[]> {
   const client = requireSupabase();
   const { data, error } = await client
     .from("workout_templates")
-    .select("id, title, description")
+    .select("id, title, description, est_duration_min")
     .eq("owner_id", ownerId)
     .eq("is_public", true)
     .order("created_at", { ascending: false })
     .limit(20);
   if (error) throw error;
-  return (data ?? []) as { id: string; title: string; description: string | null }[];
+  const rows = (data ?? []) as Omit<SharedTemplateSummary, "exercise_count">[];
+  if (rows.length === 0) return [];
+  const { data: exRows } = await client
+    .from("template_exercises")
+    .select("template_id")
+    .in("template_id", rows.map((r) => r.id));
+  const counts = new Map<string, number>();
+  for (const e of (exRows ?? []) as { template_id: string }[]) {
+    counts.set(e.template_id, (counts.get(e.template_id) ?? 0) + 1);
+  }
+  return rows.map((r) => ({ ...r, exercise_count: counts.get(r.id) ?? 0 }));
+}
+
+/** Minimal owner identities for template attribution (friends' profiles are
+ * visible under RLS once the friendship is accepted). */
+export async function fetchOwnerProfiles(
+  ids: string[],
+): Promise<Map<string, { username: string | null; display_name: string | null; avatar_url: string | null }>> {
+  const map = new Map<string, { username: string | null; display_name: string | null; avatar_url: string | null }>();
+  const unique = [...new Set(ids)].filter(Boolean);
+  if (unique.length === 0) return map;
+  const client = requireSupabase();
+  const { data } = await client
+    .from("profiles")
+    .select("id, username, display_name, avatar_url")
+    .in("id", unique);
+  for (const p of (data ?? []) as { id: string; username: string | null; display_name: string | null; avatar_url: string | null }[]) {
+    map.set(p.id, { username: p.username, display_name: p.display_name, avatar_url: p.avatar_url });
+  }
+  return map;
+}
+
+// ---------------------------------------------------------------------------
+// Friend profile stats — privacy-safe aggregates via the friend_profile_stats
+// RPC (SECURITY DEFINER, friends-only guard server-side).
+// ---------------------------------------------------------------------------
+
+export type FriendStats = {
+  total_sessions: number;
+  sessions_7d: number;
+  sessions_28d: number;
+  reps_28d: number;
+  minutes_28d: number;
+  active_days_28d: number;
+  last_trained_at: string | null;
+  top_exercises: { slug: string; sets: number }[];
+};
+
+export async function getFriendStats(friendId: string): Promise<FriendStats | null> {
+  const client = requireSupabase();
+  const { data, error } = await client.rpc("friend_profile_stats", { fid: friendId });
+  if (error) throw error;
+  return (data ?? null) as FriendStats | null;
 }
 
 /**
@@ -178,8 +238,9 @@ export async function saveSharedTemplate(templateId: string): Promise<string> {
     .order("position", { ascending: true });
   if (exError) throw exError;
 
-  // Attribution suffix (best effort — skip if the owner's profile isn't visible).
-  let suffix = "";
+  // Attribution (best effort — skip if the owner's profile isn't visible).
+  // Stored in its own column so the library can group "Saved from friends".
+  let savedFrom: string | null = null;
   if (tpl.owner_id && tpl.owner_id !== me) {
     const { data: owner } = await client
       .from("profiles")
@@ -187,20 +248,20 @@ export async function saveSharedTemplate(templateId: string): Promise<string> {
       .eq("id", tpl.owner_id)
       .maybeSingle();
     const o = owner as { username: string | null; display_name: string | null } | null;
-    const who = o?.username ? `@${o.username}` : o?.display_name?.trim() || null;
-    if (who) suffix = ` — from ${who}`;
+    savedFrom = o?.username || o?.display_name?.trim() || null;
   }
 
   const { data: created, error: insertError } = await client
     .from("workout_templates")
     .insert({
       owner_id: me,
-      title: `${tpl.title}${suffix}`,
+      title: tpl.title,
       description: tpl.description,
       source: "user",
       goal: tpl.goal,
       est_duration_min: tpl.est_duration_min,
       is_public: false,
+      saved_from_username: savedFrom,
     })
     .select("id")
     .single();
@@ -234,7 +295,10 @@ export type DbChallenge = {
   id: string;
   creator_id: string;
   name: string;
+  /** Legacy single metric (still populated as metrics[0]). */
   metric: ChallengeMetric;
+  /** The 1-4 metrics this challenge races on. */
+  metrics: ChallengeMetric[];
   starts_at: string;
   ends_at: string;
   created_at: string;
@@ -250,12 +314,17 @@ export type ChallengeEntry = {
   mine: boolean;
 };
 
-export type LeaderboardRow = {
+/** Per-participant aggregates for EVERY metric; the UI ranks on the
+ * challenge's chosen subset via a combined score. */
+export type ScoreRow = {
   user_id: string;
   display_name: string | null;
   username: string | null;
   avatar_url: string | null;
-  value: number;
+  sessions: number;
+  total_reps: number;
+  total_sets: number;
+  active_minutes: number;
 };
 
 /** Every challenge visible to me, with participant state attached. */
@@ -265,11 +334,15 @@ export async function listChallenges(): Promise<{ me: string; challenges: Challe
 
   const { data: rows, error } = await client
     .from("challenges")
-    .select("id, creator_id, name, metric, starts_at, ends_at, created_at")
+    .select("id, creator_id, name, metric, metrics, starts_at, ends_at, created_at")
     .order("ends_at", { ascending: false })
     .limit(50);
   if (error) throw error;
-  const challenges = (rows ?? []) as DbChallenge[];
+  const challenges = ((rows ?? []) as DbChallenge[]).map((c) => ({
+    ...c,
+    // Older rows may predate the metrics column; fall back to the single metric.
+    metrics: c.metrics?.length ? c.metrics : [c.metric],
+  }));
 
   const counts = new Map<string, { count: number; joined: boolean }>();
   if (challenges.length > 0) {
@@ -295,10 +368,12 @@ export async function listChallenges(): Promise<{ me: string; challenges: Challe
   };
 }
 
-/** Start a competition now: insert the challenge, then join it myself. */
-export async function createChallenge(input: { name: string; metric: ChallengeMetric; days: 3 | 5 | 7 }): Promise<string> {
+/** Start a competition now: insert the challenge, then join it myself.
+ * Races on 1-4 metrics; the legacy `metric` column stays = metrics[0]. */
+export async function createChallenge(input: { name: string; metrics: ChallengeMetric[]; days: 3 | 5 | 7 }): Promise<string> {
   const client = requireSupabase();
   const me = await requireUserId();
+  const metrics = input.metrics.length > 0 ? input.metrics.slice(0, 4) : (["sessions"] as ChallengeMetric[]);
   const starts = new Date();
   const ends = new Date(starts.getTime() + input.days * 24 * 60 * 60 * 1000);
 
@@ -307,7 +382,8 @@ export async function createChallenge(input: { name: string; metric: ChallengeMe
     .insert({
       creator_id: me,
       name: input.name.trim() || "Push Week",
-      metric: input.metric,
+      metric: metrics[0],
+      metrics,
       starts_at: starts.toISOString(),
       ends_at: ends.toISOString(),
     })
@@ -345,10 +421,17 @@ export async function deleteChallenge(challengeId: string): Promise<void> {
   if (error) throw error;
 }
 
-/** Ranked standings, best first. Only participants/creator may ask. */
-export async function getLeaderboard(challengeId: string): Promise<LeaderboardRow[]> {
+/** All-metric standings (unordered — the UI ranks by combined score).
+ * Only participants/creator may ask. */
+export async function getScoreboard(challengeId: string): Promise<ScoreRow[]> {
   const client = requireSupabase();
-  const { data, error } = await client.rpc("challenge_leaderboard", { cid: challengeId });
+  const { data, error } = await client.rpc("challenge_scores", { cid: challengeId });
   if (error) throw error;
-  return (data ?? []) as LeaderboardRow[];
+  return ((data ?? []) as ScoreRow[]).map((r) => ({
+    ...r,
+    sessions: Number(r.sessions),
+    total_reps: Number(r.total_reps),
+    total_sets: Number(r.total_sets),
+    active_minutes: Number(r.active_minutes),
+  }));
 }
