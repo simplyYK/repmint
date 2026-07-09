@@ -197,3 +197,74 @@
 .coach-chats-open small { color: var(--text-muted); font-size: 0.72rem; }
 .coach-chats-delete { background: none; border: none; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; flex-shrink: 0; font-size: 0.9rem; height: 32px; width: 32px; }
 .coach-chats-delete:hover { color: var(--danger); }
+
+/* --- Message groups, copy + regenerate controls, model tag ---------------- */
+
+/* Wrapper around each message (bubble + meta row). Keeps user bubbles
+   right-aligned now that they're nested one level deeper than .coach-scroll. */
+.chat-msg-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.chat-msg-group.user { align-items: flex-end; }
+
+/* Meta row under an assistant bubble: copy, regenerate, model. */
+.chat-msg-meta {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin: 4px 0 0 44px;
+  min-height: 24px;
+}
+
+.chat-msg-model {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+}
+
+.chat-copy {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.7rem;
+  font-weight: 700;
+  gap: 4px;
+  min-height: 24px;
+  opacity: 0;
+  padding: 2px 6px;
+  transition: opacity 140ms ease, color 140ms ease;
+}
+.chat-msg-group:hover .chat-copy,
+.chat-copy:focus-visible,
+.chat-copy.copied { opacity: 1; }
+.chat-copy:hover { color: var(--text); }
+.chat-copy.copied { color: var(--accent); }
+@media (hover: none) {
+  .chat-copy { opacity: 0.65; }
+}
+
+.chat-regen {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-height: 24px;
+  padding: 2px 10px;
+  transition: border-color 140ms ease, color 140ms ease;
+}
+.chat-regen:hover {
+  border-color: rgba(183, 255, 60, 0.45);
+  color: var(--accent);
+}

@@ -714,6 +714,8 @@ function CameraSet({
     return () => voiceRef.current?.stop();
   }, []);
   useEffect(() => {
+    // CoachVoice.enabled is a setter: muting cuts off any in-flight line
+    // (realtime, tts audio, or browser speech) immediately.
     if (voiceRef.current) voiceRef.current.enabled = voiceOn;
   }, [voiceOn]);
 
@@ -825,6 +827,9 @@ function CameraSet({
   // triggering the start (by button or by raising a hand).
   const beginCountdown = () => {
     if (active || countdown !== null) return;
+    // Warm the realtime voice session now (no-op for other engines) so the
+    // first coaching line lands instantly once the set goes live.
+    voiceRef.current?.warm();
     setCountdown(3);
     voiceRef.current?.immediate("Starting in 3, 2, 1");
     const tick = () => {
@@ -875,9 +880,18 @@ function CameraSet({
   const finish = () => {
     const out: SetOutcome = endSet();
     void releaseWake();
-    voiceRef.current?.milestone("Set done — nice work. Rest up.");
+    // Each CameraSet owns its voice engine, so every set end is a closure
+    // point: endWorkout speaks the line, then shuts the engine down for good
+    // (realtime waits for the audio to finish before closing the WebRTC
+    // session). The last planned set gets the session send-off.
+    const isLastSet = index >= total - 1;
+    void voiceRef.current?.endWorkout(
+      isLastSet
+        ? "That's the session. Great work — go get some water."
+        : "Set done — nice work. Rest up.",
+    );
     // Detach the voice coach so unmount cleanup can't cancel the line above;
-    // speechSynthesis is a global queue, so it finishes on its own.
+    // endWorkout lets it finish on its own before disposing anything.
     const peakRom = out.repEvents.length
       ? Math.max(...out.repEvents.map((e) => e.peakDepth))
       : snapshot.depth;

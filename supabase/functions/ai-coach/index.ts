@@ -79,6 +79,10 @@ type CoachRequest = {
   conversationId?: string;
   /** What screen the user is on right now (sent by the in-app coach dock). */
   pageContext?: string;
+  /** When true (requires conversationId): delete the newest assistant reply
+   * in the conversation and regenerate it from the remaining history. No new
+   * user message is inserted — the last stored user message is the prompt. */
+  regenerate?: boolean;
 };
 
 type WorkoutProposal = {
@@ -156,7 +160,11 @@ Deno.serve(async (req) => {
   const body = (await req.json().catch(() => ({}))) as CoachRequest;
   const mode = body.mode ?? "chat";
   const message = (body.message ?? "").trim();
-  if (!message) {
+  const isRegenerate = body.regenerate === true;
+  if (isRegenerate && !body.conversationId) {
+    return json({ error: "conversationId is required to regenerate" }, 400);
+  }
+  if (!message && !isRegenerate) {
     return json({ error: "message is required" }, 400);
   }
 
@@ -172,6 +180,29 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Regenerate: drop the newest assistant reply in this conversation (scoped
+    // to the caller) BEFORE loading history, so the model re-answers the last
+    // stored user message from a clean slate.
+    if (isRegenerate) {
+      const { data: lastAssistant } = await adminClient
+        .from("coach_messages")
+        .select("id")
+        .eq("owner_id", userId)
+        .eq("conversation_id", body.conversationId)
+        .eq("role", "assistant")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (lastAssistant?.id) {
+        await adminClient
+          .from("coach_messages")
+          .delete()
+          .eq("id", lastAssistant.id)
+          .eq("owner_id", userId)
+          .eq("conversation_id", body.conversationId);
+      }
+    }
+
     const [{ data: settings }, context, history, bank, memories] = await Promise.all([
       adminClient
         .from("user_settings")
@@ -196,27 +227,43 @@ Deno.serve(async (req) => {
       .filter(Boolean)
       .join("\n\n---\n");
 
-    const userPrompt = buildUserPrompt(mode, message, {
+    // Regenerate reuses the last stored user message as the prompt and feeds
+    // only the turns BEFORE it as history; a normal turn uses the incoming
+    // message and stores it.
+    let effectiveMessage = message;
+    let chatHistory = history;
+    if (isRegenerate) {
+      const lastUserIdx = history.map((h) => h.role).lastIndexOf("user");
+      if (lastUserIdx === -1) {
+        return json({ error: "Nothing to regenerate in this conversation yet." }, 400);
+      }
+      effectiveMessage = history[lastUserIdx].content;
+      chatHistory = history.slice(0, lastUserIdx);
+    }
+
+    const userPrompt = buildUserPrompt(mode, effectiveMessage, {
       ...context,
       exercise_bank: bank,
       current_screen: body.pageContext ?? null,
       long_term_memory: memories,
     });
 
-    await adminClient.from("coach_messages").insert({
-      owner_id: userId,
-      session_id: body.sessionId ?? null,
-      conversation_id: body.conversationId ?? null,
-      role: "user",
-      content: message,
-    });
+    if (!isRegenerate) {
+      await adminClient.from("coach_messages").insert({
+        owner_id: userId,
+        session_id: body.sessionId ?? null,
+        conversation_id: body.conversationId ?? null,
+        role: "user",
+        content: message,
+      });
+    }
 
     const { text, modelUsed } = await callProviderChain({
       openRouterKey,
       geminiKey,
       model,
       systemPrompt,
-      history,
+      history: chatHistory,
       userPrompt,
     });
 

@@ -6,11 +6,12 @@
 // degrades gracefully: provider/config errors surface as assistant-styled
 // notices rather than crashing. Coaching guidance, not medical advice.
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader, Card, Button, Spinner } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { askCoach } from "../../lib/ai";
+import { Markdown } from "../../components/coach/Markdown";
 import {
   getSessionDetail,
   listConversations,
@@ -37,6 +38,10 @@ type ChatMessage = {
   /** When true, render the content as a plain notice (error / config nudge). */
   notice?: boolean;
   noticeTone?: "warn" | "danger";
+  /** ISO timestamp (from persisted rows) — shown on hover. */
+  createdAt?: string | null;
+  /** User message whose reply was cancelled mid-flight. */
+  stopped?: boolean;
 };
 
 const SUGGESTIONS = [
@@ -69,78 +74,46 @@ function friendlyError(raw: string): { text: string; tone: "warn" | "danger" } {
 }
 
 // ---------------------------------------------------------------------------
-// Tiny, safe markdown-ish renderer. No dependency: splits into blocks, turns
-// runs of "- " lines into <ul>, everything else into <p>, and applies **bold**
-// via a text-node split so we never inject raw HTML.
+// Copy-to-clipboard icon button shown on assistant messages (hover reveal).
 // ---------------------------------------------------------------------------
 
-function renderInline(text: string, keyBase: string) {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
-      return <strong key={`${keyBase}-b-${i}`}>{part.slice(2, -2)}</strong>;
-    }
-    return <span key={`${keyBase}-t-${i}`}>{part}</span>;
-  });
-}
-
-function CoachMarkdown({ content }: { content: string }) {
-  const blocks = useMemo(() => {
-    const lines = content.replace(/\r\n/g, "\n").split("\n");
-    type Block =
-      | { kind: "p"; text: string }
-      | { kind: "ul"; items: string[] };
-    const out: Block[] = [];
-    let paragraph: string[] = [];
-    let bullets: string[] = [];
-
-    const flushParagraph = () => {
-      if (paragraph.length) {
-        out.push({ kind: "p", text: paragraph.join("\n") });
-        paragraph = [];
-      }
-    };
-    const flushBullets = () => {
-      if (bullets.length) {
-        out.push({ kind: "ul", items: bullets });
-        bullets = [];
-      }
-    };
-
-    for (const line of lines) {
-      const bullet = line.match(/^\s*[-*]\s+(.*)$/);
-      if (bullet) {
-        flushParagraph();
-        bullets.push(bullet[1]);
-        continue;
-      }
-      if (line.trim() === "") {
-        flushBullets();
-        flushParagraph();
-        continue;
-      }
-      flushBullets();
-      paragraph.push(line);
-    }
-    flushBullets();
-    flushParagraph();
-    return out;
-  }, [content]);
-
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
   return (
-    <div className="coach-md">
-      {blocks.map((block, i) =>
-        block.kind === "ul" ? (
-          <ul key={`ul-${i}`}>
-            {block.items.map((item, j) => (
-              <li key={`li-${i}-${j}`}>{renderInline(item, `li-${i}-${j}`)}</li>
-            ))}
-          </ul>
-        ) : (
-          <p key={`p-${i}`}>{renderInline(block.text, `p-${i}`)}</p>
-        ),
+    <button
+      type="button"
+      className={`chat-copy${copied ? " copied" : ""}`}
+      aria-label={copied ? "Copied" : "Copy message"}
+      title="Copy message"
+      onClick={() => {
+        void navigator.clipboard
+          ?.writeText(text)
+          .then(() => {
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1400);
+          })
+          .catch(() => {});
+      }}
+    >
+      {copied ? (
+        "Copied"
+      ) : (
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <rect x="9" y="9" width="13" height="13" rx="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
       )}
-    </div>
+    </button>
   );
 }
 
@@ -161,6 +134,7 @@ function CoachInner() {
   const [showChats, setShowChats] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const scrollToEnd = useCallback(() => {
     const el = scrollRef.current;
@@ -195,7 +169,13 @@ function CoachInner() {
         const rows = (await listConversationMessages(target.id)) as DbCoachMessage[];
         if (!active) return;
         setMessages(
-          rows.map((r) => ({ id: r.id, role: r.role, content: r.content, model: r.model })),
+          rows.map((r) => ({
+            id: r.id,
+            role: r.role,
+            content: r.content,
+            model: r.model,
+            createdAt: r.created_at,
+          })),
         );
       } catch {
         // Non-fatal — just start from an empty (welcome) state.
@@ -206,7 +186,6 @@ function CoachInner() {
     return () => {
       active = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
   const switchConversation = useCallback(async (id: string) => {
@@ -215,7 +194,15 @@ function CoachInner() {
     setLoading(true);
     try {
       const rows = (await listConversationMessages(id)) as DbCoachMessage[];
-      setMessages(rows.map((r) => ({ id: r.id, role: r.role, content: r.content, model: r.model })));
+      setMessages(
+        rows.map((r) => ({
+          id: r.id,
+          role: r.role,
+          content: r.content,
+          model: r.model,
+          createdAt: r.created_at,
+        })),
+      );
     } finally {
       setLoading(false);
     }
@@ -286,16 +273,29 @@ function CoachInner() {
         void renameConversation(activeConvId, title).catch(() => {});
         setConversations((cur) => cur.map((c) => (c.id === activeConvId ? { ...c, title } : c)));
       }
-      const result = await askCoach({
-        message: trimmed,
-        mode: useContext ? "post_session" : "chat",
-        sessionId: useContext ? sessionId ?? undefined : undefined,
-        conversationId: activeConvId ?? undefined,
-      });
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const result = await askCoach(
+        {
+          message: trimmed,
+          mode: useContext ? "post_session" : "chat",
+          sessionId: useContext ? sessionId ?? undefined : undefined,
+          conversationId: activeConvId ?? undefined,
+        },
+        controller.signal,
+      );
+      abortRef.current = null;
 
       setAwaiting(false);
 
       if ("error" in result) {
+        if (result.aborted) {
+          // Cancelled: keep the user's message, mark it stopped.
+          setMessages((cur) =>
+            cur.map((msg) => (msg.id === userMsg.id ? { ...msg, stopped: true } : msg)),
+          );
+          return;
+        }
         const { text: msg, tone } = friendlyError(result.error);
         setMessages((cur) => [
           ...cur,
@@ -312,11 +312,64 @@ function CoachInner() {
           content: result.message,
           model: result.model,
           workout: result.workout ?? null,
+          createdAt: new Date().toISOString(),
         },
       ]);
     },
     [awaiting, sessionId, contextActive, activeConvId, conversations],
   );
+
+  const stop = useCallback(() => {
+    abortRef.current?.abort();
+  }, []);
+
+  // Regenerate the last assistant reply: swap the bubble for the typing
+  // indicator while the server deletes + re-answers from stored history.
+  const regenerate = useCallback(async () => {
+    if (awaiting || !activeConvId) return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant" || last.notice) return;
+
+    setMessages((cur) => cur.slice(0, -1));
+    setAwaiting(true);
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const result = await askCoach(
+      { message: "", regenerate: true, conversationId: activeConvId },
+      controller.signal,
+    );
+    abortRef.current = null;
+    setAwaiting(false);
+
+    if ("error" in result) {
+      if (result.aborted) {
+        setMessages((cur) => {
+          const lastUserIdx = cur.map((m) => m.role).lastIndexOf("user");
+          if (lastUserIdx === -1) return cur;
+          return cur.map((msg, i) => (i === lastUserIdx ? { ...msg, stopped: true } : msg));
+        });
+        return;
+      }
+      const { text: msg, tone } = friendlyError(result.error);
+      setMessages((cur) => [
+        ...cur,
+        { id: makeId(), role: "assistant", content: msg, notice: true, noticeTone: tone },
+      ]);
+      return;
+    }
+
+    setMessages((cur) => [
+      ...cur,
+      {
+        id: makeId(),
+        role: "assistant",
+        content: result.message,
+        model: result.model,
+        workout: result.workout ?? null,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+  }, [awaiting, activeConvId, messages]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -388,18 +441,27 @@ function CoachInner() {
               </div>
             </div>
           ) : (
-            messages.map((m) =>
+            messages.map((m, i) =>
               m.role === "user" ? (
-                <div key={m.id} className="ai-msg user">
-                  <div className="ai-bubble">
-                    <p>{m.content}</p>
+                <div key={m.id} className="chat-msg-group user">
+                  <div className="ai-msg user">
+                    <div
+                      className="ai-bubble"
+                      title={m.createdAt ? new Date(m.createdAt).toLocaleString() : undefined}
+                    >
+                      <p>{m.content}</p>
+                    </div>
                   </div>
+                  {m.stopped && <p className="chat-stopped">stopped</p>}
                 </div>
               ) : (
-                <div key={m.id}>
+                <div key={m.id} className="chat-msg-group">
                   <div className="ai-msg assistant">
                     <img className="ai-avatar" src="/brand/logomark.svg" alt="" aria-hidden />
-                    <div className="ai-bubble">
+                    <div
+                      className="ai-bubble"
+                      title={m.createdAt ? new Date(m.createdAt).toLocaleString() : undefined}
+                    >
                       {m.notice ? (
                         <div
                           className={`notice notice-${m.noticeTone ?? "danger"} coach-msg-notice`}
@@ -407,7 +469,7 @@ function CoachInner() {
                           {m.content}
                         </div>
                       ) : (
-                        <CoachMarkdown content={m.content} />
+                        <Markdown content={m.content} />
                       )}
                       {m.workout && (
                         <a className="coach-workout-card" href="/workouts">
@@ -425,7 +487,21 @@ function CoachInner() {
                       )}
                     </div>
                   </div>
-                  {m.model && !m.notice && <p className="coach-model">{m.model}</p>}
+                  {!m.notice && (
+                    <div className="chat-msg-meta">
+                      <CopyButton text={m.content} />
+                      {i === messages.length - 1 && !awaiting && activeConvId && (
+                        <button
+                          type="button"
+                          className="chat-regen"
+                          onClick={() => void regenerate()}
+                        >
+                          ↺ Regenerate
+                        </button>
+                      )}
+                      {m.model && <span className="chat-msg-model">{m.model}</span>}
+                    </div>
+                  )}
                 </div>
               ),
             )
@@ -480,9 +556,15 @@ function CoachInner() {
             aria-label="Message the coach"
             enterKeyHint="send"
           />
-          <Button type="submit" disabled={awaiting || input.trim().length === 0}>
-            Send
-          </Button>
+          {awaiting ? (
+            <Button type="button" variant="secondary" onClick={stop}>
+              Stop
+            </Button>
+          ) : (
+            <Button type="submit" disabled={input.trim().length === 0}>
+              Send
+            </Button>
+          )}
         </form>
 
         <p className="ai-disclaimer">Coaching guidance, not medical advice.</p>

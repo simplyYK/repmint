@@ -22,13 +22,17 @@ export type AskCoachInput = {
   /** What the user is currently looking at (route + on-screen summary), so the
    * coach can answer "about this page" questions. */
   pageContext?: string;
+  /** When true, the server deletes the newest assistant reply in
+   * `conversationId` and regenerates it from the remaining history —
+   * `message` is ignored (the last stored user message is the prompt). */
+  regenerate?: boolean;
 };
 
 export type CoachWorkout = { id: string; title: string; exerciseCount: number };
 
 export type AskCoachResult =
   | { message: string; model: string; workout?: CoachWorkout | null }
-  | { error: string };
+  | { error: string; aborted?: boolean };
 
 export type GeneratePlanInput = {
   goal: string;
@@ -97,31 +101,55 @@ export async function getCoachInstructions(): Promise<{ instructions: string } |
   return { instructions: res.coach };
 }
 
-export async function askCoach(input: AskCoachInput): Promise<AskCoachResult> {
-  if (!supabase) return { error: "Supabase is not configured." };
+/** Ask the coach. Uses a direct fetch (not supabase.functions.invoke) so the
+ * request can be cancelled: pass an AbortSignal and abort it to stop a reply
+ * mid-flight — callers get back `{ error, aborted: true }` instead of a throw. */
+export async function askCoach(input: AskCoachInput, signal?: AbortSignal): Promise<AskCoachResult> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!supabase || !url || !anonKey) return { error: "Supabase is not configured." };
   const token = await getAccessToken();
   if (!token) return { error: "Sign in to talk with the AI coach." };
 
-  const { data, error } = await supabase.functions.invoke("ai-coach", {
-    body: {
-      message: input.message,
-      mode: input.mode ?? "chat",
-      sessionId: input.sessionId,
-      conversationId: input.conversationId,
-      pageContext: input.pageContext,
-    },
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  if (error) {
-    return { error: await extractFunctionError(error, data) };
+  try {
+    const res = await fetch(`${url}/functions/v1/ai-coach`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: anonKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: input.message,
+        mode: input.mode ?? "chat",
+        sessionId: input.sessionId,
+        conversationId: input.conversationId,
+        pageContext: input.pageContext,
+        regenerate: input.regenerate,
+      }),
+      signal,
+    });
+    const data = (await res.json().catch(() => null)) as {
+      message?: string;
+      model?: string;
+      workout?: CoachWorkout | null;
+      error?: string;
+    } | null;
+    if (!res.ok || !data || data.error) {
+      return { error: data?.error ?? `The AI coach is unavailable right now (${res.status}).` };
+    }
+    return {
+      message: data.message as string,
+      model: data.model as string,
+      workout: data.workout ?? null,
+    };
+  } catch (err) {
+    if ((err as { name?: string } | null)?.name === "AbortError") {
+      return { error: "Stopped.", aborted: true };
+    }
+    return { error: err instanceof Error ? err.message : "The AI coach is unavailable right now." };
   }
-  if (data?.error) return { error: data.error as string };
-  return {
-    message: data.message as string,
-    model: data.model as string,
-    workout: (data.workout as CoachWorkout | null) ?? null,
-  };
 }
 
 export async function generatePlan(input: GeneratePlanInput): Promise<GeneratePlanResult> {

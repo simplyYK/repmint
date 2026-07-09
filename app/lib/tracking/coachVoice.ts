@@ -45,13 +45,13 @@ export async function fetchTtsBlob(text: string, voice?: string): Promise<Blob |
 }
 
 export class CoachVoice {
-  /** Master switch (mirrors the HUD mute toggle). */
-  enabled = true;
-
+  private _enabled = true;
   private browser = new VoiceCoach();
   private realtime: RealtimeVoice | null = null;
   private engine: VoiceEngine;
   private failed = false;
+  /** Set once the workout's closing line has been handed off; coach goes silent. */
+  private ended = false;
   private audio: HTMLAudioElement | null = null;
   private audioUrl: string | null = null;
   private currentPriority = 0;
@@ -62,33 +62,83 @@ export class CoachVoice {
   constructor(engine: VoiceEngine = "browser", voice?: string) {
     this.engine = engine;
     this.voice = voice;
-    if (engine === "realtime") {
-      // Warm the WebRTC session during camera setup so the first cue is instant.
-      this.realtime = new RealtimeVoice(voice);
+    // Realtime connects lazily: warm() fires at set start, and the first
+    // speak() connects on its own as a fallback — no idle session while the
+    // athlete is still browsing the launcher or framing the camera.
+    if (engine === "realtime") this.realtime = new RealtimeVoice(voice);
+  }
+
+  /** Master switch (mirrors the HUD mute toggle). */
+  get enabled(): boolean {
+    return this._enabled;
+  }
+
+  /** Muting silences the coach NOW — mid-line speech stops immediately. */
+  set enabled(on: boolean) {
+    this._enabled = on;
+    if (!on) {
+      this.browser.stop();
+      this.realtime?.stop();
+      this.stopAudioOnly();
+    }
+  }
+
+  /** Pre-open the realtime session so the first cue is instant. No-op for other engines. */
+  warm(): void {
+    if (this.engine === "realtime" && this.realtime && !this.failed && !this.ended) {
       void this.realtime.connect();
     }
   }
 
   /** Rep counts: always on-device — latency beats fidelity mid-set. */
   announceRep(n: number): void {
-    if (!this.enabled) return;
+    if (!this.enabled || this.ended) return;
     this.browser.enabled = true;
     this.browser.announceRep(n);
   }
 
   /** Time-critical lines (countdowns): always on-device. */
   immediate(text: string): void {
-    if (!this.enabled) return;
+    if (!this.enabled || this.ended) return;
     this.browser.enabled = true;
     this.browser.milestone(text);
   }
 
   cue(text: string): void {
+    if (this.ended) return;
     void this.say(text, 1);
   }
 
   milestone(text: string): void {
+    if (this.ended) return;
     void this.say(text, 2);
+  }
+
+  /**
+   * End-of-workout closure: speak the final line through the active engine,
+   * then go silent for good. Realtime waits for the line's audio to finish
+   * and closes the WebRTC session (disposal is guaranteed even if it fails);
+   * browser/openai just speak it — nothing persistent to close. Idempotent.
+   */
+  async endWorkout(finalLine?: string): Promise<void> {
+    if (this.ended) return;
+    this.ended = true;
+
+    if (this.engine === "realtime" && this.realtime) {
+      const rt = this.realtime;
+      if (this._enabled && finalLine && !this.failed) {
+        await rt.finishAndClose(finalLine);
+        // Failure contract: realtime couldn't deliver it → on-device fallback.
+        if (rt.failed && this._enabled) this.speakBrowser(finalLine, 2);
+      } else {
+        rt.dispose();
+        if (this._enabled && finalLine) this.speakBrowser(finalLine, 2);
+      }
+      return;
+    }
+
+    // Existing milestone path (say() handles the openai → browser fallback).
+    if (this._enabled && finalLine) await this.say(finalLine, 2);
   }
 
   stop(): void {

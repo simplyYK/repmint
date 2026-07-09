@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { askCoach } from "../../lib/ai";
+import { Markdown } from "./Markdown";
 
 type DockMessage = {
   id: string;
@@ -19,6 +20,8 @@ type DockMessage = {
   content: string;
   workout?: { id: string; title: string } | null;
   error?: boolean;
+  /** User message whose reply was cancelled mid-flight. */
+  stopped?: boolean;
 };
 
 const HIDDEN_ROUTES = ["/coach", "/train"];
@@ -64,6 +67,7 @@ export function CoachDock() {
   const [input, setInput] = useState("");
   const [awaiting, setAwaiting] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -79,18 +83,31 @@ export function CoachDock() {
     async (text: string) => {
       const trimmed = text.trim();
       if (!trimmed || awaiting) return;
-      setMessages((cur) => [...cur, { id: makeId(), role: "user", content: trimmed }]);
+      const userId = makeId();
+      setMessages((cur) => [...cur, { id: userId, role: "user", content: trimmed }]);
       setInput("");
       setAwaiting(true);
 
-      const result = await askCoach({
-        message: trimmed,
-        mode: "chat",
-        pageContext: `The user is currently looking at ${pageLabel(pathname)} (route ${pathname}).`,
-      });
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const result = await askCoach(
+        {
+          message: trimmed,
+          mode: "chat",
+          pageContext: `The user is currently looking at ${pageLabel(pathname)} (route ${pathname}).`,
+        },
+        controller.signal,
+      );
+      abortRef.current = null;
 
       setAwaiting(false);
       if ("error" in result) {
+        if (result.aborted) {
+          setMessages((cur) =>
+            cur.map((m) => (m.id === userId ? { ...m, stopped: true } : m)),
+          );
+          return;
+        }
         setMessages((cur) => [
           ...cur,
           { id: makeId(), role: "assistant", content: result.error, error: true },
@@ -104,6 +121,10 @@ export function CoachDock() {
     },
     [awaiting, pathname],
   );
+
+  const stop = useCallback(() => {
+    abortRef.current?.abort();
+  }, []);
 
   if (HIDDEN_ROUTES.some((r) => pathname.startsWith(r))) return null;
 
@@ -156,7 +177,12 @@ export function CoachDock() {
               )}
               {messages.map((m) => (
                 <div key={m.id} className={`coach-dock-msg ${m.role}${m.error ? " error" : ""}`}>
-                  <p>{m.content}</p>
+                  {m.role === "assistant" && !m.error ? (
+                    <Markdown content={m.content} />
+                  ) : (
+                    <p>{m.content}</p>
+                  )}
+                  {m.stopped && <small className="chat-stopped">stopped</small>}
                   {m.workout && (
                     <a className="coach-dock-workout" href="/workouts">
                       ▶ {m.workout.title} — saved to Workouts
@@ -199,9 +225,15 @@ export function CoachDock() {
                 placeholder="Ask your coach…"
                 aria-label="Ask your coach"
               />
-              <button type="submit" className="btn btn-primary btn-sm" disabled={awaiting || !input.trim()}>
-                Send
-              </button>
+              {awaiting ? (
+                <button type="button" className="btn btn-secondary btn-sm" onClick={stop}>
+                  Stop
+                </button>
+              ) : (
+                <button type="submit" className="btn btn-primary btn-sm" disabled={!input.trim()}>
+                  Send
+                </button>
+              )}
             </form>
           </motion.aside>
         )}

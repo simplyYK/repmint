@@ -22,6 +22,11 @@ export class RealtimeVoice {
   private speaking = false;
   private currentPriority = 0;
   private lastConnectAttempt = 0;
+  /** Set by finishAndClose; seals the engine so no cue can ever follow it. */
+  private closing: Promise<void> | null = null;
+  /** Resolves the finishAndClose wait when the final line's audio is done. */
+  private onFinalDone: (() => void) | null = null;
+  private finalCueCreated = false;
   /** Sticky after a hard failure; CoachVoice checks this to fall back. */
   failed = false;
 
@@ -108,10 +113,19 @@ export class RealtimeVoice {
   private onEvent(raw: string) {
     try {
       const evt = JSON.parse(raw);
-      if (evt.type === "response.created") this.speaking = true;
+      if (evt.type === "response.created") {
+        this.speaking = true;
+        // A cancel emits no response.created, so any created seen after the
+        // final cue was sent belongs to the final cue itself.
+        if (this.onFinalDone) this.finalCueCreated = true;
+      }
       if (evt.type === "response.done" || evt.type === "response.output_audio.done") {
         this.speaking = false;
         this.currentPriority = 0;
+        if (this.finalCueCreated) {
+          this.onFinalDone?.();
+          this.onFinalDone = null;
+        }
       }
     } catch {
       // non-JSON frames are ignorable
@@ -119,13 +133,19 @@ export class RealtimeVoice {
   }
 
   /** Speak one cue. Returns false if the engine can't (caller falls back). */
-  async speak(text: string, priority: 1 | 2): Promise<boolean> {
+  speak(text: string, priority: 1 | 2): Promise<boolean> {
+    // Sealed after finishAndClose: the coach never speaks again this session.
+    if (this.closing) return Promise.resolve(true);
+    return this.send(text, priority, false);
+  }
+
+  private async send(text: string, priority: 1 | 2, interrupt: boolean): Promise<boolean> {
     if (!text) return true;
     const ok = await this.connect();
     if (!ok || !this.dc || this.dc.readyState !== "open") return false;
 
     // Same/higher-priority line still playing → let it finish (mirrors tts engine).
-    if (this.speaking && priority <= this.currentPriority) return true;
+    if (this.speaking && !interrupt && priority <= this.currentPriority) return true;
     // Higher-priority cue interrupts: cancel whatever is mid-sentence.
     if (this.speaking) this.dc.send(JSON.stringify({ type: "response.cancel" }));
 
@@ -141,6 +161,35 @@ export class RealtimeVoice {
     return true;
   }
 
+  /**
+   * End-of-workout closure: speak the final line, wait for its audio to
+   * finish (response.done / output_audio.done, 15s safety net), then close
+   * the WebRTC session for good. Seals the engine immediately — no cue can
+   * land after the final line. Safe to call more than once.
+   */
+  finishAndClose(text: string): Promise<void> {
+    if (this.closing) return this.closing;
+    this.closing = (async () => {
+      try {
+        const done = new Promise<void>((resolve) => {
+          this.onFinalDone = resolve;
+        });
+        // Interrupt whatever is mid-sentence — the closing line takes the floor.
+        const spoke = await this.send(text, 2, true);
+        if (!spoke) {
+          // Couldn't deliver the line; mark failed so CoachVoice falls back.
+          this.failed = true;
+          return;
+        }
+        // Wait for the audio, but never let a dropped event wedge the session.
+        await Promise.race([done, new Promise<void>((r) => setTimeout(r, 15_000))]);
+      } finally {
+        this.dispose();
+      }
+    })();
+    return this.closing;
+  }
+
   /** Stop current speech without closing the session (mute mid-line). */
   stop(): void {
     if (this.dc?.readyState === "open" && this.speaking) {
@@ -154,6 +203,9 @@ export class RealtimeVoice {
   dispose(): void {
     this.stop();
     this.teardown();
+    // Unblock a pending finishAndClose wait so it can't outlive the session.
+    this.onFinalDone?.();
+    this.onFinalDone = null;
   }
 
   private teardown(): void {
