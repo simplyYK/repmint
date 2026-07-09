@@ -24,15 +24,17 @@ type ChatMessage = {
   role: ChatRole;
   content: string;
   model?: string | null;
+  /** When the coach just created a workout, link straight to it. */
+  workout?: { id: string; title: string; exerciseCount: number } | null;
   /** When true, render the content as a plain notice (error / config nudge). */
   notice?: boolean;
   noticeTone?: "warn" | "danger";
 };
 
 const SUGGESTIONS = [
+  "Create a workout for me",
   "Plan my next session",
   "Review yesterday's workout",
-  "How's my consistency?",
   "What should I focus on next?",
 ];
 
@@ -243,7 +245,13 @@ function CoachInner() {
 
       setMessages((cur) => [
         ...cur,
-        { id: makeId(), role: "assistant", content: result.message, model: result.model },
+        {
+          id: makeId(),
+          role: "assistant",
+          content: result.message,
+          model: result.model,
+          workout: result.workout ?? null,
+        },
       ]);
     },
     [awaiting, sessionId, contextActive],
@@ -271,9 +279,7 @@ function CoachInner() {
             <Spinner label="Loading your conversation…" />
           ) : isEmpty ? (
             <div className="ai-msg assistant">
-              <span className="ai-avatar" aria-hidden>
-                R
-              </span>
+              <img className="ai-avatar" src="/brand/logomark.svg" alt="" aria-hidden />
               <div className="ai-bubble">
                 <EmptyState name="coach" className="coach-welcome-art" />
                 <div className="coach-md">
@@ -295,9 +301,7 @@ function CoachInner() {
               ) : (
                 <div key={m.id}>
                   <div className="ai-msg assistant">
-                    <span className="ai-avatar" aria-hidden>
-                      R
-                    </span>
+                    <img className="ai-avatar" src="/brand/logomark.svg" alt="" aria-hidden />
                     <div className="ai-bubble">
                       {m.notice ? (
                         <div
@@ -307,6 +311,20 @@ function CoachInner() {
                         </div>
                       ) : (
                         <CoachMarkdown content={m.content} />
+                      )}
+                      {m.workout && (
+                        <a className="coach-workout-card" href="/workouts">
+                          <span className="coach-workout-icon" aria-hidden>
+                            ▶
+                          </span>
+                          <span>
+                            <strong>{m.workout.title}</strong>
+                            <small>
+                              {m.workout.exerciseCount} exercise
+                              {m.workout.exerciseCount === 1 ? "" : "s"} · saved to your Workouts
+                            </small>
+                          </span>
+                        </a>
                       )}
                     </div>
                   </div>
@@ -318,9 +336,7 @@ function CoachInner() {
 
           {awaiting && (
             <div className="ai-msg assistant">
-              <span className="ai-avatar" aria-hidden>
-                R
-              </span>
+              <img className="ai-avatar" src="/brand/logomark.svg" alt="" aria-hidden />
               <div className="ai-bubble">
                 <span className="ai-typing" aria-label="Coach is typing">
                   <i />

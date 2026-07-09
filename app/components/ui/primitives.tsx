@@ -6,6 +6,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 
 export function PageHeader({
@@ -134,12 +135,53 @@ export function Chip({
   return <span className={cls}>{children}</span>;
 }
 
+/** Branded loading state: pulsing logomark over shimmer bars — never a bare spinner. */
 export function Spinner({ label }: { label?: string }) {
   return (
-    <div className="spinner-wrap" role="status" aria-live="polite">
-      <span className="spinner" aria-hidden />
-      {label && <span>{label}</span>}
+    <div className="spinner-wrap loading-branded" role="status" aria-live="polite">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/brand/logomark.svg" alt="" className="loading-mark" />
+      <div className="loading-bars" aria-hidden>
+        <span />
+        <span />
+        <span />
+      </div>
+      {label && <span className="loading-label">{label}</span>}
     </div>
+  );
+}
+
+/** Shimmering placeholder block for content-shaped loading states. */
+export function Skeleton({ height = 120, className = "" }: { height?: number; className?: string }) {
+  return <div className={`skeleton ${className}`} style={{ height }} aria-hidden />;
+}
+
+/**
+ * Scroll-linked section reveal (fade + rise on first entry into view).
+ * Wrap page sections in this for the "Kinetic Precision" motion language.
+ * No-ops (renders static) when the user prefers reduced motion.
+ */
+export function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const reduced = useReducedMotion();
+  if (reduced) return <div className={className}>{children}</div>;
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
   );
 }
 

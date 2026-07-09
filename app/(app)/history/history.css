@@ -114,15 +114,18 @@
 }
 .cal-cell.has-sessions:hover {
   border-color: rgba(183, 255, 60, 0.5);
+  box-shadow: var(--glow-accent);
 }
 .cal-cell.selected {
   background: rgba(183, 255, 60, 0.16);
   border-color: var(--accent);
+  box-shadow: var(--glow-accent);
 }
 .cal-dot {
   align-items: center;
   background: var(--accent);
   border-radius: var(--radius-pill);
+  box-shadow: 0 0 8px rgba(183, 255, 60, 0.55);
   color: #10141b;
   display: flex;
   font-family: var(--font-mono);
@@ -252,44 +255,50 @@
 }
 .drawer-head {
   align-items: flex-start;
+  border-bottom: 1px solid var(--line);
   display: flex;
   gap: 12px;
   justify-content: space-between;
+  padding-bottom: 14px;
+}
+.drawer-head-main {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
 }
 .drawer-head h2 {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: clamp(1.4rem, 3vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 0;
+}
+/* Instrument-panel meta row: date · duration · sets · reps · form % */
+.drawer-meta {
+  align-items: center;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  gap: 8px;
+  letter-spacing: 0.1em;
+  margin: 0;
+  text-transform: uppercase;
+}
+.drawer-meta-sep {
+  color: var(--text-muted);
+  letter-spacing: 0;
+  opacity: 0.6;
+}
+.drawer-meta-form {
+  color: var(--accent);
 }
 .drawer-close {
   flex-shrink: 0;
   min-height: 44px;
   min-width: 44px;
-}
-
-.drawer-totals {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.drawer-totals > div {
-  background: rgba(8, 10, 13, 0.4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  padding: 10px 12px;
-}
-.drawer-totals small {
-  color: var(--text-muted);
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-.drawer-totals strong {
-  color: var(--text);
-  font-family: var(--font-mono);
-  font-size: 1.15rem;
 }
 
 .drawer-groups {
@@ -471,9 +480,6 @@
 }
 
 @media (max-width: 420px) {
-  .drawer-totals {
-    grid-template-columns: repeat(2, 1fr);
-  }
   .history-row {
     grid-template-columns: minmax(0, 1fr) 18px;
     grid-template-areas: "main chev" "stats stats";

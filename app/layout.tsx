@@ -1,7 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
+
+// Display face for headlines/wordmark ("Kinetic Precision" design system).
+// Bundled at build time via next/font — no runtime CDN request.
+const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-hanken",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -15,6 +25,7 @@ export const metadata: Metadata = {
   title: "RepMint | AI Camera Trainer For Goal-Based Workouts",
   description:
     "RepMint is a camera-based training companion for goal-based plans, rep counting, time-under-tension tracking, set review, and progress.",
+  icons: { icon: "/brand/logomark.svg" },
   openGraph: {
     title: "RepMint | AI Camera Trainer For Goal-Based Workouts",
     description:
@@ -34,13 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <head>
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@900,850,700,500&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} ${hanken.variable}`}>
       <body>{children}</body>
     </html>
   );

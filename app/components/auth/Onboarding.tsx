@@ -103,7 +103,7 @@ export function Onboarding({
     >
       <div className="onboarding-head">
         <div className="brand-lockup landing-brand">
-          <span>R</span>
+          <img src="/brand/logomark.svg" alt="" className="brand-lockup-mark" />
           <strong>RepMint</strong>
         </div>
         <div className="onboarding-progress" aria-hidden>

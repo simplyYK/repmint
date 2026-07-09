@@ -20,9 +20,10 @@ import {
 } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { listMeta } from "../../lib/library";
-import { getActivePlan, getProfile, type ActivePlan } from "../../lib/db";
+import { getActivePlan, getProfile, listTemplates, type ActivePlan } from "../../lib/db";
 import type { DbPlanDay } from "../../lib/types";
 import { generatePlan } from "../../lib/ai";
+import { generatePlanIcs, downloadIcs } from "../../lib/ics";
 import "./plan.css";
 
 const TRAINING_TABS = [
@@ -134,6 +135,22 @@ function PlanView({ plan, onNew }: { plan: ActivePlan; onNew: () => void }) {
 
   const trainingDays = plan.days.filter((d) => !d.is_rest).length;
 
+  const [exporting, setExporting] = useState(false);
+
+  // Builds a weekly-recurring .ics from the plan's non-rest days and downloads
+  // it — templates are fetched lazily so descriptions can list the exercises.
+  async function handleExportIcs() {
+    setExporting(true);
+    try {
+      const templates = await listTemplates().catch(() => []);
+      const text = generatePlanIcs(plan, plan.days, templates);
+      const slug = plan.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "training-plan";
+      downloadIcs(`${slug}.ics`, text);
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="stack">
       <SectionTabs tabs={TRAINING_TABS} label="Workouts section" />
@@ -144,9 +161,14 @@ function PlanView({ plan, onNew }: { plan: ActivePlan; onNew: () => void }) {
           plan.weeks === 1 ? "" : "s"
         } · ${trainingDays} training day${trainingDays === 1 ? "" : "s"}`}
         actions={
-          <Button variant="secondary" onClick={onNew}>
-            Generate a new plan
-          </Button>
+          <div className="row-wrap">
+            <Button variant="secondary" onClick={handleExportIcs} disabled={exporting}>
+              {exporting ? "Preparing…" : "Add to calendar (.ics)"}
+            </Button>
+            <Button variant="secondary" onClick={onNew}>
+              Generate a new plan
+            </Button>
+          </div>
         }
       />
 
@@ -228,6 +250,7 @@ function PlanWizard({
   const [daysPerWeek, setDaysPerWeek] = useState(3);
   const [sessionMinutes, setSessionMinutes] = useState(45);
   const [weeks, setWeeks] = useState(4);
+  const [trackedOnly, setTrackedOnly] = useState(false);
   const [prefilled, setPrefilled] = useState(false);
 
   const [generating, setGenerating] = useState(false);
@@ -281,6 +304,7 @@ function PlanWizard({
       daysPerWeek,
       sessionMinutes,
       weeks,
+      trackedOnly,
       fallbackSlugs,
     });
     if ("error" in result) {
@@ -406,6 +430,30 @@ function PlanWizard({
             </div>
           </fieldset>
         </div>
+
+        <fieldset className="pl-fieldset">
+          <legend>Exercise tracking</legend>
+          <div className="pl-goal-grid">
+            <button
+              type="button"
+              className={`pl-goal${!trackedOnly ? " active" : ""}`}
+              onClick={() => setTrackedOnly(false)}
+              aria-pressed={!trackedOnly}
+            >
+              <strong>Include manual exercises</strong>
+              <small>Everything in the library — carries, stretches and conditioning are logged with a timer</small>
+            </button>
+            <button
+              type="button"
+              className={`pl-goal${trackedOnly ? " active" : ""}`}
+              onClick={() => setTrackedOnly(true)}
+              aria-pressed={trackedOnly}
+            >
+              <strong>Camera-tracked only</strong>
+              <small>Only exercises the camera can count and coach — reps, form and tempo tracked automatically</small>
+            </button>
+          </div>
+        </fieldset>
 
         <Button onClick={handleGenerate} size="lg" full>
           Generate plan

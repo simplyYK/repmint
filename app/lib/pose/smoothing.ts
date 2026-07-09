@@ -112,3 +112,115 @@ export class PoseSmoother {
     this.lastTs = 0;
   }
 }
+
+/* ------------------------------------------------------------------------- */
+/* Standalone One-Euro API (timestamp-driven)                                 */
+/*                                                                            */
+/* The classes below expose the same 1€ math with a timestamp-based surface  */
+/* so callers outside the pose hook (setup checks, analytics, ad-hoc signal  */
+/* smoothing) don't have to carry dt bookkeeping themselves. Defaults are    */
+/* tuned for ~30fps webcam pose landmarks: minCutoff 1.0 keeps slow drift    */
+/* smooth, beta 0.007 loosens the filter during fast rep motion.             */
+/* Ref: Casiez, Roussel & Vogel, "1€ Filter" (CHI 2012).                     */
+/* ------------------------------------------------------------------------- */
+
+export type OneEuroOptions = {
+  /** Baseline cutoff (Hz). Lower = smoother when still, but laggier. Default 1.0. */
+  minCutoff?: number;
+  /** Speed coefficient. Higher = more responsive during fast motion. Default 0.007. */
+  beta?: number;
+  /** Cutoff (Hz) for the derivative low-pass. Default 1.0. */
+  dCutoff?: number;
+};
+
+/**
+ * Single-channel One-Euro filter driven by wall-clock timestamps.
+ *
+ * Feed it one scalar signal (e.g. a landmark's x coordinate, or a joint
+ * angle) with the frame's timestamp in milliseconds; it derives dt internally
+ * and adapts smoothing to how fast the signal is moving.
+ */
+export class OneEuroFilter {
+  private inner: OneEuro;
+  private lastTs: number | null = null;
+
+  constructor(opts: OneEuroOptions = {}) {
+    this.inner = new OneEuro(opts.minCutoff ?? 1.0, opts.beta ?? 0.007, opts.dCutoff ?? 1.0);
+  }
+
+  /**
+   * Filter the next sample.
+   * @param value Raw sample value.
+   * @param timestampMs Sample time in milliseconds (monotonic, e.g. performance.now()).
+   * @returns The smoothed value.
+   */
+  filter(value: number, timestampMs: number): number {
+    const dt = this.lastTs === null ? 1 / 30 : (timestampMs - this.lastTs) / 1000;
+    this.lastTs = timestampMs;
+    return this.inner.filter(value, dt);
+  }
+
+  /** Clear all internal state; the next sample passes through unfiltered. */
+  reset() {
+    this.inner.reset();
+    this.lastTs = null;
+  }
+}
+
+/**
+ * Applies per-coordinate One-Euro filters to a full landmark array
+ * (MediaPipe NormalizedLandmark-compatible: `{x, y, z?, visibility?}`).
+ *
+ * x, y and z are smoothed independently per landmark index; `visibility` is
+ * passed through untouched (it is a confidence, not a position — smoothing it
+ * would hide tracking dropouts from downstream quality gates).
+ */
+export class LandmarkSmoother {
+  private filters = new Map<number, { x: OneEuroFilter; y: OneEuroFilter; z: OneEuroFilter }>();
+  private opts: OneEuroOptions;
+
+  constructor(opts: OneEuroOptions = {}) {
+    this.opts = {
+      minCutoff: opts.minCutoff ?? 1.0,
+      beta: opts.beta ?? 0.007,
+      dCutoff: opts.dCutoff ?? 1.0,
+    };
+  }
+
+  private forIndex(i: number) {
+    let f = this.filters.get(i);
+    if (!f) {
+      f = {
+        x: new OneEuroFilter(this.opts),
+        y: new OneEuroFilter(this.opts),
+        z: new OneEuroFilter(this.opts),
+      };
+      this.filters.set(i, f);
+    }
+    return f;
+  }
+
+  /**
+   * Smooth one frame of landmarks.
+   * @param landmarks Landmark array for this frame (any length; filters are keyed by index).
+   * @param timestampMs Frame time in milliseconds.
+   * @returns A new array of smoothed landmarks (input is not mutated).
+   */
+  smooth(landmarks: Pose, timestampMs: number): Pose {
+    return landmarks.map((lm, i) => {
+      const f = this.forIndex(i);
+      const out: Landmark = {
+        x: f.x.filter(lm.x, timestampMs),
+        y: f.y.filter(lm.y, timestampMs),
+        visibility: lm.visibility,
+      };
+      if (lm.z !== undefined) out.z = f.z.filter(lm.z, timestampMs);
+      return out;
+    });
+  }
+
+  /** Drop every per-landmark filter; the next frame passes through unfiltered. */
+  reset() {
+    this.filters.clear();
+  }
+}

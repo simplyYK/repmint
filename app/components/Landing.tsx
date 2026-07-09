@@ -222,7 +222,7 @@ export default function Landing() {
     <main className="landing">
       <header className="landing-nav">
         <div className="brand-lockup landing-brand">
-          <span>R</span>
+          <img src="/brand/logomark.svg" alt="" className="brand-lockup-mark" />
           <strong>RepMint</strong>
         </div>
         <div className="landing-nav-actions">
@@ -398,7 +398,7 @@ export default function Landing() {
 
       <footer className="landing-footer">
         <div className="brand-lockup landing-brand">
-          <span>R</span>
+          <img src="/brand/logomark.svg" alt="" className="brand-lockup-mark" />
           <strong>RepMint</strong>
         </div>
         <p>RepMint is coaching software that helps you train with more awareness — not medical guidance.</p>

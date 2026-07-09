@@ -20,7 +20,7 @@ export default function Home() {
   if (!loading && user) {
     return (
       <div className="shell-boot">
-        <div className="shell-boot-mark">R</div>
+        <img className="shell-boot-mark" src="/brand/logomark.svg" alt="" />
         <span>Loading your hub…</span>
       </div>
     );

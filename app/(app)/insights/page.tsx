@@ -7,7 +7,7 @@
 // form % is presented as a coaching signal, not a precise measurement.
 
 import { useEffect, useMemo, useState } from "react";
-import { PageHeader, Card, LinkButton, Spinner, InlineNotice, SectionTitle, SectionTabs } from "../../components/ui/primitives";
+import { PageHeader, Card, LinkButton, Spinner, InlineNotice, SectionTitle, SectionTabs, Metric, Reveal } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { listSessions, getSessionDetail, getExerciseProgress, getProfile, type ExerciseProgressPoint } from "../../lib/db";
 import { getMeta } from "../../lib/library";
@@ -233,6 +233,12 @@ export default function InsightsPage() {
   const totalSessions = sessions.length;
   const anyVolume = volumeData.some((d) => d.value > 0);
 
+  // Headline instrument-panel stats over the loaded window.
+  const totalReps = sessions.reduce((acc, s) => acc + (s.total_reps ?? 0), 0);
+  const peakWeekVolume = Math.max(0, ...volumeData.map((d) => d.value));
+  const formScores = sessions.map((s) => s.avg_form_score).filter((v): v is number => v != null);
+  const avgForm = formScores.length > 0 ? Math.round(formScores.reduce((a, b) => a + b, 0) / formScores.length) : null;
+
   return (
     <div className="stack">
       <SectionTabs tabs={PROGRESS_TABS} label="Progress section" />
@@ -244,90 +250,124 @@ export default function InsightsPage() {
 
       {error && <InlineNotice tone="danger">{error}</InlineNotice>}
 
+      <Reveal>
+        <div className="insights-stats">
+          <Metric label="Sessions" value={totalSessions} note="in this window" />
+          <Metric label="Total reps" value={totalReps.toLocaleString()} note="all sessions" />
+          <Metric
+            label="Peak week"
+            value={
+              peakWeekVolume > 0 ? (
+                <>
+                  {peakWeekVolume >= 1000 ? `${Math.round(peakWeekVolume / 100) / 10}k` : peakWeekVolume}
+                  <small>{unitLabel}</small>
+                </>
+              ) : (
+                "—"
+              )
+            }
+            note="load volume"
+          />
+          <Metric label="Avg form" value={avgForm != null ? `${avgForm}%` : "—"} note="coaching signal" />
+        </div>
+      </Reveal>
+
       <div className="insights-grid">
-        <Card className="insight-panel">
-          <SectionTitle>Weekly load volume</SectionTitle>
-          <p className="insight-sub">Sets × reps × weight across each week ({unitLabel}). Bodyweight work shows up in reps instead of load.</p>
-          {anyVolume ? (
-            <BarChart data={volumeData} valueFormat={(v) => (v >= 1000 ? `${Math.round(v / 100) / 10}k` : String(Math.round(v)))} />
-          ) : (
-            <p className="insight-hint">Log some weighted sets and your load volume will chart here.</p>
-          )}
-        </Card>
+        <Reveal delay={0.05}>
+          <Card className="insight-panel">
+            <SectionTitle>Weekly load volume</SectionTitle>
+            <p className="insight-sub">Sets × reps × weight across each week ({unitLabel}). Bodyweight work shows up in reps instead of load.</p>
+            {anyVolume ? (
+              <BarChart data={volumeData} valueFormat={(v) => (v >= 1000 ? `${Math.round(v / 100) / 10}k` : String(Math.round(v)))} />
+            ) : (
+              <p className="insight-hint">Log some weighted sets and your load volume will chart here.</p>
+            )}
+          </Card>
+        </Reveal>
 
-        <Card className="insight-panel">
-          <SectionTitle>Reps per week</SectionTitle>
-          <p className="insight-sub">Total reps logged each week — a simple pulse on your training volume.</p>
-          <LineChart data={repsData} accent="var(--accent-2)" />
-        </Card>
+        <Reveal delay={0.1}>
+          <Card className="insight-panel">
+            <SectionTitle>Reps per week</SectionTitle>
+            <p className="insight-sub">Total reps logged each week — a simple pulse on your training volume.</p>
+            <LineChart data={repsData} accent="var(--accent-2)" />
+          </Card>
+        </Reveal>
 
-        <Card className="insight-panel insight-wide">
-          <SectionTitle>Consistency</SectionTitle>
-          <p className="insight-sub">The last {WEEKS_SHOWN} weeks. Each square is a day — brighter means you showed up.</p>
-          <div className="heatmap-wrap">
-            <Heatmap weeks={heatWeeks} />
-            <div className="heat-legend">
-              <span>Less</span>
-              <i className="rm-heat-l0" />
-              <i className="rm-heat-l1" />
-              <i className="rm-heat-l2" />
-              <i className="rm-heat-l3" />
-              <span>More</span>
+        <Reveal className="insight-wide" delay={0.05}>
+          <Card className="insight-panel">
+            <SectionTitle>Consistency</SectionTitle>
+            <p className="insight-sub">The last {WEEKS_SHOWN} weeks. Each square is a day — brighter means you showed up.</p>
+            <div className="heatmap-wrap">
+              <Heatmap weeks={heatWeeks} />
+              <div className="heat-legend">
+                <span>Less</span>
+                <i className="rm-heat-l0" />
+                <i className="rm-heat-l1" />
+                <i className="rm-heat-l2" />
+                <i className="rm-heat-l3" />
+                <span>More</span>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </Reveal>
 
-        <Card className="insight-panel">
-          <SectionTitle>Form score trend</SectionTitle>
-          <p className="insight-sub">Average form score per week — a coaching signal from your camera-tracked sets, not a precise measurement.</p>
-          {formData.some((d) => d.value != null) ? (
-            <LineChart data={formData} accent="var(--accent)" valueFormat={(v) => `${Math.round(v)}%`} />
-          ) : (
-            <p className="insight-hint">Camera-coached sets will build your form-score trend here.</p>
-          )}
-        </Card>
+        <Reveal delay={0.05}>
+          <Card className="insight-panel">
+            <SectionTitle>Form score trend</SectionTitle>
+            <p className="insight-sub">Average form score per week — a coaching signal from your camera-tracked sets, not a precise measurement.</p>
+            {formData.some((d) => d.value != null) ? (
+              <LineChart data={formData} accent="var(--accent)" valueFormat={(v) => `${Math.round(v)}%`} />
+            ) : (
+              <p className="insight-hint">Camera-coached sets will build your form-score trend here.</p>
+            )}
+          </Card>
+        </Reveal>
 
-        <Card className="insight-panel">
-          <SectionTitle>Load trend by lift</SectionTitle>
-          <p className="insight-sub">How the top weight on your key lifts is moving over time ({unitLabel}).</p>
-          {loadTrends.length > 0 ? (
-            <div className="trend-cards">
-              {loadTrends.map((t) => (
-                <div key={t.slug} className="trend-card">
-                  <div className="trend-card-head">
-                    <strong>{t.name}</strong>
-                    <span>
-                      {Math.round(t.values[t.values.length - 1] * 10) / 10} {unitLabel}
-                    </span>
+        <Reveal delay={0.1}>
+          <Card className="insight-panel">
+            <SectionTitle>Load trend by lift</SectionTitle>
+            <p className="insight-sub">How the top weight on your key lifts is moving over time ({unitLabel}).</p>
+            {loadTrends.length > 0 ? (
+              <div className="trend-cards">
+                {loadTrends.map((t) => (
+                  <div key={t.slug} className="trend-card">
+                    <div className="trend-card-head">
+                      <strong>{t.name}</strong>
+                      <span>
+                        {Math.round(t.values[t.values.length - 1] * 10) / 10} {unitLabel}
+                      </span>
+                    </div>
+                    <Sparkline values={t.values} />
                   </div>
-                  <Sparkline values={t.values} />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="insight-hint">Log a few weighted sessions of the big lifts to see their trend.</p>
-          )}
-        </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="insight-hint">Log a few weighted sessions of the big lifts to see their trend.</p>
+            )}
+          </Card>
+        </Reveal>
 
-        <Card className="insight-panel">
-          <SectionTitle>Personal bests</SectionTitle>
-          <p className="insight-sub">Your heaviest logged weight on each key lift so far.</p>
-          {prs.length > 0 ? (
-            <div className="pr-cards">
-              {prs.map((pr) => (
-                <div key={pr.slug} className="pr-card">
-                  <span className="pr-name">{pr.name}</span>
-                  <strong className="pr-value">
-                    {pr.weight} {unitLabel}
-                  </strong>
-                  {pr.reps != null && <small className="pr-reps">{pr.reps} reps that day</small>}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="insight-hint">Weighted personal bests will appear here as you train.</p>
-          )}
-        </Card>
+        <Reveal delay={0.15}>
+          <Card className="insight-panel">
+            <SectionTitle>Personal bests</SectionTitle>
+            <p className="insight-sub">Your heaviest logged weight on each key lift so far.</p>
+            {prs.length > 0 ? (
+              <div className="pr-cards">
+                {prs.map((pr) => (
+                  <div key={pr.slug} className="pr-card">
+                    <span className="pr-name">{pr.name}</span>
+                    <strong className="pr-value">
+                      {pr.weight} {unitLabel}
+                    </strong>
+                    {pr.reps != null && <small className="pr-reps">{pr.reps} reps that day</small>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="insight-hint">Weighted personal bests will appear here as you train.</p>
+            )}
+          </Card>
+        </Reveal>
       </div>
     </div>
   );

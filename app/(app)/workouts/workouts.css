@@ -2,6 +2,69 @@
    tokens from globals.css :root. Mobile-first, 44px+ touch targets, no
    horizontal scroll at 360px. */
 
+/* ---- Jump back in (resume card) ---- */
+.wk-resume {
+  align-items: flex-end;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  min-height: 230px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wk-resume-img {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+
+.wk-resume-overlay {
+  background: linear-gradient(180deg, rgba(8, 10, 13, 0.25), rgba(8, 10, 13, 0.88));
+  inset: 0;
+  position: absolute;
+}
+
+.wk-resume-body {
+  display: grid;
+  gap: 8px;
+  padding: 22px 20px 20px;
+  position: relative;
+  width: 100%;
+}
+
+.wk-resume-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.wk-resume-meta {
+  color: var(--text-soft);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+/* ---- Filter chips ---- */
+.wk-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wk-filter-empty {
+  color: var(--text-muted);
+  margin: 0;
+}
+
 /* ---- List: template cards ---- */
 .wk-grid {
   display: grid;
@@ -67,6 +130,42 @@
   gap: 8px;
 }
 
+/* Instrument-panel badge row: duration · equipment · exercise count */
+.wk-card-badges {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wk-badge {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Teal focus tag (goal or derived category) */
+.wk-focus-chip {
+  background: rgba(72, 229, 194, 0.08);
+  border: 1px solid rgba(72, 229, 194, 0.35);
+  border-radius: var(--radius-pill);
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .wk-card-actions {
   display: flex;
   flex-wrap: wrap;
@@ -122,6 +221,133 @@
 
 .wk-inline-empty p {
   margin: 0;
+}
+
+/* Dashed "create new" card that closes the grid */
+.wk-create-card {
+  align-items: center;
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.92rem;
+  font-weight: 700;
+  gap: 8px;
+  justify-content: center;
+  min-height: 170px;
+  padding: 20px;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.wk-create-card:hover {
+  background: rgba(183, 255, 60, 0.05);
+  border-color: rgba(183, 255, 60, 0.5);
+  color: var(--text);
+}
+
+.wk-create-plus {
+  color: var(--accent);
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* ---- Starter cards (zero-template empty state) ---- */
+.wk-starters {
+  display: grid;
+  gap: 14px;
+}
+
+.wk-starters-sub {
+  color: var(--text-muted);
+  margin: -6px 0 0;
+}
+
+.wk-starter-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.wk-starter {
+  align-items: flex-end;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  min-height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wk-starter-img {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+
+.wk-starter-overlay {
+  background: linear-gradient(180deg, rgba(8, 10, 13, 0.25), rgba(8, 10, 13, 0.88));
+  inset: 0;
+  position: absolute;
+}
+
+.wk-starter-body {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  position: relative;
+  width: 100%;
+}
+
+.wk-starter-tag {
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wk-starter-body h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.wk-starter-body p {
+  color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0 0 4px;
+}
+
+.wk-starters-foot {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---- Floating "+ Create new" pill (mobile only) ---- */
+.wk-fab {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .wk-fab {
+    /* Sits above the CoachDock FAB (which occupies the bottom-right corner). */
+    bottom: calc(148px + env(safe-area-inset-bottom));
+    box-shadow: var(--glow-accent-strong);
+    display: inline-flex;
+    position: fixed;
+    right: 16px;
+    z-index: 60;
+  }
 }
 
 /* ---- Builder ---- */

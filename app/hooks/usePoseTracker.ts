@@ -7,10 +7,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PoseSmoother } from "../lib/pose/smoothing";
-import { SKELETON, bestSide, visibilityOf, type Pose } from "../lib/pose/landmarks";
+import { SKELETON, SIDE_JOINTS, bestSide, visibilityOf, type Pose } from "../lib/pose/landmarks";
 import type { MovementDef, PoseContext, RepPhase } from "../lib/movements/types";
 import { RepEngine, type RepEvent } from "../lib/tracking/repEngine";
 import { FormCoach, type CoachTone } from "../lib/tracking/formCoach";
+import { evaluateSetup, type ExpectedView, type SetupResult } from "../lib/tracking/setupCheck";
 import type { CoachConfig, FaultTally } from "../lib/types";
 
 function strictnessScale(s: CoachConfig["strictness"]) {
@@ -46,6 +47,10 @@ export type TrackerSnapshot = {
   tone: CoachTone;
   holdValid: boolean;
   motion: string;
+  /** The most recent completed rep's metrics (null until the first rep). */
+  lastRep: RepEvent | null;
+  /** Camera setup diagnostics, evaluated while idle (pre-set). */
+  setup: SetupResult | null;
 };
 
 export type SetOutcome = {
@@ -76,6 +81,8 @@ const IDLE: TrackerSnapshot = {
   tone: "idle",
   holdValid: false,
   motion: "Ready",
+  lastRep: null,
+  setup: null,
 };
 
 const PHASE_LABEL: Record<RepPhase, string> = {
@@ -107,6 +114,7 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
   // live values written every frame, published to React at ~12Hz
   const liveRef = useRef<TrackerSnapshot>({ ...IDLE });
   const [snapshot, setSnapshot] = useState<TrackerSnapshot>({ ...IDLE });
+  const setupFrameRef = useRef(0);
 
   // Recreate the pure engines whenever the movement or coaching config changes.
   useEffect(() => {
@@ -193,7 +201,10 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
 
           if (runningRef.current) {
             const coach = coachRef.current.update(ctx, ts);
-            if (frame.repEvent) repEventsRef.current.push(frame.repEvent);
+            if (frame.repEvent) {
+              repEventsRef.current.push(frame.repEvent);
+              liveRef.current.lastRep = frame.repEvent;
+            }
 
             const elapsed = startedAtRef.current
               ? Math.round((Date.now() - startedAtRef.current) / 1000)
@@ -215,11 +226,28 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
               motion: move.mode === "hold" ? (frame.holdValid ? "Holding" : "Find the line") : PHASE_LABEL[frame.phase],
             };
           } else {
+            // Idle (pre-set): run camera-setup diagnostics every ~15 frames so
+            // the UI can guide framing/distance/view before the set starts.
+            setupFrameRef.current += 1;
+            let setup = liveRef.current.setup;
+            if (setupFrameRef.current % 15 === 1) {
+              const expectedView: ExpectedView = /side/i.test(move.camera)
+                ? "side"
+                : /front|face/i.test(move.camera)
+                  ? "front"
+                  : "any";
+              // Visibility is judged on the better-tracked side's joints so a
+              // correct side-on stance doesn't get flagged for the far side.
+              const setupSide = bestSide(pose, move.keyJoints);
+              const keyIdxs = move.keyJoints.map((j) => SIDE_JOINTS[setupSide][j]);
+              setup = evaluateSetup(pose, keyIdxs, expectedView);
+            }
             liveRef.current = {
               ...liveRef.current,
               quality: Math.round(frame.quality * 100),
               angle: frame.angle,
               depth: move.mode === "hold" ? 0 : frame.depth,
+              setup,
             };
           }
         }

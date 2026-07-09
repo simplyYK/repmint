@@ -17,9 +17,16 @@ export type AskCoachInput = {
   message: string;
   mode?: CoachChatMode;
   sessionId?: string;
+  /** What the user is currently looking at (route + on-screen summary), so the
+   * coach can answer "about this page" questions. */
+  pageContext?: string;
 };
 
-export type AskCoachResult = { message: string; model: string } | { error: string };
+export type CoachWorkout = { id: string; title: string; exerciseCount: number };
+
+export type AskCoachResult =
+  | { message: string; model: string; workout?: CoachWorkout | null }
+  | { error: string };
 
 export type GeneratePlanInput = {
   goal: string;
@@ -28,6 +35,8 @@ export type GeneratePlanInput = {
   daysPerWeek: number;
   sessionMinutes: number;
   weeks: number;
+  /** Restrict the plan to camera-tracked (tier 1-2) exercises. */
+  trackedOnly?: boolean;
   /** Only used if the exercises table is empty server-side. */
   fallbackSlugs?: string[];
 };
@@ -40,42 +49,38 @@ async function getAccessToken(): Promise<string | null> {
   return data.session?.access_token ?? null;
 }
 
-/** GET the default (+ any active override is NOT included — that's per-user and only applied server-side) coach instructions. Public, no auth required. */
-export async function getCoachInstructions(): Promise<{ instructions: string } | { error: string }> {
-  if (!supabase) return { error: "Supabase is not configured." };
-  try {
-    const { data, error } = await supabase.functions.invoke("ai-coach", {
-      method: "GET",
-      body: undefined,
-    });
-    // supabase-js always POSTs via invoke; use a direct fetch for the GET mode instead.
-    if (error) throw error;
-    if (data && typeof data === "object" && "instructions" in data) {
-      return data as { instructions: string };
-    }
-    throw new Error("Unexpected response shape");
-  } catch {
-    return fetchInstructionsDirect();
-  }
-}
+export type AgentPrompts = { coach: string; planner: string };
 
-// supabase-js's `functions.invoke` always issues a POST, so hit the GET
-// ?mode=instructions route directly with fetch instead.
-async function fetchInstructionsDirect(): Promise<{ instructions: string } | { error: string }> {
+/** GET the built-in default system prompts for both AI agents (chat coach +
+ * workout/plan creator). Per-user overrides are applied server-side only.
+ * Public, no auth required. */
+export async function getAgentPrompts(): Promise<AgentPrompts | { error: string }> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !anonKey) return { error: "Supabase is not configured." };
   try {
+    // supabase-js's `functions.invoke` always issues a POST, so hit the GET
+    // ?mode=instructions route directly with fetch instead.
     const res = await fetch(`${url}/functions/v1/ai-coach?mode=instructions`, {
       method: "GET",
       headers: { Authorization: `Bearer ${anonKey}`, apikey: anonKey },
     });
     const json = await res.json();
-    if (!res.ok) return { error: json?.error ?? "Could not load coach instructions." };
-    return json as { instructions: string };
+    if (!res.ok) return { error: json?.error ?? "Could not load agent prompts." };
+    return {
+      coach: (json.coach as string) ?? (json.instructions as string) ?? "",
+      planner: (json.planner as string) ?? "",
+    };
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Could not load coach instructions." };
+    return { error: err instanceof Error ? err.message : "Could not load agent prompts." };
   }
+}
+
+/** Legacy alias — the Settings screen previously showed only the coach prompt. */
+export async function getCoachInstructions(): Promise<{ instructions: string } | { error: string }> {
+  const res = await getAgentPrompts();
+  if ("error" in res) return res;
+  return { instructions: res.coach };
 }
 
 export async function askCoach(input: AskCoachInput): Promise<AskCoachResult> {
@@ -84,7 +89,12 @@ export async function askCoach(input: AskCoachInput): Promise<AskCoachResult> {
   if (!token) return { error: "Sign in to talk with the AI coach." };
 
   const { data, error } = await supabase.functions.invoke("ai-coach", {
-    body: { message: input.message, mode: input.mode ?? "chat", sessionId: input.sessionId },
+    body: {
+      message: input.message,
+      mode: input.mode ?? "chat",
+      sessionId: input.sessionId,
+      pageContext: input.pageContext,
+    },
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -92,7 +102,11 @@ export async function askCoach(input: AskCoachInput): Promise<AskCoachResult> {
     return { error: await extractFunctionError(error, data) };
   }
   if (data?.error) return { error: data.error as string };
-  return { message: data.message as string, model: data.model as string };
+  return {
+    message: data.message as string,
+    model: data.model as string,
+    workout: (data.workout as CoachWorkout | null) ?? null,
+  };
 }
 
 export async function generatePlan(input: GeneratePlanInput): Promise<GeneratePlanResult> {
@@ -108,6 +122,7 @@ export async function generatePlan(input: GeneratePlanInput): Promise<GeneratePl
       daysPerWeek: input.daysPerWeek,
       sessionMinutes: input.sessionMinutes,
       weeks: input.weeks,
+      trackedOnly: input.trackedOnly ?? false,
       fallbackSlugs: input.fallbackSlugs,
     },
     headers: { Authorization: `Bearer ${token}` },

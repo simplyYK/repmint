@@ -107,7 +107,7 @@ function AuthInner() {
   if (user && needsOnboarding === null) {
     return (
       <div className="shell-boot">
-        <div className="shell-boot-mark">R</div>
+        <img className="shell-boot-mark" src="/brand/logomark.svg" alt="" />
         <span>Setting up your profile…</span>
       </div>
     );
@@ -117,7 +117,7 @@ function AuthInner() {
     <main className="auth-screen">
       <div className="auth-aside" aria-hidden>
         <Link href="/" className="brand-lockup landing-brand">
-          <span>R</span>
+          <img src="/brand/logomark.svg" alt="" className="brand-lockup-mark" />
           <strong>RepMint</strong>
         </Link>
         <h2>Your AI camera coach, ready when you are.</h2>
@@ -134,7 +134,7 @@ function AuthInner() {
           ← Back
         </Link>
         <div className="brand-lockup landing-brand auth-panel-brand">
-          <span>R</span>
+          <img src="/brand/logomark.svg" alt="" className="brand-lockup-mark" />
           <strong>RepMint</strong>
         </div>
         <h1>
@@ -203,7 +203,7 @@ export default function AuthPage() {
     <Suspense
       fallback={
         <div className="shell-boot">
-          <div className="shell-boot-mark">R</div>
+          <img className="shell-boot-mark" src="/brand/logomark.svg" alt="" />
           <span>Loading…</span>
         </div>
       }

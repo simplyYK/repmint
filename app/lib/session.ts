@@ -17,7 +17,13 @@ export type SessionState = {
 
 /**
  * Subscribes to Supabase auth state. `loading` is true until the first
- * getUser() resolves, so guards can avoid flashing the wrong screen.
+ * session read resolves, so guards can avoid flashing the wrong screen.
+ *
+ * Uses getSession() (local storage, no network) for the initial answer —
+ * getUser() validates over the network and can transiently report "no user"
+ * while the access token is being refreshed after a hard reload, which used
+ * to bounce signed-in users through /auth on every refresh. RLS still
+ * enforces real authorization server-side on every query.
  */
 export function useSession(): SessionState {
   const [user, setUser] = useState<User | null>(null);
@@ -29,9 +35,9 @@ export function useSession(): SessionState {
       return;
     }
     let active = true;
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
-      setUser(data.user ?? null);
+      setUser(data.session?.user ?? null);
       setLoading(false);
     });
     const { data } = supabase.auth.onAuthStateChange((_event, sess) => {

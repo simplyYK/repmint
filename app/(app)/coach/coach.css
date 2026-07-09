@@ -146,3 +146,33 @@
     margin-left: 44px;
   }
 }
+
+/* Workout-created card inside an assistant bubble */
+.coach-workout-card {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(183, 255, 60, 0.14), rgba(72, 229, 194, 0.08));
+  border: 1px solid rgba(183, 255, 60, 0.35);
+  border-radius: 12px;
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+.coach-workout-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.coach-workout-icon {
+  align-items: center;
+  background: var(--accent);
+  border-radius: 50%;
+  color: #0b0e07;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+.coach-workout-card strong { display: block; font-size: 0.95rem; }
+.coach-workout-card small { color: var(--text-soft); font-size: 0.78rem; }

@@ -22,7 +22,7 @@ import {
   getProfile,
   upsertProfile,
 } from "../../lib/db";
-import { getCoachInstructions } from "../../lib/ai";
+import { getAgentPrompts, type AgentPrompts } from "../../lib/ai";
 import { supabase } from "../../lib/supabaseClient";
 import type { DbUserSettings } from "../../lib/types";
 import "./settings.css";
@@ -46,11 +46,15 @@ const EQUIPMENT = [
 ];
 
 const MODEL_PRESETS = [
-  { value: "google/gemini-2.5-flash", label: "Gemini 2.5 Flash (default)" },
+  { value: "google/gemini-2.5-flash", label: "Gemini 2.5 Flash (default — fast)" },
+  { value: "google/gemini-2.5-pro", label: "Gemini 2.5 Pro (deeper reasoning)" },
   { value: "anthropic/claude-sonnet-4.5", label: "Claude Sonnet 4.5" },
   { value: "openai/gpt-4o-mini", label: "GPT-4o mini" },
   { value: "meta-llama/llama-3.3-70b-instruct", label: "Llama 3.3 70B" },
 ];
+
+// Preset avatars — stored as `emoji:<char>` in profiles.avatar_url.
+const AVATARS = ["⚡", "🔥", "🦁", "🏔️", "🐺", "🚀", "💎", "🌊"];
 
 const DELETE_TABLES = ["sessions", "workout_templates", "plans", "coach_messages"];
 
@@ -61,6 +65,7 @@ type ProfileForm = {
   experience_level: "beginner" | "intermediate" | "advanced";
   equipment: string[];
   units: "kg" | "lb";
+  avatar_url: string;
 };
 
 const EMPTY_PROFILE: ProfileForm = {
@@ -70,6 +75,7 @@ const EMPTY_PROFILE: ProfileForm = {
   experience_level: "beginner",
   equipment: ["bodyweight"],
   units: "kg",
+  avatar_url: "",
 };
 
 function labelFor(v: string) {
@@ -113,6 +119,7 @@ export default function SettingsPage() {
                 ? p.equipment
                 : ["bodyweight"],
             units: p.units === "lb" ? "lb" : "kg",
+            avatar_url: p.avatar_url ?? "",
           });
         }
         setSettings(sett);
@@ -218,6 +225,7 @@ function ProfileSection({
         experience_level: value.experience_level,
         equipment: value.equipment,
         units: value.units,
+        avatar_url: value.avatar_url || null,
       });
       setNotice({ tone: "info", text: "Profile saved." });
     } catch (err) {
@@ -235,6 +243,28 @@ function ProfileSection({
       <div className="set-card-head">
         <h2>Profile</h2>
         <p>How you show up in RepMint.</p>
+      </div>
+
+      <div className="field" style={{ marginBottom: 14 }}>
+        <span>Avatar</span>
+        <div className="set-avatars" role="group" aria-label="Avatar">
+          {AVATARS.map((emoji) => {
+            const val = `emoji:${emoji}`;
+            const on = value.avatar_url === val;
+            return (
+              <button
+                key={emoji}
+                type="button"
+                className={`set-avatar${on ? " on" : ""}`}
+                aria-pressed={on}
+                aria-label={`Avatar ${emoji}`}
+                onClick={() => set("avatar_url", on ? "" : val)}
+              >
+                {emoji}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="field-grid">
@@ -471,6 +501,24 @@ function Toggle({
 // AI section
 // ---------------------------------------------------------------------------
 
+type AgentRole = "coach" | "planner";
+
+const AGENT_META: Record<
+  AgentRole,
+  { label: string; hint: string; column: "ai_prompt_coach" | "ai_prompt_planner" }
+> = {
+  coach: {
+    label: "Chat coach",
+    hint: "Answers questions grounded in your training data and creates workouts in chat.",
+    column: "ai_prompt_coach",
+  },
+  planner: {
+    label: "Workout & plan creator",
+    hint: "Designs your workouts and multi-week plans from the exercise bank.",
+    column: "ai_prompt_planner",
+  },
+};
+
 function AiSection({
   settings,
   onChange,
@@ -488,28 +536,47 @@ function AiSection({
   );
   const [override, setOverride] = useState<string>(settings.ai_instructions_override ?? "");
 
+  // Per-agent system prompts. `defaults` come from the server; drafts start
+  // from the saved override (or the default once loaded).
+  const [role, setRole] = useState<AgentRole>("coach");
+  const [defaults, setDefaults] = useState<AgentPrompts | null>(null);
+  const [defaultsError, setDefaultsError] = useState<string | null>(null);
+  const [drafts, setDrafts] = useState<Record<AgentRole, string>>({
+    coach: settings.ai_prompt_coach ?? "",
+    planner: settings.ai_prompt_planner ?? "",
+  });
+
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
 
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [defaultInstructions, setDefaultInstructions] = useState<string | null>(null);
-  const [instructionsError, setInstructionsError] = useState<string | null>(null);
-  const [loadingInstructions, setLoadingInstructions] = useState(false);
-
-  async function toggleInstructions() {
-    const next = !showInstructions;
-    setShowInstructions(next);
-    if (next && defaultInstructions === null && !loadingInstructions) {
-      setLoadingInstructions(true);
-      setInstructionsError(null);
-      const res = await getCoachInstructions();
-      setLoadingInstructions(false);
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const res = await getAgentPrompts();
+      if (!active) return;
       if ("error" in res) {
-        setInstructionsError(res.error);
-      } else {
-        setDefaultInstructions(res.instructions);
+        setDefaultsError(res.error);
+        return;
       }
-    }
+      setDefaults(res);
+      // Fill empty drafts with the defaults so the prompt is always visible.
+      setDrafts((cur) => ({
+        coach: cur.coach || res.coach,
+        planner: cur.planner || res.planner,
+      }));
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const draft = drafts[role];
+  const roleDefault = defaults?.[role] ?? "";
+  const isCustomized = defaults !== null && draft.trim() !== roleDefault.trim();
+
+  function revertToDefault() {
+    if (!defaults) return;
+    setDrafts((cur) => ({ ...cur, [role]: defaults[role] }));
   }
 
   async function save() {
@@ -522,9 +589,19 @@ function AiSection({
       return;
     }
     try {
+      // A prompt equal to the default (or empty) is stored as null, which is
+      // what "revert to original" means server-side.
+      const normalize = (r: AgentRole) => {
+        const text = drafts[r].trim();
+        if (!text) return null;
+        if (defaults && text === defaults[r].trim()) return null;
+        return text;
+      };
       const updated = await upsertSettings({
         ai_model: model,
         ai_instructions_override: override.trim() ? override.trim() : null,
+        ai_prompt_coach: normalize("coach"),
+        ai_prompt_planner: normalize("planner"),
       });
       onChange(updated);
       setNotice({ tone: "info", text: "AI settings saved." });
@@ -542,7 +619,10 @@ function AiSection({
     <Card className="settings-card">
       <div className="set-card-head">
         <h2>AI coach</h2>
-        <p>Choose the model and shape how the coach talks to you.</p>
+        <p>
+          Pick the model (served via OpenRouter), inspect and edit each agent&apos;s system
+          prompt, and add your own guidance.
+        </p>
       </div>
 
       <label className="field" style={{ marginBottom: 14 }}>
@@ -553,7 +633,7 @@ function AiSection({
               {m.label}
             </option>
           ))}
-          <option value="custom">Custom…</option>
+          <option value="custom">Custom OpenRouter model…</option>
         </select>
       </label>
 
@@ -564,7 +644,7 @@ function AiSection({
             type="text"
             value={customModel}
             onChange={(e) => setCustomModel(e.target.value)}
-            placeholder="provider/model-name"
+            placeholder="provider/model-name (any OpenRouter id)"
             autoCapitalize="none"
             autoCorrect="off"
           />
@@ -573,41 +653,69 @@ function AiSection({
 
       <SectionTitle
         action={
-          <Button size="sm" variant="ghost" onClick={toggleInstructions}>
-            {showInstructions ? "Hide" : "View coach instructions"}
-          </Button>
+          isCustomized ? (
+            <Button size="sm" variant="ghost" onClick={revertToDefault}>
+              Revert to original
+            </Button>
+          ) : undefined
         }
       >
-        Coach instructions
+        Agent system prompts
       </SectionTitle>
 
-      {showInstructions && (
-        <div className="set-instructions">
-          {loadingInstructions ? (
-            <Spinner label="Loading instructions…" />
-          ) : instructionsError ? (
-            <InlineNotice tone="warn">
-              Couldn&apos;t load the default instructions right now. You can still write your
-              own guidance below.
-            </InlineNotice>
-          ) : (
-            defaultInstructions && (
-              <pre className="set-instructions-default">{defaultInstructions}</pre>
-            )
-          )}
+      <label className="field" style={{ marginBottom: 10 }}>
+        <span>Agent</span>
+        <select value={role} onChange={(e) => setRole(e.target.value as AgentRole)}>
+          {(Object.keys(AGENT_META) as AgentRole[]).map((r) => (
+            <option key={r} value={r}>
+              {AGENT_META[r].label}
+              {(r === "coach" ? settings.ai_prompt_coach : settings.ai_prompt_planner)
+                ? " (customized)"
+                : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="set-hint" style={{ marginBottom: 10 }}>
+        {AGENT_META[role].hint}
+      </p>
 
-          <label className="field">
-            <span>Your instructions (optional)</span>
-            <textarea
-              className="set-textarea"
-              value={override}
-              onChange={(e) => setOverride(e.target.value)}
-              placeholder="Add your own guidance — tone, focus areas, anything you'd like the coach to keep in mind."
-            />
-          </label>
-          <p className="set-hint">Leave this empty to use the default coaching style.</p>
-        </div>
+      {defaultsError && (
+        <InlineNotice tone="warn">
+          Couldn&apos;t load the default prompts right now — editing is disabled until they
+          load. {defaultsError}
+        </InlineNotice>
       )}
+
+      <label className="field" style={{ marginBottom: 6 }}>
+        <span>
+          System prompt {isCustomized ? "— customized" : "— original"}
+        </span>
+        <textarea
+          className="set-textarea set-prompt-textarea"
+          value={draft}
+          disabled={defaults === null}
+          onChange={(e) => setDrafts((cur) => ({ ...cur, [role]: e.target.value }))}
+          placeholder={defaults === null ? "Loading default prompt…" : undefined}
+          aria-label={`${AGENT_META[role].label} system prompt`}
+        />
+      </label>
+      <p className="set-hint" style={{ marginBottom: 14 }}>
+        Edits apply only to your account. Saving a prompt identical to the original stores
+        nothing, so &quot;Revert to original&quot; + Save fully resets it.
+      </p>
+
+      <SectionTitle>Extra guidance (applies to both agents)</SectionTitle>
+      <label className="field">
+        <textarea
+          className="set-textarea"
+          value={override}
+          onChange={(e) => setOverride(e.target.value)}
+          placeholder="Optional: tone, focus areas, anything you'd like the AI to keep in mind."
+          aria-label="Extra guidance for both agents"
+        />
+      </label>
+      <p className="set-hint">Leave empty to use the prompts above as-is.</p>
 
       {notice && <InlineNotice tone={notice.tone}>{notice.text}</InlineNotice>}
 

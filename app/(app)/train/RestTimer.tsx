@@ -25,19 +25,22 @@ export function RestTimer({
     setTotal(seconds);
   }, [seconds]);
 
+  // Tick down with a pure updater; completion fires from an effect so React
+  // Strict Mode's double-invoked updaters can't call onDone twice.
   useEffect(() => {
     const id = window.setInterval(() => {
-      setRemaining((r) => {
-        if (r <= 1) {
-          window.clearInterval(id);
-          doneRef.current();
-          return 0;
-        }
-        return r - 1;
-      });
+      setRemaining((r) => Math.max(0, r - 1));
     }, 1000);
     return () => window.clearInterval(id);
   }, [total]);
+
+  const firedRef = useRef(false);
+  useEffect(() => {
+    if (remaining === 0 && total > 0 && !firedRef.current) {
+      firedRef.current = true;
+      doneRef.current();
+    }
+  }, [remaining, total]);
 
   const pct = total > 0 ? (remaining / total) * 100 : 0;
 

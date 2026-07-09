@@ -235,6 +235,10 @@ export type DbUserSettings = {
   owner_id: string;
   ai_model: string;
   ai_instructions_override: string | null;
+  /** Full system-prompt override for the chat coach agent. Null = built-in default. */
+  ai_prompt_coach: string | null;
+  /** Full system-prompt override for the workout/plan creator agent. Null = built-in default. */
+  ai_prompt_planner: string | null;
   coach_voice: string;
   audio_cues: boolean;
   haptics: boolean;

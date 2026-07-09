@@ -225,9 +225,9 @@ function HistoryInner() {
             <Card className="history-empty">
               <EmptyState name="history" />
               <div className="history-empty-text">
-                <strong>No sessions logged this month yet</strong>
-                <p>When you finish a workout it lands here, mapped to the day. Start one and it&apos;ll show up.</p>
-                <LinkButton href="/train">Start training</LinkButton>
+                <strong>Nothing on the board for {MONTHS[month.getMonth()]} yet</strong>
+                <p>Every session you finish lands here, mapped to the day you trained. One workout is all it takes to get this month moving.</p>
+                <LinkButton href="/train">Start a session</LinkButton>
               </div>
             </Card>
           ) : listed.length === 0 ? (
@@ -385,9 +385,33 @@ function SessionDrawer({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="drawer-head">
-          <div>
-            <p className="eyebrow">{session ? shortDate(session.started_at) : "Session"}</p>
+          <div className="drawer-head-main">
             <h2>{session?.title || "Training session"}</h2>
+            {session && (
+              <p className="drawer-meta">
+                <span>{shortDate(session.started_at)}</span>
+                <span className="drawer-meta-sep" aria-hidden>
+                  ·
+                </span>
+                <span>{formatDuration(session.active_seconds)}</span>
+                <span className="drawer-meta-sep" aria-hidden>
+                  ·
+                </span>
+                <span>{session.total_sets} sets</span>
+                <span className="drawer-meta-sep" aria-hidden>
+                  ·
+                </span>
+                <span>{session.total_reps} reps</span>
+                {session.avg_form_score != null && (
+                  <>
+                    <span className="drawer-meta-sep" aria-hidden>
+                      ·
+                    </span>
+                    <span className="drawer-meta-form">{Math.round(session.avg_form_score)}% form</span>
+                  </>
+                )}
+              </p>
+            )}
           </div>
           <button className="drawer-close btn btn-ghost btn-sm" onClick={onClose} aria-label="Close">
             ✕
@@ -400,29 +424,6 @@ function SessionDrawer({
           <InlineNotice tone="danger">{error}</InlineNotice>
         ) : (
           <>
-            {session && (
-              <div className="drawer-totals">
-                <div>
-                  <small>Sets</small>
-                  <strong>{session.total_sets}</strong>
-                </div>
-                <div>
-                  <small>Reps</small>
-                  <strong>{session.total_reps}</strong>
-                </div>
-                <div>
-                  <small>Active</small>
-                  <strong>{formatDuration(session.active_seconds)}</strong>
-                </div>
-                {session.avg_form_score != null && (
-                  <div>
-                    <small>Form score</small>
-                    <strong>{Math.round(session.avg_form_score)}%</strong>
-                  </div>
-                )}
-              </div>
-            )}
-
             {saveError && <InlineNotice tone="warn">{saveError}</InlineNotice>}
 
             <div className="drawer-groups">

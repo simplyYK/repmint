@@ -1,10 +1,48 @@
 /* /insights — dashboard panels + hand-rolled SVG chart styling. Tokens from
    globals.css :root. Mobile-first, 360px-safe, no horizontal scroll. */
 
+/* ---- Headline stat strip: lime numerals under instrument-panel labels ---- */
+.insights-stats {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.insights-stats .metric {
+  background: rgba(8, 10, 13, 0.34);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.insights-stats .metric-label {
+  letter-spacing: 0.1em;
+}
+.insights-stats .metric-value {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.insights-stats .metric-value small {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+
 .insights-grid {
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* Chart cards sit inside Reveal wrappers — keep them grid-safe + full height. */
+.insights-grid > * {
+  min-width: 0;
+}
+.insights-grid .insight-panel {
+  height: 100%;
 }
 .insight-panel {
   display: grid;
@@ -59,15 +97,14 @@
   transform: scaleY(1);
 }
 
+/* Dasharray/dashoffset are set inline per-path (measured length) so the
+   draw-in wipe completes exactly at the end of the line. */
 .rm-line {
   opacity: 0;
-  stroke-dasharray: 620;
-  stroke-dashoffset: 620;
   transition: stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease;
 }
 .rm-line.in {
   opacity: 1;
-  stroke-dashoffset: 0;
 }
 .rm-line-area {
   opacity: 0;
@@ -119,17 +156,21 @@
   opacity: 1;
   transform: scale(1);
 }
+/* Lime intensity ramp — rest days stay near-invisible, peak days glow. */
 .rm-heat-l0 {
   fill: rgba(244, 247, 251, 0.06);
 }
 .rm-heat-l1 {
-  fill: rgba(183, 255, 60, 0.28);
+  fill: rgba(183, 255, 60, 0.24);
 }
 .rm-heat-l2 {
-  fill: rgba(183, 255, 60, 0.6);
+  fill: rgba(183, 255, 60, 0.55);
 }
 .rm-heat-l3 {
   fill: var(--accent);
+}
+svg .rm-heat-l3 {
+  filter: drop-shadow(0 0 4px rgba(183, 255, 60, 0.55));
 }
 
 .heat-legend {
@@ -145,6 +186,20 @@
   display: inline-block;
   height: 13px;
   width: 13px;
+}
+/* Legend swatches are HTML <i>, not SVG — mirror the ramp with background. */
+.heat-legend .rm-heat-l0 {
+  background: rgba(244, 247, 251, 0.06);
+}
+.heat-legend .rm-heat-l1 {
+  background: rgba(183, 255, 60, 0.24);
+}
+.heat-legend .rm-heat-l2 {
+  background: rgba(183, 255, 60, 0.55);
+}
+.heat-legend .rm-heat-l3 {
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(183, 255, 60, 0.45);
 }
 
 /* ---- Load trend cards ---- */
@@ -232,6 +287,9 @@
 @media (max-width: 720px) {
   .insights-grid {
     grid-template-columns: 1fr;
+  }
+  .insights-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .insights-empty {
     grid-template-columns: 1fr;

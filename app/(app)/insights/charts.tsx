@@ -1,42 +1,71 @@
 "use client";
 
 // Hand-rolled, dependency-free SVG chart primitives for /insights. Every chart
-// is typed, responsive (viewBox + preserveAspectRatio), and animates in with
-// transform/opacity only — disabled under prefers-reduced-motion via CSS
-// (see insights.css). No chart library.
+// is typed, responsive (viewBox + preserveAspectRatio), and draws in the first
+// time it scrolls into view (IntersectionObserver): lines wipe in via
+// stroke-dashoffset, bars grow from the baseline. Disabled under
+// prefers-reduced-motion (and via `animate={false}`). No chart library.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { RefObject } from "react";
 
-/** Respects prefers-reduced-motion; returns true once mount animation may run. */
-function useMountAnim(): boolean {
+/**
+ * Draw-in trigger: flips true the first time the SVG scrolls into view.
+ * Skips straight to true (no animation) when `animate` is false, when the
+ * user prefers reduced motion, or when IntersectionObserver is unavailable.
+ */
+function useInViewAnim(animate: boolean): { ref: RefObject<SVGSVGElement | null>; on: boolean } {
+  const ref = useRef<SVGSVGElement | null>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {
+    if (on) return;
     const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) {
+    const el = ref.current;
+    if (!animate || reduce || !el || typeof IntersectionObserver === "undefined") {
       setOn(true);
       return;
     }
-    const id = window.requestAnimationFrame(() => setOn(true));
-    return () => window.cancelAnimationFrame(id);
-  }, []);
-  return on;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setOn(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [animate, on]);
+  return { ref, on };
+}
+
+/** Polyline length for stroke-dash draw-in (matches M/L paths exactly). */
+function polylineLength(pts: { x: number; y: number }[]): number {
+  let len = 0;
+  for (let i = 1; i < pts.length; i += 1) {
+    len += Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+  }
+  return Math.max(1, len);
 }
 
 export type BarDatum = { label: string; value: number; sub?: string };
 
-/** Vertical bar chart. Bars grow from the baseline on mount. */
+/** Vertical bar chart. Bars grow from the baseline when scrolled into view. */
 export function BarChart({
   data,
   height = 150,
   accent = "var(--accent)",
   valueFormat = (v) => String(Math.round(v)),
+  animate = true,
 }: {
   data: BarDatum[];
   height?: number;
   accent?: string;
   valueFormat?: (v: number) => string;
+  animate?: boolean;
 }) {
-  const mounted = useMountAnim();
+  const { ref, on } = useInViewAnim(animate);
   const width = 320;
   const pad = { top: 14, bottom: 26, left: 6, right: 6 };
   const max = Math.max(1, ...data.map((d) => d.value));
@@ -47,7 +76,7 @@ export function BarChart({
   const barW = Math.min(30, slot * 0.62);
 
   return (
-    <svg className="rm-chart" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Bar chart">
+    <svg ref={ref} className="rm-chart" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Bar chart">
       <line className="rm-axis" x1={pad.left} y1={pad.top + innerH} x2={width - pad.right} y2={pad.top + innerH} />
       {data.map((d, i) => {
         const h = (d.value / max) * innerH;
@@ -56,7 +85,7 @@ export function BarChart({
         return (
           <g key={i}>
             <rect
-              className={`rm-bar${mounted ? " in" : ""}`}
+              className={`rm-bar${on ? " in" : ""}`}
               x={x}
               y={y}
               width={barW}
@@ -82,19 +111,21 @@ export function BarChart({
 
 export type LinePoint = { label: string; value: number | null };
 
-/** Line chart with a mount reveal (stroke wipe via dashoffset). */
+/** Line chart. The stroke wipes in (dashoffset → 0) when scrolled into view. */
 export function LineChart({
   data,
   height = 150,
   accent = "var(--accent)",
   valueFormat = (v) => String(Math.round(v)),
+  animate = true,
 }: {
   data: LinePoint[];
   height?: number;
   accent?: string;
   valueFormat?: (v: number) => string;
+  animate?: boolean;
 }) {
-  const mounted = useMountAnim();
+  const { ref, on } = useInViewAnim(animate);
   const width = 320;
   const pad = { top: 16, bottom: 26, left: 8, right: 8 };
   const innerW = width - pad.left - pad.right;
@@ -112,28 +143,30 @@ export function LineChart({
   });
   const drawn = xy.filter((p): p is { x: number; y: number; d: LinePoint } => p.y != null);
   const path = drawn.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+  const pathLen = polylineLength(drawn);
   const areaPath =
     drawn.length > 1
       ? `${path} L${drawn[drawn.length - 1].x.toFixed(1)} ${pad.top + innerH} L${drawn[0].x.toFixed(1)} ${pad.top + innerH} Z`
       : "";
 
   return (
-    <svg className="rm-chart" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Line chart">
+    <svg ref={ref} className="rm-chart" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="xMidYMid meet" role="img" aria-label="Line chart">
       <line className="rm-axis" x1={pad.left} y1={pad.top + innerH} x2={width - pad.right} y2={pad.top + innerH} />
-      {areaPath && <path className={`rm-line-area${mounted ? " in" : ""}`} d={areaPath} fill={accent} />}
+      {areaPath && <path className={`rm-line-area${on ? " in" : ""}`} d={areaPath} fill={accent} />}
       {path && (
         <path
-          className={`rm-line${mounted ? " in" : ""}`}
+          className={`rm-line${on ? " in" : ""}`}
           d={path}
           fill="none"
           stroke={accent}
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
+          style={{ strokeDasharray: pathLen, strokeDashoffset: on ? 0 : pathLen }}
         />
       )}
       {drawn.map((p, i) => (
-        <circle key={i} className={`rm-line-dot${mounted ? " in" : ""}`} cx={p.x} cy={p.y} r={3} fill={accent} style={{ transitionDelay: `${300 + i * 30}ms` }} />
+        <circle key={i} className={`rm-line-dot${on ? " in" : ""}`} cx={p.x} cy={p.y} r={3} fill={accent} style={{ transitionDelay: `${300 + i * 30}ms` }} />
       ))}
       {drawn.length > 0 && (
         <text className="rm-bar-value" x={drawn[drawn.length - 1].x} y={drawn[drawn.length - 1].y - 7} textAnchor="end">
@@ -154,8 +187,16 @@ export function LineChart({
 }
 
 /** Compact sparkline (no axes/labels) for per-exercise cards. */
-export function Sparkline({ values, accent = "var(--accent-2)" }: { values: number[]; accent?: string }) {
-  const mounted = useMountAnim();
+export function Sparkline({
+  values,
+  accent = "var(--accent-2)",
+  animate = true,
+}: {
+  values: number[];
+  accent?: string;
+  animate?: boolean;
+}) {
+  const { ref, on } = useInViewAnim(animate);
   const width = 120;
   const height = 40;
   const pad = 4;
@@ -169,11 +210,21 @@ export function Sparkline({ values, accent = "var(--accent-2)" }: { values: numb
     y: pad + (height - pad * 2) - ((v - min) / range) * (height - pad * 2),
   }));
   const path = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+  const pathLen = polylineLength(pts);
   const last = pts[pts.length - 1];
   return (
-    <svg className="rm-spark" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label="Trend sparkline">
-      <path className={`rm-line${mounted ? " in" : ""}`} d={path} fill="none" stroke={accent} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-      <circle className={`rm-line-dot${mounted ? " in" : ""}`} cx={last.x} cy={last.y} r={2.5} fill={accent} style={{ transitionDelay: "260ms" }} />
+    <svg ref={ref} className="rm-spark" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" role="img" aria-label="Trend sparkline">
+      <path
+        className={`rm-line${on ? " in" : ""}`}
+        d={path}
+        fill="none"
+        stroke={accent}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ strokeDasharray: pathLen, strokeDashoffset: on ? 0 : pathLen }}
+      />
+      <circle className={`rm-line-dot${on ? " in" : ""}`} cx={last.x} cy={last.y} r={2.5} fill={accent} style={{ transitionDelay: "260ms" }} />
     </svg>
   );
 }
@@ -181,8 +232,8 @@ export function Sparkline({ values, accent = "var(--accent-2)" }: { values: numb
 export type HeatCell = { level: number; label: string };
 
 /** GitHub-style consistency heatmap: weeks (columns) × 7 days (rows). */
-export function Heatmap({ weeks }: { weeks: HeatCell[][] }) {
-  const mounted = useMountAnim();
+export function Heatmap({ weeks, animate = true }: { weeks: HeatCell[][]; animate?: boolean }) {
+  const { ref, on } = useInViewAnim(animate);
   const cell = 15;
   const gap = 4;
   const rows = 7;
@@ -192,6 +243,7 @@ export function Heatmap({ weeks }: { weeks: HeatCell[][] }) {
   const dayLabels = ["M", "", "W", "", "F", "", "S"];
   return (
     <svg
+      ref={ref}
       className="rm-heat"
       viewBox={`0 0 ${width + 16} ${height}`}
       preserveAspectRatio="xMinYMid meet"
@@ -210,7 +262,7 @@ export function Heatmap({ weeks }: { weeks: HeatCell[][] }) {
           col.map((c, ri) => (
             <rect
               key={`${ci}-${ri}`}
-              className={`rm-heat-cell rm-heat-l${c.level}${mounted ? " in" : ""}`}
+              className={`rm-heat-cell rm-heat-l${c.level}${on ? " in" : ""}`}
               x={ci * (cell + gap)}
               y={ri * (cell + gap)}
               width={cell}

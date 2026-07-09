@@ -6,9 +6,11 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "../../lib/session";
+import { supabase } from "../../lib/supabaseClient";
+import { CoachDock } from "../coach/CoachDock";
 
 type Tab = { href: string; label: string; icon: React.ReactNode; match?: string[] };
 
@@ -24,10 +26,20 @@ const PRIMARY: Tab[] = [
 ];
 
 // Utility destinations: rail footer on desktop, top-bar icons on mobile.
+// Settings is reached through the profile chip (avatar) instead of a gear.
 const UTILITY: Tab[] = [
   { href: "/exercises", label: "Exercise library", icon: <IconLibrary /> },
-  { href: "/settings", label: "Settings", icon: <IconGear /> },
 ];
+
+/** The signed-in user's avatar: preset emoji (`emoji:⚡`) or initial. */
+function ProfileBadge({ avatarUrl, name }: { avatarUrl: string | null; name: string | null }) {
+  const emoji = avatarUrl?.startsWith("emoji:") ? avatarUrl.slice(6) : null;
+  return (
+    <span className="shell-profile-badge" aria-hidden>
+      {emoji ?? (name?.trim()?.[0]?.toUpperCase() || "•")}
+    </span>
+  );
+}
 
 function isActive(pathname: string, tab: Tab): boolean {
   return (tab.match ?? [tab.href]).some(
@@ -39,6 +51,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, configured } = useSession();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && configured && !user) {
@@ -46,10 +60,30 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [loading, configured, user, router]);
 
+  // Lightweight profile fetch for the avatar chip. Re-runs on route change so
+  // a Settings save is reflected as soon as you navigate.
+  useEffect(() => {
+    if (!supabase || !user) return;
+    let active = true;
+    supabase
+      .from("profiles")
+      .select("avatar_url, display_name")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!active || !data) return;
+        setAvatarUrl(data.avatar_url ?? null);
+        setDisplayName(data.display_name ?? null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [user, pathname]);
+
   if (loading) {
     return (
       <div className="shell-boot">
-        <div className="shell-boot-mark">R</div>
+        <img className="shell-boot-mark" src="/brand/logomark.svg" alt="" />
         <span>Loading RepMint…</span>
       </div>
     );
@@ -59,7 +93,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   if (configured && !user) {
     return (
       <div className="shell-boot">
-        <div className="shell-boot-mark">R</div>
+        <img className="shell-boot-mark" src="/brand/logomark.svg" alt="" />
         <span>Redirecting to sign in…</span>
       </div>
     );
@@ -69,7 +103,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="shell">
       <aside className="shell-rail" aria-label="Primary">
         <Link href="/hub" className="shell-brand" aria-label="RepMint hub">
-          <span className="shell-brand-mark">R</span>
+          <img className="shell-brand-mark" src="/brand/logomark.svg" alt="" />
           <strong>RepMint</strong>
         </Link>
         <nav className="shell-rail-nav">
@@ -98,12 +132,22 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <span>{t.label}</span>
             </Link>
           ))}
+          <Link
+            href="/settings"
+            className={`shell-rail-item shell-rail-item-utility shell-rail-profile${pathname.startsWith("/settings") ? " active" : ""}`}
+          >
+            <ProfileBadge avatarUrl={avatarUrl} name={displayName} />
+            <span>
+              {displayName || "Profile"}
+              <small className="shell-profile-sub">Profile &amp; settings</small>
+            </span>
+          </Link>
         </nav>
       </aside>
 
       <header className="shell-mobile-top">
         <Link href="/hub" className="shell-brand" aria-label="RepMint hub">
-          <span className="shell-brand-mark">R</span>
+          <img className="shell-brand-mark" src="/brand/logomark.svg" alt="" />
           <strong>RepMint</strong>
         </Link>
         <div className="shell-mobile-actions">
@@ -119,6 +163,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </span>
             </Link>
           ))}
+          <Link
+            href="/settings"
+            className={`shell-mobile-action${pathname.startsWith("/settings") ? " active" : ""}`}
+            aria-label="Profile and settings"
+          >
+            <ProfileBadge avatarUrl={avatarUrl} name={displayName} />
+          </Link>
         </div>
       </header>
 
@@ -137,16 +188,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
       </main>
 
+      <CoachDock />
+
       <nav className="shell-tabbar" aria-label="Primary">
         {PRIMARY.map((t) => (
           <Link
             key={t.href}
             href={t.href}
-            className={`shell-tab${isActive(pathname, t) ? " active" : ""}`}
+            className={`shell-tab${t.href === "/train" ? " shell-tab-train" : ""}${isActive(pathname, t) ? " active" : ""}`}
             aria-current={isActive(pathname, t) ? "page" : undefined}
           >
             <span className="shell-icon" aria-hidden>
-              {t.icon}
+              {t.href === "/train" ? <IconBolt /> : t.icon}
             </span>
             <small>{t.label}</small>
           </Link>
@@ -157,6 +210,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 }
 
 /* ---- Inline stroke icons (currentColor, 24px grid) ---- */
+
+function IconBolt() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" stroke="none">
+      <path d="M13.2 2.6 5.6 13.4h4.6L9 21.4l7.6-10.8h-4.6l1.2-8Z" />
+    </svg>
+  );
+}
 
 function IconHub() {
   return (
@@ -205,14 +266,6 @@ function IconChart() {
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 20V4M4 20h16" />
       <path d="M8 16v-4M12 16V8M16 16v-6" />
-    </svg>
-  );
-}
-function IconGear() {
-  return (
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="3.2" />
-      <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" />
     </svg>
   );
 }

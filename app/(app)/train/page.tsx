@@ -2,24 +2,39 @@
 
 // /train — the flagship live camera coach + workout runner.
 //
-// Flow: load a template (?template=id[&day=id]) or start ad-hoc → step through
-// planned sets → per set: live camera coaching (tier 1/2) or manual/timer
-// logging (tier 3) → weight quick-log → rest timer → next set → session summary
-// → saveSession (lands in the calendar) → history / ask coach.
+// Entry: a session launcher (continue plan / recents / your workouts / quick
+// single exercise) unless ?template=, ?slug=, ?starter= or ?quick= is given.
+// Flow per set: camera setup gate (framing/privacy) → live coaching HUD with
+// rep ring, voice cues, per-rep quality and fatigue tracking (tier 1/2), or
+// manual/timer logging (tier 3) → weight quick-log → rest timer → summary.
 //
-// Reuses usePoseTracker as-is (no tracking rewrite). Works portrait + landscape,
-// requests a wake lock while a set is live.
+// ML per rep: RepEvent → scoreRep (ROM/tempo/stability composite) and
+// SetAnalytics (velocity-loss fatigue, Pareja-Blanco 2017 thresholds).
+// Voice: VoiceCoach announces reps and speaks one form cue at a time.
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePoseTracker, type SetOutcome } from "../../hooks/usePoseTracker";
 import { useWakeLock } from "../../hooks/useWakeLock";
-import { getTemplate, getProfile, saveSession, type TemplateWithExercises } from "../../lib/db";
+import {
+  getTemplate,
+  getProfile,
+  saveSession,
+  listTemplates,
+  listSessions,
+  getActivePlan,
+  type TemplateWithExercises,
+  type ActivePlan,
+} from "../../lib/db";
 import { getMovementForSlug, getMeta, TIER_INFO } from "../../lib/library";
 import { configFromProfile, DEFAULT_PROFILE } from "../../lib/types";
+import type { DbSession } from "../../lib/types";
 import type { MovementDef } from "../../lib/movements/types";
-import { Spinner, Button } from "../../components/ui/primitives";
+import { Spinner, Button, Reveal } from "../../components/ui/primitives";
+import { VoiceCoach } from "../../lib/tracking/voiceCoach";
+import { scoreRep } from "../../lib/tracking/repQuality";
+import { SetAnalytics, type FatigueStatus } from "../../lib/tracking/setAnalytics";
 import { WeightLogger } from "./WeightLogger";
 import { RestTimer } from "./RestTimer";
 import {
@@ -31,10 +46,35 @@ import {
   type CompletedSet,
   type PlannedSet,
 } from "./workoutModel";
-import { formatClock } from "../../lib/format";
+import { formatClock, relativeDate } from "../../lib/format";
 import { SessionSummary } from "./SessionSummary";
 
 type Stage = "config" | "coach" | "log" | "rest" | "summary";
+
+/** Titles of the seeded system starter templates, keyed by ?starter= value. */
+const STARTER_TITLES: Record<string, string> = {
+  room: "Room Workout",
+  gym: "Gym Starter",
+  minimum: "15-min Minimum",
+};
+
+/** Cap a session at 2 sets per exercise — the sanctioned "short version". */
+function compressPlanned(sets: PlannedSet[]): PlannedSet[] {
+  const kept = sets.filter((s) => s.setIndex < 2);
+  const totals = new Map<string, number>();
+  for (const s of kept) totals.set(s.exerciseSlug, (totals.get(s.exerciseSlug) ?? 0) + 1);
+  return kept.map((s) => ({ ...s, totalSets: totals.get(s.exerciseSlug) ?? s.totalSets }));
+}
+
+/** Estimated minutes for the planned sets (work + rest), rounded to 5. */
+function estimateSessionMinutes(sets: PlannedSet[]): number {
+  let seconds = 0;
+  for (const s of sets) {
+    seconds += s.targetSeconds ?? (s.targetReps ?? 10) * 4;
+    seconds += s.restSeconds ?? 60;
+  }
+  return Math.max(5, Math.round(seconds / 60 / 5) * 5);
+}
 
 function TrainInner() {
   const router = useRouter();
@@ -42,11 +82,15 @@ function TrainInner() {
   const templateId = params.get("template");
   const slugParam = params.get("slug");
   const planDayId = params.get("day");
+  const starterParam = params.get("starter");
+  const quickParam = params.get("quick");
+  const shortParam = params.get("short") === "1";
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [template, setTemplate] = useState<TemplateWithExercises | null>(null);
   const [planned, setPlanned] = useState<PlannedSet[]>([]);
+  const [short, setShort] = useState(shortParam);
   const [unit, setUnit] = useState<"kg" | "lb">("kg");
 
   const [index, setIndex] = useState(0);
@@ -64,6 +108,7 @@ function TrainInner() {
     formScore: number | null;
     romScore: number | null;
     cues: string[];
+    repMetrics: Record<string, unknown>[];
   } | null>(null);
   const [logWeight, setLogWeight] = useState<{ weight: number | null; bodyweight: boolean }>({
     weight: null,
@@ -83,6 +128,19 @@ function TrainInner() {
             setTemplate(t);
             setPlanned(buildPlannedSets(t));
           }
+        } else if (starterParam || quickParam) {
+          // Resolve a seeded system template by title: ?starter=room|gym|minimum
+          // or ?quick=15 (streak-saver = the 15-min Minimum).
+          const wanted = starterParam ? STARTER_TITLES[starterParam] : "15-min Minimum";
+          const all = await listTemplates().catch(() => [] as TemplateWithExercises[]);
+          if (!active) return;
+          const t = all.find((x) => x.title === wanted) ?? all[0];
+          if (!t) {
+            setError("No starter workout is available yet — build one in Workouts.");
+          } else {
+            setTemplate(t);
+            setPlanned(buildPlannedSets(t));
+          }
         } else if (slugParam) {
           const meta = getMeta(slugParam);
           if (!meta) setError("That exercise couldn't be found.");
@@ -97,7 +155,7 @@ function TrainInner() {
     return () => {
       active = false;
     };
-  }, [templateId, slugParam]);
+  }, [templateId, slugParam, starterParam, quickParam]);
 
   // Fetch the user's unit preference from the profile.
   useEffect(() => {
@@ -112,8 +170,13 @@ function TrainInner() {
     };
   }, []);
 
-  const current = planned[index];
-  const exGroups = useMemo(() => groupByExercise(planned), [planned]);
+  const effectivePlanned = useMemo(() => (short ? compressPlanned(planned) : planned), [planned, short]);
+  const current = effectivePlanned[index];
+  const exGroups = useMemo(() => groupByExercise(effectivePlanned), [effectivePlanned]);
+  const estMin = useMemo(
+    () => (effectivePlanned.length ? estimateSessionMinutes(effectivePlanned) : null),
+    [effectivePlanned],
+  );
 
   const begin = () => {
     startedAtRef.current = new Date().toISOString();
@@ -128,6 +191,7 @@ function TrainInner() {
     formScore: number | null;
     romScore: number | null;
     cues: string[];
+    repMetrics: Record<string, unknown>[];
   }) => {
     setPendingOutcome(outcome);
     const last = readLastWeight(current.exerciseSlug);
@@ -153,13 +217,13 @@ function TrainInner() {
       romScore: pendingOutcome.romScore,
       tutSeconds: pendingOutcome.tut,
       topCues: pendingOutcome.cues,
-      repMetrics: [],
+      repMetrics: pendingOutcome.repMetrics,
     };
     if (!logWeight.bodyweight && logWeight.weight) writeLastWeight(current.exerciseSlug, logWeight.weight);
     setCompleted((c) => [...c, completedSet]);
     setPendingOutcome(null);
 
-    const isLast = index >= planned.length - 1;
+    const isLast = index >= effectivePlanned.length - 1;
     if (isLast) {
       setStage("summary");
     } else {
@@ -168,7 +232,7 @@ function TrainInner() {
   };
 
   const goNextSet = () => {
-    setIndex((i) => Math.min(i + 1, planned.length - 1));
+    setIndex((i) => Math.min(i + 1, effectivePlanned.length - 1));
     setStage("coach");
   };
 
@@ -225,16 +289,28 @@ function TrainInner() {
   // ---- Config / start screen ----
   if (stage === "config") {
     if (planned.length === 0) {
-      return <AdHocPicker onPick={(slug) => router.replace(`/train?slug=${slug}`)} />;
+      return <SessionLauncher onPickSlug={(slug) => router.replace(`/train?slug=${slug}`)} />;
     }
     return (
       <div className="train-config">
         <p className="eyebrow">Ready to train</p>
         <h1>{template?.title ?? current?.meta.name ?? "Quick session"}</h1>
         <p className="train-config-sub">
-          {exGroups.length} exercise{exGroups.length === 1 ? "" : "s"} · {planned.length} sets. RepMint coaches the
-          camera-trackable moves and logs the rest.
+          {exGroups.length} exercise{exGroups.length === 1 ? "" : "s"} · {effectivePlanned.length} sets
+          {estMin ? ` · ~${estMin} min` : ""}. RepMint coaches the camera-trackable moves and logs the rest.
         </p>
+        {planned.some((s) => s.setIndex >= 2) && (
+          <button
+            type="button"
+            className={`train-short-toggle${short ? " on" : ""}`}
+            onClick={() => setShort((v) => !v)}
+            aria-pressed={short}
+          >
+            <span className="train-short-dot" aria-hidden />
+            Short on time? Cap at 2 sets per exercise
+            {short ? " — on" : ""}
+          </button>
+        )}
         <ul className="train-plan-list">
           {exGroups.map((g) => {
             const tier = g.meta.tier;
@@ -253,7 +329,7 @@ function TrainInner() {
         </ul>
         <div className="row-wrap">
           <Button size="lg" onClick={begin}>
-            Start session
+            Start session{estMin ? ` · ~${estMin} min` : ""}
           </Button>
           <Link href="/hub" className="btn btn-ghost btn-md">
             Cancel
@@ -280,7 +356,7 @@ function TrainInner() {
 
   // ---- Rest ----
   if (stage === "rest") {
-    const next = planned[Math.min(index + 1, planned.length - 1)];
+    const next = effectivePlanned[Math.min(index + 1, effectivePlanned.length - 1)];
     return (
       <div className="train-live">
         <RestTimer
@@ -316,7 +392,7 @@ function TrainInner() {
         />
         <div className="row-wrap">
           <Button size="lg" onClick={confirmLog}>
-            {index >= planned.length - 1 ? "Finish & review" : "Log set"}
+            {index >= effectivePlanned.length - 1 ? "Finish & review" : "Log set"}
           </Button>
         </div>
       </div>
@@ -330,7 +406,7 @@ function TrainInner() {
         key={current.key}
         planned={current}
         index={index}
-        total={planned.length}
+        total={effectivePlanned.length}
         onComplete={handleSetComplete}
         onQuit={finishEarly}
       />
@@ -341,8 +417,175 @@ function TrainInner() {
 }
 
 /* ------------------------------------------------------------------ */
+/* Session launcher: what you see when you tap Train with no target    */
+/* ------------------------------------------------------------------ */
+
+function SessionLauncher({ onPickSlug }: { onPickSlug: (slug: string) => void }) {
+  const [loading, setLoading] = useState(true);
+  const [plan, setPlan] = useState<ActivePlan | null>(null);
+  const [templates, setTemplates] = useState<TemplateWithExercises[]>([]);
+  const [recents, setRecents] = useState<DbSession[]>([]);
+  const [showQuick, setShowQuick] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const now = new Date();
+        const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const [p, tpls, cur, last] = await Promise.all([
+          getActivePlan().catch(() => null),
+          listTemplates().catch(() => [] as TemplateWithExercises[]),
+          listSessions(now).catch(() => [] as DbSession[]),
+          listSessions(prev).catch(() => [] as DbSession[]),
+        ]);
+        if (!active) return;
+        setPlan(p);
+        setTemplates(tpls);
+        const tplIds = new Set(tpls.map((t) => t.id));
+        const seen = new Set<string>();
+        const rec = [...cur, ...last]
+          .filter((s) => s.status === "completed" && s.template_id && tplIds.has(s.template_id))
+          .filter((s) => {
+            if (seen.has(s.template_id as string)) return false;
+            seen.add(s.template_id as string);
+            return true;
+          })
+          .slice(0, 3);
+        setRecents(rec);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (loading) return <Spinner label="Loading your training…" />;
+
+  const todayDay = plan?.days.find((d) => !d.is_rest && d.template_id);
+  const todayTemplate = todayDay && templates.find((t) => t.id === todayDay.template_id);
+  const byId = new Map(templates.map((t) => [t.id, t]));
+  const quick = ["squat", "strict_push_up", "bicep_curl", "front_plank", "reverse_lunge", "bent_over_row"];
+
+  return (
+    <div className="train-config train-launcher">
+      <p className="eyebrow">Train</p>
+      <h1>What are we training?</h1>
+
+      {todayTemplate && (
+        <Reveal>
+          <Link href={`/train?template=${todayTemplate.id}&day=${todayDay!.id}`} className="launcher-hero">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/images/athletes/deadlift.jpg" alt="" className="launcher-hero-img" />
+            <div className="launcher-hero-scrim" aria-hidden />
+            <div className="launcher-hero-body">
+              <span className="eyebrow">Continue your plan · today</span>
+              <strong>{todayTemplate.title}</strong>
+              <small>
+                {todayDay!.focus ? `${todayDay!.focus} · ` : ""}
+                {todayTemplate.exercises.length} exercises
+              </small>
+              <span className="btn btn-primary btn-md launcher-hero-btn">Start today&apos;s session</span>
+            </div>
+          </Link>
+        </Reveal>
+      )}
+
+      {recents.length > 0 && (
+        <Reveal delay={0.06}>
+          <section className="launcher-section">
+            <h2>Jump back in</h2>
+            <div className="launcher-recents">
+              {recents.map((s) => {
+                const t = byId.get(s.template_id as string);
+                if (!t) return null;
+                return (
+                  <Link key={s.id} href={`/train?template=${t.id}`} className="launcher-recent">
+                    <div>
+                      <strong>{t.title}</strong>
+                      <small>
+                        {relativeDate(s.started_at)} · {s.total_sets} sets · {s.total_reps} reps
+                      </small>
+                    </div>
+                    <span className="launcher-recent-go" aria-hidden>
+                      ▶
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {templates.length > 0 && (
+        <Reveal delay={0.12}>
+          <section className="launcher-section">
+            <h2>Your workouts</h2>
+            <div className="launcher-templates">
+              {templates.slice(0, 8).map((t) => (
+                <Link key={t.id} href={`/train?template=${t.id}`} className="launcher-template">
+                  <strong>{t.title}</strong>
+                  <small>
+                    {t.exercises.length} exercises
+                    {t.est_duration_min ? ` · ~${t.est_duration_min} min` : ""}
+                  </small>
+                </Link>
+              ))}
+            </div>
+            <Link href="/workouts" className="chip">
+              All workouts →
+            </Link>
+          </section>
+        </Reveal>
+      )}
+
+      <Reveal delay={0.18}>
+        <section className="launcher-section">
+          <button type="button" className="launcher-quick-toggle" onClick={() => setShowQuick((v) => !v)}>
+            Quick single exercise {showQuick ? "▴" : "▾"}
+          </button>
+          {showQuick && (
+            <>
+              <div className="grid-auto">
+                {quick.map((slug) => {
+                  const m = getMeta(slug);
+                  return (
+                    m && (
+                      <button key={m.slug} className="adhoc-pick" onClick={() => onPickSlug(m.slug)}>
+                        <strong>{m.name}</strong>
+                        <small>{TIER_INFO[m.tier].short}</small>
+                      </button>
+                    )
+                  );
+                })}
+              </div>
+              <Link href="/exercises" className="btn btn-secondary btn-md">
+                Full exercise library
+              </Link>
+            </>
+          )}
+        </section>
+      </Reveal>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Live coach for a single set                                         */
 /* ------------------------------------------------------------------ */
+
+type SetOutcomePayload = {
+  reps: number | null;
+  seconds: number | null;
+  tut: number | null;
+  formScore: number | null;
+  romScore: number | null;
+  cues: string[];
+  repMetrics: Record<string, unknown>[];
+};
 
 function LiveCoach({
   planned,
@@ -354,14 +597,7 @@ function LiveCoach({
   planned: PlannedSet;
   index: number;
   total: number;
-  onComplete: (o: {
-    reps: number | null;
-    seconds: number | null;
-    tut: number | null;
-    formScore: number | null;
-    romScore: number | null;
-    cues: string[];
-  }) => void;
+  onComplete: (o: SetOutcomePayload) => void;
   onQuit: () => void;
 }) {
   const meta = planned.meta;
@@ -400,6 +636,13 @@ function LiveCoach({
   );
 }
 
+const FATIGUE_LABEL: Record<FatigueStatus, string | null> = {
+  fresh: null,
+  productive: "In the productive zone",
+  high_fatigue: "Power dropping — finish strong",
+  stop_suggested: "Consider ending the set",
+};
+
 function CameraSet({
   movement,
   planned,
@@ -418,14 +661,7 @@ function CameraSet({
   total: number;
   wake: () => Promise<void>;
   releaseWake: () => Promise<void>;
-  onComplete: (o: {
-    reps: number | null;
-    seconds: number | null;
-    tut: number | null;
-    formScore: number | null;
-    romScore: number | null;
-    cues: string[];
-  }) => void;
+  onComplete: (o: SetOutcomePayload) => void;
   onQuit: () => void;
 }) {
   const { videoRef, canvasRef, snapshot, startCamera, startSet, endSet, resetSet, manualRep } = usePoseTracker(
@@ -433,35 +669,150 @@ function CameraSet({
     config,
   );
   const [active, setActive] = useState(false);
+  // Voice preference survives set remounts (CameraSet remounts per set).
+  const [voiceOn, setVoiceOnState] = useState(
+    () => typeof window === "undefined" || window.localStorage.getItem("repmint-voice") !== "off",
+  );
+  const setVoiceOn = (fn: (v: boolean) => boolean) =>
+    setVoiceOnState((v) => {
+      const next = fn(v);
+      try {
+        window.localStorage.setItem("repmint-voice", next ? "on" : "off");
+      } catch {
+        // storage unavailable (private mode) — preference just won't persist
+      }
+      return next;
+    });
+  const [overrideSetup, setOverrideSetup] = useState(false);
   const isHold = movement.mode === "hold";
   const targetReps = planned.targetReps ?? movement.target.reps ?? 0;
   const targetSeconds = planned.targetSeconds ?? movement.target.seconds ?? 40;
   const tier = planned.meta.tier;
 
+  // ---- ML instrumentation: voice, per-rep quality, fatigue ----
+  const voiceRef = useRef<VoiceCoach | null>(null);
+  const analyticsRef = useRef(new SetAnalytics());
+  const [repScores, setRepScores] = useState<number[]>([]);
+  const repMetricsRef = useRef<Record<string, unknown>[]>([]);
+  const lastSpokenCue = useRef<string>("");
+  const lastRepNumber = useRef(0);
+  const fatigueSpoken = useRef(false);
+
+  useEffect(() => {
+    voiceRef.current = new VoiceCoach();
+    return () => voiceRef.current?.stop();
+  }, []);
+  useEffect(() => {
+    if (voiceRef.current) voiceRef.current.enabled = voiceOn;
+  }, [voiceOn]);
+
+  // Announce reps + score them as they land.
+  const lastRep = snapshot.lastRep;
+  useEffect(() => {
+    if (!lastRep || lastRep.repNumber === lastRepNumber.current) return;
+    lastRepNumber.current = lastRep.repNumber;
+
+    voiceRef.current?.announceRep(lastRep.repNumber);
+
+    const quality = scoreRep({
+      peakDepth: lastRep.peakDepth,
+      minFrac: movement.minRepFraction,
+      tutSeconds: lastRep.tutSeconds,
+      tutTargetSeconds: config.tutTargetPerRep || 4,
+      concentricSeconds: lastRep.concentricSeconds,
+      severity1Faults: 0,
+      severity2Faults: 0,
+    });
+    setRepScores((cur) => [...cur, quality.score]);
+
+    const vConc = lastRep.concentricSeconds > 0 ? lastRep.peakDepth / lastRep.concentricSeconds : 0;
+    analyticsRef.current.addRep({ vConc, concentricSeconds: lastRep.concentricSeconds });
+    repMetricsRef.current.push({
+      rep: lastRep.repNumber,
+      score: quality.score,
+      rom: Math.round(quality.rom * 100) / 100,
+      tempo: Math.round(quality.tempo * 100) / 100,
+      tut: lastRep.tutSeconds,
+      concentricSeconds: lastRep.concentricSeconds,
+      vConc: Math.round(vConc * 100) / 100,
+    });
+
+    const status = analyticsRef.current.status;
+    if ((status === "high_fatigue" || status === "stop_suggested") && !fatigueSpoken.current) {
+      fatigueSpoken.current = true;
+      voiceRef.current?.milestone(
+        status === "stop_suggested" ? "Power is dropping fast — consider ending the set." : "Power is dropping — two more good reps.",
+      );
+    }
+  }, [lastRep, movement.minRepFraction, config.tutTargetPerRep]);
+
+  // Speak form cues when they change (adjust tone only — praise stays visual).
+  useEffect(() => {
+    if (!active || !snapshot.cue || snapshot.tone !== "adjust") return;
+    if (snapshot.cue === lastSpokenCue.current) return;
+    lastSpokenCue.current = snapshot.cue;
+    voiceRef.current?.cue(snapshot.cue);
+  }, [snapshot.cue, snapshot.tone, active]);
+
+  const [manualFallback, setManualFallback] = useState(false);
+  const cameraBlocked = !snapshot.hasCamera && /blocked/i.test(snapshot.cameraStatus);
+
   const toneClass = snapshot.tone === "adjust" ? "adjust" : snapshot.tone === "good" ? "good" : "idle";
   const depthPct = Math.round(snapshot.depth * 100);
-  const formPct = snapshot.quality; // pose quality as the live form % readout (tier 1)
+  const liveScore = repScores.length
+    ? Math.round(repScores.reduce((s, x) => s + x, 0) / repScores.length)
+    : snapshot.quality;
+  const fatigue = analyticsRef.current.status;
+  const fatigueLabel = FATIGUE_LABEL[fatigue];
+  const setupOk = overrideSetup || !snapshot.setup || snapshot.setup.ok;
+
+  // Tempo readout from the latest rep: eccentric-pause-concentric.
+  const tempo = lastRep
+    ? `${Math.round(lastRep.eccentricSeconds)}:${Math.round(lastRep.pauseSeconds)}:${Math.round(lastRep.concentricSeconds)}`
+    : "—";
 
   const start = () => {
     setActive(true);
+    setRepScores([]);
+    repMetricsRef.current = [];
+    analyticsRef.current.reset();
+    fatigueSpoken.current = false;
+    lastRepNumber.current = 0;
     startSet();
     void wake();
+    voiceRef.current?.milestone(isHold ? "Hold started." : "Set started. Move with control.");
   };
 
   const finish = () => {
     const out: SetOutcome = endSet();
     void releaseWake();
-    // Derive a simple form score from tracking quality; ROM from achieved depth.
-    const formScore = tier === 1 ? Math.round(snapshot.quality) : null;
+    voiceRef.current?.milestone("Set done — nice work. Rest up.");
+    // Detach the voice coach so unmount cleanup can't cancel the line above;
+    // speechSynthesis is a global queue, so it finishes on its own.
+    const peakRom = out.repEvents.length
+      ? Math.max(...out.repEvents.map((e) => e.peakDepth))
+      : snapshot.depth;
+    voiceRef.current = null;
+    // Form score: mean per-rep quality when we have it, else tracking quality.
+    const formScore =
+      tier === 1 ? (repScores.length ? Math.round(repScores.reduce((s, x) => s + x, 0) / repScores.length) : Math.round(snapshot.quality)) : null;
     onComplete({
       reps: isHold ? null : out.reps,
-      seconds: isHold ? out.seconds : out.seconds,
+      seconds: out.seconds,
       tut: Math.round(out.tut),
       formScore,
-      romScore: tier === 1 ? Math.min(100, Math.round(snapshot.depth * 100)) || null : null,
+      romScore: tier === 1 ? Math.min(100, Math.round(peakRom * 100)) || null : null,
       cues: out.faults.slice(0, 3).map((f) => f.cue),
+      repMetrics: repMetricsRef.current,
     });
   };
+
+  // Camera permission denied → the promised manual mode, not a dead end.
+  if (manualFallback) {
+    return (
+      <ManualSet planned={planned} index={index} total={total} onComplete={onComplete} onQuit={onQuit} />
+    );
+  }
 
   return (
     <div className="train-live">
@@ -475,7 +826,19 @@ function CameraSet({
             Set {planned.setIndex + 1}/{planned.totalSets} · exercise {index + 1}/{total}
           </small>
         </div>
-        <span className={`chip chip-${tier === 1 ? "accent" : "live"}`}>{TIER_INFO[tier].short}</span>
+        <div className="train-topbar-actions">
+          <button
+            type="button"
+            className={`hud-voice-toggle${voiceOn ? " on" : ""}`}
+            onClick={() => setVoiceOn((v) => !v)}
+            aria-pressed={voiceOn}
+            aria-label={voiceOn ? "Mute voice coach" : "Unmute voice coach"}
+            title={voiceOn ? "Voice coach on" : "Voice coach muted"}
+          >
+            {voiceOn ? "🔊" : "🔇"}
+          </button>
+          <span className={`chip chip-${tier === 1 ? "accent" : "live"}`}>{TIER_INFO[tier].short}</span>
+        </div>
       </div>
 
       <div className="camera-stage train-camera">
@@ -492,81 +855,142 @@ function CameraSet({
             <span>{snapshot.cameraStatus}</span>
           </div>
         )}
-        <div className="stage-badges">
-          <span>{snapshot.cameraStatus}</span>
-          {snapshot.running && <span>Pose {snapshot.quality}%</span>}
-        </div>
 
-        {/* Big rep counter */}
-        <div className="train-repcount" aria-live="polite">
-          {isHold ? (
-            <strong>{formatClock(snapshot.seconds)}</strong>
-          ) : (
-            <strong>
-              {snapshot.reps}
-              <em>/{targetReps || "—"}</em>
-            </strong>
-          )}
-        </div>
+        {/* HUD: one coaching cue in a glass banner at the top */}
+        {snapshot.hasCamera && (
+          <div className={`hud-cue ${toneClass}`} aria-live="polite">
+            <span className="hud-cue-dot" aria-hidden />
+            {active ? snapshot.cue || movement.setupCue : setupOk ? "Framing looks good — start when ready." : snapshot.setup?.issues[0]?.message ?? movement.setupCue}
+          </div>
+        )}
 
-        {/* Form ring (tier 1 only) */}
-        {tier === 1 && snapshot.running && (
-          <div className="train-formring" aria-hidden>
-            <svg viewBox="0 0 60 60" width="72" height="72">
-              <circle cx="30" cy="30" r="25" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5" />
+        {/* HUD: rep ring with live count */}
+        {snapshot.hasCamera && active && (
+          <div className="hud-repring" aria-live="polite">
+            <svg viewBox="0 0 120 120" width="148" height="148" aria-hidden>
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(244,247,251,0.14)" strokeWidth="7" />
               <circle
-                cx="30"
-                cy="30"
-                r="25"
+                cx="60"
+                cy="60"
+                r="52"
                 fill="none"
                 stroke="var(--accent)"
-                strokeWidth="5"
+                strokeWidth="7"
                 strokeLinecap="round"
-                strokeDasharray={2 * Math.PI * 25}
-                strokeDashoffset={2 * Math.PI * 25 * (1 - formPct / 100)}
-                transform="rotate(-90 30 30)"
+                strokeDasharray={2 * Math.PI * 52}
+                strokeDashoffset={
+                  2 * Math.PI * 52 *
+                  (1 -
+                    (isHold
+                      ? Math.min(1, snapshot.seconds / Math.max(1, targetSeconds))
+                      : targetReps
+                        ? Math.min(1, snapshot.reps / targetReps)
+                        : 0))
+                }
+                transform="rotate(-90 60 60)"
+                className="hud-ring-sweep"
               />
-              <text x="30" y="34" textAnchor="middle" fontSize="14" fontFamily="var(--font-mono)" fontWeight="800" fill="var(--text)">
-                {formPct}%
-              </text>
             </svg>
-            <small>Form</small>
+            <div className="hud-repring-center">
+              {isHold ? (
+                <strong>{formatClock(snapshot.seconds)}</strong>
+              ) : (
+                <>
+                  <strong key={snapshot.reps} className="hud-rep-pop">
+                    {snapshot.reps}
+                  </strong>
+                  <small>/{targetReps || "—"}</small>
+                </>
+              )}
+              {tier === 1 && <span className="hud-ring-label">{liveScore}% form</span>}
+            </div>
           </div>
         )}
 
-        {/* Depth / ROM bar */}
-        {snapshot.running && !isHold && (
-          <div className="depth-meter train-depth" aria-hidden>
-            <div className="depth-fill" style={{ width: `${Math.min(100, depthPct)}%` }} />
-            <div className="depth-target" style={{ left: `${Math.round(movement.minRepFraction * 100)}%` }} />
-            <span className="depth-label">ROM {depthPct}%</span>
+        {/* HUD: per-rep quality pips */}
+        {active && repScores.length > 0 && (
+          <div className="hud-pips" aria-hidden>
+            {repScores.slice(-12).map((s, i) => (
+              <span key={i} className={s >= 85 ? "great" : s >= 65 ? "ok" : "low"} />
+            ))}
           </div>
         )}
 
-        {/* TUT + tempo readout */}
-        {snapshot.running && (
-          <div className="train-readouts" aria-hidden>
-            <span>TUT {snapshot.tut}s</span>
-            <span>{isHold ? (snapshot.holdValid ? "Holding" : "Find the line") : snapshot.motion}</span>
+        {/* HUD: fatigue signal */}
+        {active && fatigueLabel && (
+          <div className={`hud-fatigue ${fatigue}`} aria-live="polite">
+            {fatigueLabel}
           </div>
         )}
 
-        {/* One live cue */}
-        <div className={`live-cue ${toneClass}`} aria-live="polite">
-          {snapshot.cue || movement.setupCue}
-        </div>
+        {/* HUD: glass stat bar */}
+        {snapshot.hasCamera && active && (
+          <div className="hud-statbar" aria-hidden>
+            {!isHold && (
+              <div className="hud-stat">
+                <span className="hud-stat-label">ROM</span>
+                <div className="hud-rom-track">
+                  <div className="hud-rom-fill" style={{ width: `${Math.min(100, depthPct)}%` }} />
+                  <div className="hud-rom-target" style={{ left: `${Math.round(movement.minRepFraction * 100)}%` }} />
+                </div>
+                <strong>{depthPct}%</strong>
+              </div>
+            )}
+            <div className="hud-stat">
+              <span className="hud-stat-label">Tempo</span>
+              <strong className="hud-stat-lime">{tempo}</strong>
+            </div>
+            <div className="hud-stat">
+              <span className="hud-stat-label">Tension</span>
+              <strong>
+                {snapshot.tut}
+                <em>s</em>
+              </strong>
+            </div>
+          </div>
+        )}
+
+        {/* Setup gate: framing + privacy, before the set starts */}
+        {snapshot.hasCamera && !active && (
+          <div className="hud-setup">
+            {snapshot.setup && !snapshot.setup.ok && !overrideSetup && (
+              <ul className="hud-setup-issues">
+                {snapshot.setup.issues.slice(0, 2).map((i) => (
+                  <li key={i.code}>{i.message}</li>
+                ))}
+              </ul>
+            )}
+            <p className="hud-privacy">
+              <span aria-hidden>🔒</span> Pose tracking runs on your device — video is never uploaded or stored.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="train-controls">
         {!snapshot.hasCamera && (
-          <Button size="lg" onClick={startCamera}>
-            Start camera
-          </Button>
+          <>
+            <Button size="lg" onClick={startCamera}>
+              Start camera
+            </Button>
+            {cameraBlocked && (
+              <Button variant="secondary" onClick={() => setManualFallback(true)}>
+                Log manually instead
+              </Button>
+            )}
+          </>
         )}
         {snapshot.hasCamera && !active && (
-          <Button size="lg" onClick={start}>
-            {isHold ? "Start hold" : "Start set"}
-          </Button>
+          <>
+            <Button size="lg" onClick={start} disabled={!setupOk}>
+              {isHold ? "Start hold" : "Start set"}
+            </Button>
+            {!setupOk && (
+              <Button variant="ghost" onClick={() => setOverrideSetup(true)}>
+                Start anyway
+              </Button>
+            )}
+          </>
         )}
         {active && (
           <>
@@ -576,18 +1000,34 @@ function CameraSet({
               </Button>
             )}
             <Button onClick={finish}>{isHold ? "End hold" : "End set"}</Button>
-            <Button variant="ghost" onClick={resetSet}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                resetSet();
+                setActive(false);
+                setRepScores([]);
+                repMetricsRef.current = [];
+                analyticsRef.current.reset();
+                lastRepNumber.current = 0;
+                fatigueSpoken.current = false;
+              }}
+            >
               Reset
             </Button>
           </>
         )}
         {!active && (
-          <button className="btn btn-ghost btn-sm" onClick={() => onComplete({ reps: 0, seconds: 0, tut: 0, formScore: null, romScore: null, cues: [] })}>
+          <button
+            className="btn btn-ghost btn-sm"
+            onClick={() => onComplete({ reps: 0, seconds: 0, tut: 0, formScore: null, romScore: null, cues: [], repMetrics: [] })}
+          >
             Skip set
           </button>
         )}
       </div>
-      <p className="train-hint">{movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}.</p>
+      <p className="train-hint">
+        {movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}.
+      </p>
     </div>
   );
 }
@@ -603,14 +1043,7 @@ function ManualSet({
   planned: PlannedSet;
   index: number;
   total: number;
-  onComplete: (o: {
-    reps: number | null;
-    seconds: number | null;
-    tut: number | null;
-    formScore: number | null;
-    romScore: number | null;
-    cues: string[];
-  }) => void;
+  onComplete: (o: SetOutcomePayload) => void;
   onQuit: () => void;
 }) {
   const meta = planned.meta;
@@ -634,6 +1067,7 @@ function ManualSet({
       formScore: null,
       romScore: null,
       cues: [],
+      repMetrics: [],
     });
   };
 
@@ -656,7 +1090,7 @@ function ManualSet({
         <p className="manual-note">This one is logged by hand — the camera can&apos;t read the load path honestly.</p>
         {isHold ? (
           <div className="manual-timer">
-            <strong>{formatClock(running ? elapsed : seconds)}</strong>
+            <strong>{formatClock(running ? elapsed : elapsed || seconds)}</strong>
             {!running ? (
               <Button size="lg" onClick={() => { setElapsed(0); setRunning(true); }}>
                 Start timer
@@ -686,33 +1120,6 @@ function ManualSet({
           Log set
         </Button>
       </div>
-    </div>
-  );
-}
-
-/* Ad-hoc: no template or slug given — let the user pick from a short list. */
-function AdHocPicker({ onPick }: { onPick: (slug: string) => void }) {
-  const quick = ["squat", "strict_push_up", "bicep_curl", "front_plank", "reverse_lunge", "bent_over_row"];
-  const items = quick.map((s) => getMeta(s)).filter(Boolean);
-  return (
-    <div className="train-config">
-      <p className="eyebrow">Quick set</p>
-      <h1>What are you training?</h1>
-      <p className="train-config-sub">Pick a movement to start an ad-hoc set, or open the full library.</p>
-      <div className="grid-auto">
-        {items.map(
-          (m) =>
-            m && (
-              <button key={m.slug} className="adhoc-pick" onClick={() => onPick(m.slug)}>
-                <strong>{m.name}</strong>
-                <small>{TIER_INFO[m.tier].short}</small>
-              </button>
-            ),
-        )}
-      </div>
-      <Link href="/exercises" className="btn btn-secondary btn-md">
-        Full exercise library
-      </Link>
     </div>
   );
 }
