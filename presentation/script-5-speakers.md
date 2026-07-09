@@ -1,6 +1,6 @@
 # RepMint — 10-Minute Presentation Script (5 speakers)
 
-**Total: 9:45 + buffer. Deck: `RepMint-MVP-Deck.pptx` (12 slides). Demo: repmint.vercel.app**
+**Total: 9:45 + buffer. Deck: `RepMint-MVP-Deck.pptx` (14 slides). Demo: repmint.vercel.app**
 
 Same beats as the 4-speaker version, with the demo split across two presenters
 so everyone owns real content (faculty may direct questions at non-presenters —
@@ -8,7 +8,7 @@ in this version there are none).
 
 ---
 
-## SPEAKER 1 — Hook, Problem, NABC (0:00 – 1:50) · Slides 1–3
+## SPEAKER 1 — Hook, Problem, NABC (0:00 – 1:50) · Slides 1–4
 
 Same as 4-speaker Speaker 1, trimmed ~10s per slide:
 
@@ -26,11 +26,13 @@ Same as 4-speaker Speaker 1, trimmed ~10s per slide:
 > Competition — apps that can't see you, mirrors that cost €2,000, trainers
 > that don't scale. We're the only camera-native software coach.
 
+*(On slide 3 — "Nobody is watching." — pause two seconds before NABC.)*
+
 **HANDOFF →** "Who needs it? [Speaker 2] met them."
 
 ---
 
-## SPEAKER 2 — Personas, Jump Start, Solution (1:50 – 3:20) · Slides 4–6
+## SPEAKER 2 — Personas, Jump Start, Solution (1:50 – 3:20) · Slides 5–7
 
 Same beats as 4-speaker Speaker 2:
 
@@ -45,11 +47,12 @@ Same beats as 4-speaker Speaker 2:
 > uploaded). Is the AI decorative? Without the camera model there is no
 > product.
 
-**HANDOFF →** "[Speaker 3] — show them the coach."
+**HANDOFF →** Click to slide 8 ("Enough slides.") as you say: "[Speaker 3] —
+show them the coach."
 
 ---
 
-## SPEAKER 3 — Demo Part 1: The Camera Coach (3:20 – 5:20) · Slide 7 → app
+## SPEAKER 3 — Demo Part 1: The Camera Coach (3:20 – 5:20) · Slide 9 → app
 
 **Beat 1 — Train flow (100s):**
 - Train → today's workout → camera gate → prop the phone → step back.
@@ -91,7 +94,7 @@ narration, no second apology.
 
 ---
 
-## SPEAKER 5 — Business, Architecture, Reliability, Close (7:00 – 9:45) · Slides 8–12
+## SPEAKER 5 — Business, Architecture, Reliability, Close (7:00 – 9:45) · Slides 10–14
 
 Same as 4-speaker Speaker 4, at full length:
 

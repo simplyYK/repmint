@@ -12,7 +12,7 @@
 - [ ] Phone hotspot ready in case venue wifi blocks WebRTC (realtime voice).
 - [ ] One dry run in the actual room if possible — check projector contrast
       (deck is dark-theme; bump screen brightness).
-- [ ] Faculty may interact with the MVP: have the QR slide (7 or 12) up during
+- [ ] Faculty may interact with the MVP: have a QR slide (9 or 14) up during
       Q&A; the app is public and sign-up works.
 
 ## Demo choreography

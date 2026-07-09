@@ -1,6 +1,6 @@
 # RepMint — 10-Minute Presentation Script (4 speakers)
 
-**Total: 9:45 + buffer. Deck: `RepMint-MVP-Deck.pptx` (12 slides). Demo: repmint.vercel.app**
+**Total: 9:45 + buffer. Deck: `RepMint-MVP-Deck.pptx` (14 slides). Demo: repmint.vercel.app**
 
 > Faculty rule: reading from paper or screen is penalized. These are *beats to
 > internalize*, not lines to read. Each speaker owns their beats; rehearse the
@@ -8,7 +8,7 @@
 
 ---
 
-## SPEAKER 1 — The Problem (0:00 – 2:00) · Slides 1–3
+## SPEAKER 1 — The Problem (0:00 – 2:00) · Slides 1–4
 
 **[Slide 1 — Title]** *(35s)*
 
@@ -30,7 +30,7 @@
 > logs whatever you *type*. It has no idea what you actually *did*. The moment
 > of pain is mid-set, alone: "was that rep even right?"
 
-**[Slide 3 — NABC]** *(40s)*
+**[Slide 4 — NABC]** *(40s)*
 
 > The need: real-time form guidance for people who will never pay for a
 > trainer. Our approach: a 33-point pose model that runs entirely on your
@@ -42,13 +42,19 @@
 > Smart mirrors see you — for two thousand euros of hardware. Trainers see you
 > but don't scale. We are the only camera-native, software-only coach.
 
+**[Slide 3 — "Nobody is watching."]** *(10s beat)*
+
+> *(Say the line. Let it sit for two full seconds — the empty gym does the
+> work. Then click.)* Nobody is watching. And form is the first thing that
+> breaks.
+
 **HANDOFF →** "So who is this for? [Speaker 2] met them."
 
 ---
 
-## SPEAKER 2 — The People & The Product (2:00 – 3:45) · Slides 4–6
+## SPEAKER 2 — The People & The Product (2:00 – 3:45) · Slides 5–7
 
-**[Slide 4 — Personas]** *(35s)*
+**[Slide 5 — Personas]** *(35s)*
 
 > Three people from our user research. Mateo, 26, trains between classes —
 > he abandons any app that makes him take more than two decisions. Priya, 22,
@@ -58,7 +64,7 @@
 >
 > Every feature you're about to see exists because one of these three needed it.
 
-**[Slide 5 — Jump Start]** *(30s)*
+**[Slide 6 — Jump Start]** *(30s)*
 
 > We didn't spend three weeks on slides. Week one: the camera engine — pose
 > tracking, honest rep counting, a 115-exercise library. Week two: the brain —
@@ -66,7 +72,7 @@
 > the feel — a realtime voice, a community, and hardening. Forty-five-plus
 > production deployments later, it's live at repmint-dot-vercel-dot-app.
 
-**[Slide 6 — Solution]** *(40s)*
+**[Slide 7 — Solution]** *(40s)*
 
 > One coach, five superpowers. It **sees**: only full range-of-motion reps
 > count — half reps don't fool it. It **speaks**: a natural voice mid-set, one
@@ -79,13 +85,14 @@
 > decorative? Without the vision model there is no product. A form can't count
 > your reps.
 
-**HANDOFF →** "Enough slides. [Speaker 3] — show them."
+**HANDOFF →** Click to slide 8 ("Enough slides.") AS you say: "Enough
+slides. [Speaker 3] — show them." Speaker 3 walks to the demo machine over it.
 
 ---
 
-## SPEAKER 3 — Live Demo (3:45 – 7:15) · Slide 7 stays up, then the app
+## SPEAKER 3 — Live Demo (3:45 – 7:15) · Slide 9 stays up, then the app
 
-*(Slide 7 shows the run-of-show + QR while you switch to the browser.
+*(Slide 8 is your entrance music; click to slide 9 — run-of-show + QR while you switch to the browser.
 Phone/laptop already signed in. Backup video open in a second tab, muted.)*
 
 **Beat 1 — Train (90s, the wow):**
@@ -123,9 +130,9 @@ keep narrating over it with the same beats. Do not apologize twice.
 
 ---
 
-## SPEAKER 4 — Business, Architecture, Close (7:15 – 9:45) · Slides 8–12
+## SPEAKER 4 — Business, Architecture, Close (7:15 – 9:45) · Slides 10–14
 
-**[Slide 8 — Business value]** *(50s)*
+**[Slide 10 — Business value]** *(50s)*
 
 > The business writes itself from the architecture. Free tier: the camera
 > coach — because it shows the magic in thirty seconds and costs us nothing;
@@ -135,7 +142,7 @@ keep narrating over it with the same beats. Do not apologize twice.
 > And the community layer means the product invites the next user for us —
 > competitions literally require friends.
 
-**[Slide 9 — Architecture]** *(40s)*
+**[Slide 11 — Architecture]** *(40s)*
 
 > One idea to remember: heavy where it matters, light everywhere else. The
 > heaviest AI — vision — runs in the browser. That single decision makes
@@ -144,7 +151,7 @@ keep narrating over it with the same beats. Do not apologize twice.
 > functions, and the language models — OpenRouter with a Gemini fallback, and
 > OpenAI's Realtime API for the voice over WebRTC.
 
-**[Slide 10 — Reliability]** *(30s)*
+**[Slide 12 — Reliability]** *(30s)*
 
 > We built for trust, not just for demo day. Two examples: generated plans are
 > validated against a 115-exercise allowlist — the model *cannot* invent an
@@ -152,7 +159,7 @@ keep narrating over it with the same beats. Do not apologize twice.
 > detection off, it speaks only the cues we send, and the session closes the
 > moment the workout ends.
 
-**[Slide 11 — Future & conclusions]** *(30s)*
+**[Slide 13 — Future & conclusions]** *(30s)*
 
 > Next: wearables, form-video library, a workout marketplace, B2B pilots with
 > gyms and university sport programs. But the conclusion is on the right: the
@@ -160,7 +167,7 @@ keep narrating over it with the same beats. Do not apologize twice.
 > for anyone in this room. Your own canvas says it best: a smaller working MVP
 > with evidence beats an ambitious fake demo.
 
-**[Slide 12 — Close]** *(10s)*
+**[Slide 14 — Close]** *(10s)*
 
 > We're Team RepMint. Stop guessing, start counting — scan it and train.
 > Questions welcome.
