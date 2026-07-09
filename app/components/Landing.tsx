@@ -214,7 +214,6 @@ export default function Landing() {
   const router = useRouter();
   const onGetStarted = () => router.push("/auth?mode=sign-up");
   const onSignIn = () => router.push("/auth");
-  const onGuest = () => router.push("/auth");
   const groups = movementsByCategory();
   const totalExercises = Object.keys(EXERCISES).length;
 
@@ -238,21 +237,24 @@ export default function Landing() {
       <section className="landing-hero">
         <div className="landing-hero-copy">
           <Reveal>
-            <p className="micro-label">AI camera coach</p>
-            <h1>Train with a coach in your camera.</h1>
+            <p className="micro-label">Your AI camera coach</p>
+            <h1>A personal trainer, living in your camera.</h1>
             <p className="landing-lead">
-              RepMint counts your reps, tracks time under tension and tempo, and gives one clear form cue at a time —
-              using just your phone or laptop camera.
+              RepMint watches your form the way a coach would — counts every honest rep, talks you
+              through fixes mid-set, and notices you&apos;re gassing out before you do. Just your
+              phone. No wearables, no trainer fees, no gym required.
             </p>
             <div className="hero-actions">
               <button className="button button-primary" onClick={onGetStarted}>
                 Start training free
               </button>
-              <button className="button button-secondary" onClick={onSignIn}>
-                I have an account
-              </button>
+              <a className="button button-secondary" href="#how">
+                See how it works
+              </a>
             </div>
-            <p className="landing-microtrust">No equipment or wearables needed · Works in your browser</p>
+            <p className="landing-microtrust">
+              Video never leaves your device · No equipment needed · Free to start
+            </p>
           </Reveal>
         </div>
         <div className="landing-hero-visual">
@@ -260,12 +262,48 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="landing-marquee" aria-hidden="true">
-        <div className="marquee-track">
-          {[...Array(2)].map((_, i) => (
-            <span key={i}>
-              Rep counting · Time under tension · Tempo · Form coach · Push · Pull · Legs · Core · Progress ·
-            </span>
+      <section className="landing-stats" aria-label="RepMint by the numbers">
+        {[
+          ["115", "exercises, one coaching engine"],
+          ["33-point", "pose AI at 30fps"],
+          ["Real voice", "coaching mid-set"],
+          ["100%", "of video stays on-device"],
+        ].map(([big, small], i) => (
+          <Reveal key={big} delay={i * 70} className="landing-stat">
+            <strong>{big}</strong>
+            <small>{small}</small>
+          </Reveal>
+        ))}
+      </section>
+
+      <section className="landing-how" id="how">
+        <Reveal>
+          <p className="micro-label center">How it works</p>
+          <h2 className="center">From pocket to coached set in 30 seconds.</h2>
+        </Reveal>
+        <div className="landing-steps">
+          {[
+            {
+              n: "1",
+              t: "Prop your phone against anything",
+              d: "A water bottle works. RepMint checks your framing and tells you exactly where to stand.",
+            },
+            {
+              n: "2",
+              t: "Raise a hand. 3… 2… 1.",
+              d: "No tapping with dumbbells in your hands — one gesture starts the countdown, then the set.",
+            },
+            {
+              n: "3",
+              t: "Every rep counted, scored, coached",
+              d: "Honest reps only, a form score per rep, and one clear voice cue at a time — never a wall of noise.",
+            },
+          ].map((s2, i) => (
+            <Reveal key={s2.n} delay={i * 100} className="landing-step">
+              <span className="landing-step-n">{s2.n}</span>
+              <strong>{s2.t}</strong>
+              <p>{s2.d}</p>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -275,8 +313,9 @@ export default function Landing() {
           <p className="micro-label">Every rep, counted</p>
           <h2>It counts the reps that actually count.</h2>
           <p>
-            A depth-aware rep engine only logs reps that reach real range of motion — partial reps don&apos;t sneak in.
-            Time under tension and tempo are tracked per rep, automatically.
+            Half-reps don&apos;t fool it. A depth-aware engine only logs reps that hit real range of
+            motion, and tracks your tempo and time under tension on every single one — the numbers
+            gym mirrors can&apos;t give you.
           </p>
         </Reveal>
         <Reveal className="scene-visual" delay={120}>
@@ -300,11 +339,12 @@ export default function Landing() {
 
       <section className="landing-scene reverse">
         <Reveal className="scene-text">
-          <p className="micro-label">Real-time form coach</p>
-          <h2>One clear cue at a time.</h2>
+          <p className="micro-label">A coach that speaks up</p>
+          <h2>It talks you through the set.</h2>
           <p>
-            RepMint reads your joint angles and turns them into calm, practical cues grounded in mainstream coaching
-            standards — never a wall of noise, just the one thing to fix next.
+            You can&apos;t read a screen mid-squat. RepMint speaks — counting your reps out loud and
+            giving one calm, practical cue at a time, grounded in real coaching standards. Natural
+            AI voice, or instant on-device speech when you&apos;re offline.
           </p>
         </Reveal>
         <Reveal className="scene-visual" delay={120}>
@@ -318,13 +358,97 @@ export default function Landing() {
         </Reveal>
       </section>
 
+      <section className="landing-scene">
+        <Reveal className="scene-text">
+          <p className="micro-label">Fatigue, measured</p>
+          <h2>It knows when you&apos;re grinding.</h2>
+          <p>
+            RepMint measures how fast every rep moves. When your bar speed drops the way sports
+            science says it should near failure, it tells you — &quot;two more good reps&quot; or
+            &quot;call it here&quot; — so you stop guessing how much you had left.
+          </p>
+        </Reveal>
+        <Reveal className="scene-visual" delay={120}>
+          <div className="scene-card">
+            <div className="scene-metric">
+              <small>Rep speed</small>
+              <strong>−18%</strong>
+            </div>
+            <div className="fatigue-bars" aria-hidden>
+              {[92, 90, 88, 84, 78, 70].map((v, i) => (
+                <span key={i} style={{ height: `${v}%` }} className={i >= 4 ? "hot" : ""} />
+              ))}
+            </div>
+            <div className="scene-metric-row">
+              <span className="fatigue-tag">In the productive zone</span>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <section className="landing-scene reverse">
+        <Reveal className="scene-text">
+          <p className="micro-label">Plans that fit real life</p>
+          <h2>Built around your week, not someone else&apos;s.</h2>
+          <p>
+            Tell it your goal, your gear and your schedule — get a full week-by-week plan built from
+            real exercises in seconds. Class ran over? Every workout has a sanctioned 20-minute
+            short version, and your plan drops straight into your calendar.
+          </p>
+        </Reveal>
+        <Reveal className="scene-visual" delay={120}>
+          <div className="landing-photo-card">
+            <img src="/images/athletes/home-training.jpg" alt="Athlete training at home" loading="lazy" />
+            <div className="landing-photo-scrim" aria-hidden />
+            <div className="landing-photo-caption">
+              <small>Tuesday · 18:00</small>
+              <strong>Upper Push · ~40 min</strong>
+              <span>Short on time? 20-min version ready</span>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <section className="landing-scene">
+        <Reveal className="scene-text">
+          <p className="micro-label">A coach with memory</p>
+          <h2>It remembers your shoulder. And your goals.</h2>
+          <p>
+            Mention a tweaky shoulder once and every future conversation trains around it. The AI
+            coach reads your actual training data — every set, every score — and you even pick which
+            AI model powers it. Your coach, your rules.
+          </p>
+        </Reveal>
+        <Reveal className="scene-visual" delay={120}>
+          <div className="progress-preview">
+            <div className="progress-row">
+              <span>This week</span>
+              <strong>3 / 3</strong>
+            </div>
+            <div className="progress-row">
+              <span>Form score trend</span>
+              <strong>82% → 93%</strong>
+            </div>
+            <div className="progress-row">
+              <span>Coach remembers</span>
+              <strong>“keep pressing light”</strong>
+            </div>
+            <div className="progress-spark">
+              {[40, 62, 55, 78, 70, 90, 84].map((v, i) => (
+                <span key={i} style={{ height: `${v}%` }} />
+              ))}
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       <section className="landing-exercises">
         <Reveal>
-          <p className="micro-label">Movement library</p>
-          <h2>Push. Pull. Legs. Core.</h2>
+          <p className="micro-label center">Movement library</p>
+          <h2 className="center">Push. Pull. Legs. Core.</h2>
           <p className="landing-lead center">
-            {totalExercises} exercises from one shared coaching engine — bodyweight and loaded, from squats and push-ups
-            to hinges, curls, presses and planks.
+            {totalExercises} exercises on one coaching engine — from dorm-room push-ups to barbell
+            deadlifts. The camera coaches what it can see honestly, and logs the rest.
           </p>
         </Reveal>
         <div className="exercise-grid">
@@ -341,41 +465,19 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="landing-scene">
-        <Reveal className="scene-text">
-          <p className="micro-label">Your training, remembered</p>
-          <h2>Progress that follows you.</h2>
-          <p>
-            Create an account and every set, rep and cue is saved to your profile — so your history and next-focus
-            guidance are there on any device. Prefer to explore first? Jump in as a guest.
-          </p>
-          <div className="hero-actions">
-            <button className="button button-primary" onClick={onGetStarted}>
-              Create your account
-            </button>
-            <button className="button ghost-button" onClick={onGuest}>
-              Explore as guest
-            </button>
-          </div>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="progress-preview">
-            <div className="progress-row">
-              <span>This week</span>
-              <strong>3 / 3</strong>
-            </div>
-            <div className="progress-row">
-              <span>Total reps</span>
-              <strong>142</strong>
-            </div>
-            <div className="progress-row">
-              <span>Training time</span>
-              <strong>28m</strong>
-            </div>
-            <div className="progress-spark">
-              {[40, 62, 55, 78, 70, 90, 84].map((v, i) => (
-                <span key={i} style={{ height: `${v}%` }} />
-              ))}
+      <section className="landing-privacy">
+        <Reveal>
+          <div className="landing-privacy-inner">
+            <span className="landing-privacy-icon" aria-hidden>
+              🔒
+            </span>
+            <div>
+              <h2>Your camera never phones home.</h2>
+              <p>
+                All pose tracking runs on your device — the video is processed frame by frame in
+                your browser and never uploaded, stored, or seen by anyone. Only your numbers (reps,
+                scores, sets) sync to your account.
+              </p>
             </div>
           </div>
         </Reveal>
@@ -383,8 +485,11 @@ export default function Landing() {
 
       <section className="landing-cta">
         <Reveal>
-          <h2>Ready when you are.</h2>
-          <p>Set up your camera, run one controlled set, and see what better awareness feels like.</p>
+          <h2>Stop guessing. Start counting.</h2>
+          <p>
+            Prop up your phone, raise a hand, and feel what it&apos;s like to have a coach on every
+            set — free.
+          </p>
           <div className="hero-actions center">
             <button className="button button-primary" onClick={onGetStarted}>
               Start training free

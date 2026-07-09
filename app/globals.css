@@ -2596,3 +2596,85 @@ button.chip:hover { border-color: var(--line-strong); color: var(--text); }
 .set-avatar { overflow: hidden; padding: 0; }
 .set-avatar img { border-radius: 50%; display: block; height: 100%; object-fit: cover; width: 100%; }
 .shell-profile-img { object-fit: cover; }
+
+/* ---- Landing: Kinetic Precision additions ---- */
+.landing-stats {
+  border-block: 1px solid var(--line);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 10px auto 0;
+  max-width: 1080px;
+  padding: 26px clamp(18px, 4vw, 40px);
+}
+.landing-stat { display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.landing-stat strong { color: var(--accent); font-family: var(--font-display); font-size: clamp(1.3rem, 2.6vw, 1.8rem); font-weight: 800; letter-spacing: -0.01em; }
+.landing-stat small { color: var(--text-muted); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.landing-how { margin: 0 auto; max-width: 1080px; padding: clamp(48px, 8vw, 90px) clamp(18px, 4vw, 40px) 20px; }
+.landing-how h2 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -0.02em; margin: 6px 0 0; }
+.center { text-align: center; }
+.landing-steps { display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); margin-top: 34px; }
+.landing-step {
+  background: linear-gradient(180deg, rgba(27, 36, 48, 0.7), rgba(20, 26, 34, 0.7));
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 22px;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.landing-step:hover { border-color: rgba(183, 255, 60, 0.35); transform: translateY(-3px); }
+.landing-step-n {
+  align-items: center;
+  background: rgba(183, 255, 60, 0.14);
+  border: 1px solid rgba(183, 255, 60, 0.4);
+  border-radius: 50%;
+  color: var(--accent);
+  display: flex;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  height: 36px;
+  justify-content: center;
+  margin-bottom: 6px;
+  width: 36px;
+}
+.landing-step strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; }
+.landing-step p { color: var(--text-soft); font-size: 0.9rem; line-height: 1.55; margin: 0; }
+
+.fatigue-bars { align-items: flex-end; display: flex; gap: 8px; height: 74px; margin: 14px 0; }
+.fatigue-bars span { background: var(--accent-2); border-radius: 3px 3px 0 0; flex: 1; opacity: 0.85; }
+.fatigue-bars span.hot { background: var(--warn); }
+.fatigue-tag { border: 1px solid rgba(72, 229, 194, 0.45); border-radius: var(--radius-pill); color: var(--accent-2); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; padding: 5px 12px; text-transform: uppercase; }
+
+.landing-photo-card { border-radius: var(--radius-lg); overflow: hidden; position: relative; }
+.landing-photo-card img { aspect-ratio: 4 / 3; display: block; object-fit: cover; width: 100%; }
+.landing-photo-scrim { background: linear-gradient(180deg, rgba(8, 10, 13, 0.05), rgba(8, 10, 13, 0.9)); inset: 0; position: absolute; }
+.landing-photo-caption { bottom: 0; display: flex; flex-direction: column; gap: 3px; left: 0; padding: 18px; position: absolute; right: 0; }
+.landing-photo-caption small { color: var(--accent-2); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.landing-photo-caption strong { font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; }
+.landing-photo-caption span { color: var(--text-soft); font-size: 0.82rem; }
+
+.landing-privacy { margin: 0 auto; max-width: 900px; padding: clamp(30px, 5vw, 60px) clamp(18px, 4vw, 40px); }
+.landing-privacy-inner {
+  align-items: flex-start;
+  backdrop-filter: blur(16px);
+  background: rgba(27, 36, 48, 0.55);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  display: flex;
+  gap: 18px;
+  padding: clamp(22px, 4vw, 34px);
+}
+.landing-privacy-icon { font-size: 1.6rem; line-height: 1; margin-top: 4px; }
+.landing-privacy h2 { font-family: var(--font-display); font-size: clamp(1.2rem, 2.4vw, 1.6rem); font-weight: 800; margin: 0 0 8px; }
+.landing-privacy p { color: var(--text-soft); font-size: 0.94rem; line-height: 1.6; margin: 0; }
+
+@media (max-width: 860px) {
+  .landing-stats { gap: 14px; grid-template-columns: repeat(2, 1fr); }
+  .landing-steps { grid-template-columns: 1fr; }
+  .landing-privacy-inner { flex-direction: column; gap: 10px; }
+}
+a.button { align-items: center; display: inline-flex; justify-content: center; text-decoration: none; }
