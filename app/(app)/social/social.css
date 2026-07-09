@@ -1,0 +1,156 @@
+/* /social — Community styles. Follows the dark athletic theme in globals.css. */
+
+.soc-visibility {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.soc-search {
+  background: rgba(8, 10, 13, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  margin-top: 10px;
+  min-height: 46px;
+  padding: 0 14px;
+  width: 100%;
+}
+
+.soc-search:focus {
+  border-color: rgba(183, 255, 60, 0.6);
+  outline: none;
+}
+
+.soc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.soc-row {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+}
+
+.soc-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.soc-row-text small {
+  color: var(--text-muted);
+}
+
+.soc-avatar {
+  border-radius: 50%;
+  flex: none;
+  object-fit: cover;
+}
+
+.soc-avatar-fallback {
+  align-items: center;
+  background: rgba(183, 255, 60, 0.12);
+  color: var(--accent);
+  display: inline-flex;
+  font-weight: 800;
+  justify-content: center;
+}
+
+.soc-tag {
+  background: rgba(183, 255, 60, 0.1);
+  border: 1px solid rgba(183, 255, 60, 0.35);
+  border-radius: 999px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+.soc-empty,
+.soc-empty-card p {
+  color: var(--text-muted);
+  margin: 10px 0 0;
+}
+
+.soc-empty-card p {
+  margin: 0;
+}
+
+.soc-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  margin-top: 12px;
+}
+
+.soc-friend-card {
+  align-items: center;
+  background: var(--surface, rgba(14, 17, 21, 0.7));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 14px;
+  text-align: center;
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.soc-friend-card:hover {
+  border-color: rgba(183, 255, 60, 0.5);
+  transform: translateY(-2px);
+}
+
+.soc-friend-card small {
+  color: var(--text-muted);
+}
+
+.soc-friend-since {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  margin-top: 4px;
+}
+
+.soc-profile-head {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+}
+
+.soc-profile-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+}
+
+.soc-profile-facts small {
+  color: var(--text-muted);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.soc-unfriend {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 560px) {
+  .soc-profile-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

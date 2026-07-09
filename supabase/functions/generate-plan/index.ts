@@ -33,6 +33,12 @@ type GenerateRequest = {
   weeks?: number;
   trackedOnly?: boolean;
   fallbackSlugs?: string[];
+  /** "plan" (default) = full weekly plan. "workout" = one standalone session
+   * for today, saved to the workout library WITHOUT touching the active plan. */
+  mode?: "plan" | "workout";
+  /** Workout mode only: what the user wants to hit today ("chest and triceps,
+   * shoulder is tweaky", "quick full-body burner"). */
+  focus?: string;
 };
 
 type PlanDayExercise = {
@@ -96,6 +102,7 @@ Deno.serve(async (req) => {
   const userId = authData.user.id;
 
   const body = (await req.json().catch(() => ({}))) as GenerateRequest;
+  const mode = body.mode === "workout" ? "workout" : "plan";
   const goal = (body.goal ?? "general fitness").trim();
   const level = (body.level ?? "beginner").trim();
   const equipment = Array.isArray(body.equipment) && body.equipment.length ? body.equipment : ["bodyweight"];
@@ -103,6 +110,7 @@ Deno.serve(async (req) => {
   const sessionMinutes = clampInt(body.sessionMinutes, 10, 120, 30);
   const weeks = clampInt(body.weeks, 1, 52, 4);
   const trackedOnly = Boolean(body.trackedOnly);
+  const focus = (body.focus ?? "").trim().slice(0, 400);
 
   const { openRouterKey, geminiKey } = await resolveAiKeys(adminClient);
   if (!openRouterKey && !geminiKey) {
@@ -147,12 +155,15 @@ Deno.serve(async (req) => {
   const systemPrompt = [
     settings?.ai_prompt_planner?.trim() || DEFAULT_PLANNER_INSTRUCTIONS,
     settings?.ai_instructions_override?.trim(),
-    PLAN_SYSTEM_APPENDIX,
+    mode === "workout" ? WORKOUT_SYSTEM_APPENDIX : PLAN_SYSTEM_APPENDIX,
   ]
     .filter(Boolean)
     .join("\n\n---\n");
 
-  const userPrompt = buildPlanPrompt({ goal, level, equipment, daysPerWeek, sessionMinutes, weeks, trackedOnly, availableSlugs });
+  const userPrompt =
+    mode === "workout"
+      ? buildWorkoutPrompt({ goal, level, equipment, sessionMinutes, trackedOnly, availableSlugs, focus })
+      : buildPlanPrompt({ goal, level, equipment, daysPerWeek, sessionMinutes, weeks, trackedOnly, availableSlugs });
 
   let planJson: PlanJson | null = null;
   let lastError = "";
@@ -173,14 +184,23 @@ Deno.serve(async (req) => {
   }
 
   if (!planJson) {
-    return json({ error: `The AI coach could not generate a valid plan: ${lastError}` }, 502);
+    return json({ error: `The AI coach could not generate a valid ${mode === "workout" ? "workout" : "plan"}: ${lastError}` }, 502);
   }
 
   try {
+    if (mode === "workout") {
+      const day = planJson.days.find((d) => !d.isRest && d.exercises.length > 0);
+      if (!day) return json({ error: "The AI returned a workout with no exercises — try again." }, 502);
+      const { templateId, title } = await persistWorkout(adminClient, userId, day, {
+        goal: focus || goal,
+        planTitle: planJson.title,
+      });
+      return json({ templateId, title });
+    }
     const planId = await persistPlan(adminClient, userId, planJson, { goal, weeks, model });
     return json({ planId });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Could not save the generated plan";
+    const message = err instanceof Error ? err.message : "Could not save the generated workout";
     return json({ error: message }, 500);
   }
 });
@@ -238,6 +258,61 @@ Rules:
 - Number of non-rest days should match the requested days per week; total days in the array should cover one full weekly cycle (7 entries recommended, rest days included).
 - Keep each session realistic for the requested session length.
 - No clinical, injury-prevention, or guaranteed-outcome claims in any text field (see AGENTS.md claim-safety rules).`;
+
+const WORKOUT_SYSTEM_APPENDIX = `You are now generating ONE standalone workout for today, not a weekly plan and not a chat reply.
+Output STRICT JSON only — no markdown fences, no commentary — matching exactly this schema:
+
+{
+  "title": string,             // short, specific to today's focus (e.g. "Chest & Triceps — Push Day")
+  "goal": string,
+  "days": [
+    {
+      "dayIndex": 0,
+      "weekday": null,
+      "title": string,         // same as the top-level title
+      "focus": string,         // one-line description of the session
+      "isRest": false,
+      "exercises": [
+        {
+          "slug": string,      // MUST be one of the provided allowed exercise slugs
+          "sets": number,
+          "targetReps": number | null,
+          "targetSeconds": number | null,
+          "restSeconds": number,
+          "supersetGroup": number | null,
+          "notes": string | null
+        }
+      ]
+    }
+  ]
+}
+
+Rules:
+- Exactly ONE day, isRest=false, 3-8 exercises sized to the requested session length.
+- Honor the user's stated focus for today (muscle groups, vibe, constraints they mention).
+- Use ONLY exercise slugs from the allowed list. Never invent slugs.
+- No clinical, injury-prevention, or guaranteed-outcome claims in any text field.`;
+
+function buildWorkoutPrompt(input: {
+  goal: string;
+  level: string;
+  equipment: string[];
+  sessionMinutes: number;
+  trackedOnly: boolean;
+  availableSlugs: string[];
+  focus: string;
+}) {
+  return JSON.stringify({
+    task: "generate_single_workout",
+    todays_focus: input.focus || "coach's choice based on the overall goal",
+    overall_goal: input.goal,
+    level: input.level,
+    equipment: input.equipment,
+    session_minutes: input.sessionMinutes,
+    camera_tracked_exercises_only: input.trackedOnly,
+    allowed_exercise_slugs: input.availableSlugs,
+  });
+}
 
 function buildPlanPrompt(input: {
   goal: string;
@@ -316,6 +391,49 @@ function validatePlanJson(raw: string, availableSlugs: string[]): PlanJson {
   if (days.every((d) => d.isRest)) throw new Error("plan has no training days");
 
   return { title: obj.title.slice(0, 120), goal: obj.goal.slice(0, 120), days };
+}
+
+/** Workout mode: save ONE ai-sourced template + its exercises. Deliberately
+ * never touches plans/plan_days — the user's active weekly plan stays live. */
+async function persistWorkout(
+  adminClient: ReturnType<typeof createClient>,
+  userId: string,
+  day: PlanDayJson,
+  meta: { goal: string; planTitle: string },
+) {
+  const title = day.title?.trim() || meta.planTitle;
+  const { data: templateRow, error: templateError } = await adminClient
+    .from("workout_templates")
+    .insert({
+      owner_id: userId,
+      title,
+      description: day.focus || null,
+      source: "ai",
+      goal: meta.goal.slice(0, 120) || null,
+      est_duration_min: null,
+      is_public: false,
+    })
+    .select("id")
+    .single();
+  if (templateError || !templateRow) throw new Error(templateError?.message ?? "Could not create workout template");
+  const templateId = templateRow.id as string;
+
+  const rows = day.exercises.map((ex, index) => ({
+    template_id: templateId,
+    position: index + 1,
+    exercise_slug: ex.slug,
+    sets: ex.sets,
+    target_reps: ex.targetReps ?? null,
+    target_seconds: ex.targetSeconds ?? null,
+    target_weight: null,
+    rest_seconds: ex.restSeconds ?? 60,
+    superset_group: ex.supersetGroup ?? null,
+    notes: ex.notes ?? null,
+  }));
+  const { error: exercisesError } = await adminClient.from("template_exercises").insert(rows);
+  if (exercisesError) throw new Error(exercisesError.message);
+
+  return { templateId, title };
 }
 
 async function persistPlan(

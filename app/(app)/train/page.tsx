@@ -706,8 +706,8 @@ function CameraSet({
     // (browser engine keeps working while this loads / if it fails).
     getSettings()
       .then((s) => {
-        if (voiceRef.current && s.voice_provider === "openai") {
-          voiceRef.current = new CoachVoice("openai");
+        if (voiceRef.current && (s.voice_provider === "openai" || s.voice_provider === "realtime")) {
+          voiceRef.current = new CoachVoice(s.voice_provider, s.tts_voice || undefined);
         }
       })
       .catch(() => {});

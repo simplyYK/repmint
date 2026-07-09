@@ -28,6 +28,7 @@ const PRIMARY: Tab[] = [
 // Utility destinations: rail footer on desktop, top-bar icons on mobile.
 // Settings is reached through the profile chip (avatar) instead of a gear.
 const UTILITY: Tab[] = [
+  { href: "/social", label: "Community", icon: <IconPeople /> },
   { href: "/exercises", label: "Exercise library", icon: <IconLibrary /> },
 ];
 
@@ -232,6 +233,15 @@ function IconHub() {
       <path d="M3 11 12 3l9 8" />
       <path d="M5 10v10h14V10" />
       <path d="M9 20v-6h6v6" />
+    </svg>
+  );
+}
+function IconPeople() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="8" r="3.4" />
+      <path d="M2.8 20c.7-3.4 3.2-5.2 6.2-5.2s5.5 1.8 6.2 5.2" />
+      <path d="M15.5 5.2a3.4 3.4 0 0 1 0 5.7M18.4 14.9c1.6.8 2.6 2.3 3 4.4" opacity="0.55" />
     </svg>
   );
 }

@@ -13,10 +13,12 @@
 // loses voice coaching mid-set.
 
 import { VoiceCoach } from "./voiceCoach";
+import { RealtimeVoice } from "./realtimeVoice";
 
-export type VoiceEngine = "browser" | "openai";
+export type VoiceEngine = "browser" | "openai" | "realtime";
 
-async function fetchTtsBlob(text: string): Promise<Blob | null> {
+/** Exported for the Settings voice-preview button; returns null on any failure. */
+export async function fetchTtsBlob(text: string, voice?: string): Promise<Blob | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey =
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -36,7 +38,7 @@ async function fetchTtsBlob(text: string): Promise<Blob | null> {
       apikey: anonKey,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify(voice ? { text, voice } : { text }),
   });
   if (!res.ok || !res.headers.get("content-type")?.includes("audio")) return null;
   return await res.blob();
@@ -47,14 +49,24 @@ export class CoachVoice {
   enabled = true;
 
   private browser = new VoiceCoach();
+  private realtime: RealtimeVoice | null = null;
   private engine: VoiceEngine;
   private failed = false;
   private audio: HTMLAudioElement | null = null;
   private audioUrl: string | null = null;
   private currentPriority = 0;
 
-  constructor(engine: VoiceEngine = "browser") {
+  /** Preferred OpenAI TTS voice (settings.tts_voice); server default when unset. */
+  voice: string | undefined;
+
+  constructor(engine: VoiceEngine = "browser", voice?: string) {
     this.engine = engine;
+    this.voice = voice;
+    if (engine === "realtime") {
+      // Warm the WebRTC session during camera setup so the first cue is instant.
+      this.realtime = new RealtimeVoice(voice);
+      void this.realtime.connect();
+    }
   }
 
   /** Rep counts: always on-device — latency beats fidelity mid-set. */
@@ -81,6 +93,7 @@ export class CoachVoice {
 
   stop(): void {
     this.browser.stop();
+    this.realtime?.dispose();
     if (this.audio) {
       this.audio.pause();
       this.audio = null;
@@ -94,6 +107,15 @@ export class CoachVoice {
   private async say(text: string, priority: 1 | 2): Promise<void> {
     if (!this.enabled || !text) return;
 
+    if (this.engine === "realtime" && this.realtime && !this.failed) {
+      const spoke = await this.realtime.speak(text, priority);
+      if (spoke) return;
+      // Realtime session unavailable → permanent fallback for this workout.
+      this.failed = true;
+      this.speakBrowser(text, priority);
+      return;
+    }
+
     if (this.engine !== "openai" || this.failed) {
       this.speakBrowser(text, priority);
       return;
@@ -105,7 +127,7 @@ export class CoachVoice {
     }
 
     try {
-      const blob = await fetchTtsBlob(text);
+      const blob = await fetchTtsBlob(text, this.voice);
       if (!blob) throw new Error("tts unavailable");
       if (!this.enabled) return; // muted while fetching
       this.stopAudioOnly();

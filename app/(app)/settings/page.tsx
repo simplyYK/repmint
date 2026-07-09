@@ -23,6 +23,7 @@ import {
   upsertProfile,
 } from "../../lib/db";
 import { getAgentPrompts, type AgentPrompts } from "../../lib/ai";
+import { fetchTtsBlob } from "../../lib/tracking/coachVoice";
 import { supabase } from "../../lib/supabaseClient";
 import type { DbUserSettings } from "../../lib/types";
 import "./settings.css";
@@ -52,6 +53,24 @@ const MODEL_PRESETS = [
   { value: "openai/gpt-4o-mini", label: "GPT-4o mini" },
   { value: "meta-llama/llama-3.3-70b-instruct", label: "Llama 3.3 70B" },
 ];
+
+// OpenAI TTS voices the tts edge function accepts, with how they read as a
+// trainer. Kept in sync with ALLOWED_VOICES in supabase/functions/tts.
+const TTS_VOICES = [
+  { value: "ash", label: "Ash — warm & steady (default)" },
+  { value: "coral", label: "Coral — bright & upbeat" },
+  { value: "nova", label: "Nova — friendly & energetic" },
+  { value: "shimmer", label: "Shimmer — calm & soothing" },
+  { value: "onyx", label: "Onyx — deep & grounded" },
+  { value: "echo", label: "Echo — crisp & direct" },
+  { value: "sage", label: "Sage — soft-spoken" },
+  { value: "ballad", label: "Ballad — smooth & relaxed" },
+  { value: "verse", label: "Verse — expressive" },
+  { value: "alloy", label: "Alloy — neutral & clear" },
+  { value: "fable", label: "Fable — animated" },
+];
+
+const VOICE_PREVIEW_LINE = "Nice depth. Two more reps — you've got this.";
 
 // Preset avatars — human illustrations in public/avatars/, stored as
 // `preset:aN` in profiles.avatar_url (legacy `emoji:<char>` still renders).
@@ -395,9 +414,34 @@ function CoachingSection({
   const [audioCues, setAudioCues] = useState(settings.audio_cues);
   const [haptics, setHaptics] = useState(settings.haptics);
   const [restTimer, setRestTimer] = useState(settings.rest_timer_default);
-  const [voiceProvider, setVoiceProvider] = useState<"browser" | "openai">(
-    settings.voice_provider === "openai" ? "openai" : "browser",
+  const [voiceProvider, setVoiceProvider] = useState<"browser" | "openai" | "realtime">(
+    settings.voice_provider === "openai" || settings.voice_provider === "realtime"
+      ? settings.voice_provider
+      : "browser",
   );
+  const [ttsVoice, setTtsVoice] = useState<string>(settings.tts_voice || "ash");
+  const [previewing, setPreviewing] = useState(false);
+
+  async function previewVoice() {
+    if (previewing) return;
+    setPreviewing(true);
+    setNotice(null);
+    try {
+      const blob = await fetchTtsBlob(VOICE_PREVIEW_LINE, ttsVoice);
+      if (!blob) throw new Error("preview unavailable");
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.onended = () => URL.revokeObjectURL(url);
+      await audio.play();
+    } catch {
+      setNotice({
+        tone: "warn",
+        text: "Couldn't play the preview — the OpenAI voice may not be set up on the server yet.",
+      });
+    } finally {
+      setPreviewing(false);
+    }
+  }
 
   async function save() {
     setSaving(true);
@@ -408,6 +452,7 @@ function CoachingSection({
         haptics,
         rest_timer_default: restTimer,
         voice_provider: voiceProvider,
+        tts_voice: ttsVoice,
       });
       onChange(updated);
       setNotice({ tone: "info", text: "Preferences saved." });
@@ -452,19 +497,46 @@ function CoachingSection({
         <div className="setting-label">
           <strong>Coach voice engine</strong>
           <small>
-            OpenAI voice sounds natural (needs an OpenAI key on the server); on-device is
-            instant and works offline. Rep counts always use on-device speech.
+            Realtime keeps one live connection open for the whole workout — natural voice with
+            almost no delay. Standard fetches each line as audio (a beat slower). On-device is
+            instant, robotic, and works offline. Rep counts always use on-device speech.
           </small>
         </div>
         <select
           value={voiceProvider}
-          onChange={(e) => setVoiceProvider(e.target.value === "openai" ? "openai" : "browser")}
+          onChange={(e) =>
+            setVoiceProvider(
+              e.target.value === "openai" || e.target.value === "realtime" ? e.target.value : "browser",
+            )
+          }
           aria-label="Coach voice engine"
         >
-          <option value="browser">On-device (instant)</option>
-          <option value="openai">OpenAI voice (natural)</option>
+          <option value="realtime">OpenAI realtime (natural, fastest)</option>
+          <option value="openai">OpenAI standard (natural)</option>
+          <option value="browser">On-device (instant, offline)</option>
         </select>
       </div>
+
+      {(voiceProvider === "openai" || voiceProvider === "realtime") && (
+        <div className="setting-row">
+          <div className="setting-label">
+            <strong>Coach voice</strong>
+            <small>Pick the voice that talks you through your sets, then hear a sample.</small>
+          </div>
+          <div className="row-wrap" style={{ gap: 8, alignItems: "center" }}>
+            <select value={ttsVoice} onChange={(e) => setTtsVoice(e.target.value)} aria-label="Coach voice">
+              {TTS_VOICES.map((v) => (
+                <option key={v.value} value={v.value}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
+            <Button size="sm" variant="secondary" onClick={previewVoice} disabled={previewing}>
+              {previewing ? "Playing…" : "Preview"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="setting-row">
         <div className="setting-label">

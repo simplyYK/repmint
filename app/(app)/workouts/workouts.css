@@ -680,3 +680,74 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- Create chooser + AI form ---- */
+.wk-choose-card {
+  background: var(--surface, rgba(14, 17, 21, 0.7));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 180px;
+  padding: 24px;
+  text-align: left;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.wk-choose-card:hover {
+  background: rgba(183, 255, 60, 0.06);
+  border-color: rgba(183, 255, 60, 0.5);
+  transform: translateY(-2px);
+}
+
+.wk-choose-card strong {
+  font-size: 1.08rem;
+}
+
+.wk-choose-card p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wk-choose-icon {
+  color: var(--accent);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.wk-ai-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.wk-ai-form textarea {
+  background: rgba(8, 10, 13, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  padding: 12px;
+  resize: vertical;
+  width: 100%;
+}
+
+.wk-ai-tracked {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.wk-ai-tracked input {
+  accent-color: var(--accent);
+  height: 18px;
+  width: 18px;
+}

@@ -22,7 +22,19 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 
-const ALLOWED_VOICES = new Set(["ash", "alloy", "echo", "coral", "sage", "verse"]);
+const ALLOWED_VOICES = new Set([
+  "ash",
+  "alloy",
+  "ballad",
+  "coral",
+  "echo",
+  "fable",
+  "nova",
+  "onyx",
+  "sage",
+  "shimmer",
+  "verse",
+]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -67,7 +79,7 @@ Deno.serve(async (req) => {
       voice,
       input: text,
       instructions:
-        "You are an encouraging, calm personal trainer speaking mid-workout. Energetic but never shouty. Very brief.",
+        "You are a real personal trainer standing next to someone mid-set. Warm, grounded, conversational — like a coach they've trained with for months. Slightly breathy and energetic, natural pacing with micro-pauses, never robotic, never shouty, no announcer voice. Keep it punchy and brief.",
       response_format: "mp3",
     }),
   });

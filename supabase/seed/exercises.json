@@ -2605,11 +2605,12 @@
   },
   {
     "slug": "squat",
-    "name": "Bodyweight Squat",
+    "name": "Squat",
     "aliases": [
       "air squat",
       "bodyweight squat",
-      "squat"
+      "squat",
+      "back squat"
     ],
     "category": "legs",
     "primary_muscles": [

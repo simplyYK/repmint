@@ -45,6 +45,18 @@ export type GeneratePlanInput = {
 
 export type GeneratePlanResult = { planId: string } | { error: string };
 
+export type GenerateWorkoutInput = {
+  /** What to hit today, in the user's words ("chest + triceps", "20-min burner, no jumping"). */
+  focus: string;
+  goal?: string;
+  level?: string;
+  equipment?: string[];
+  sessionMinutes?: number;
+  trackedOnly?: boolean;
+};
+
+export type GenerateWorkoutResult = { templateId: string; title: string } | { error: string };
+
 async function getAccessToken(): Promise<string | null> {
   if (!supabase) return null;
   const { data } = await supabase.auth.getSession();
@@ -136,6 +148,33 @@ export async function generatePlan(input: GeneratePlanInput): Promise<GeneratePl
   }
   if (data?.error) return { error: data.error as string };
   return { planId: data.planId as string };
+}
+
+/** AI-build ONE workout for today and save it to the library. Never touches
+ * the active weekly plan — server-side workout mode skips plans/plan_days. */
+export async function generateWorkout(input: GenerateWorkoutInput): Promise<GenerateWorkoutResult> {
+  if (!supabase) return { error: "Supabase is not configured." };
+  const token = await getAccessToken();
+  if (!token) return { error: "Sign in to generate a workout." };
+
+  const { data, error } = await supabase.functions.invoke("generate-plan", {
+    body: {
+      mode: "workout",
+      focus: input.focus,
+      goal: input.goal,
+      level: input.level,
+      equipment: input.equipment,
+      sessionMinutes: input.sessionMinutes ?? 40,
+      trackedOnly: input.trackedOnly ?? false,
+    },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (error) {
+    return { error: await extractFunctionError(error, data) };
+  }
+  if (data?.error) return { error: data.error as string };
+  return { templateId: data.templateId as string, title: (data.title as string) ?? "Your workout" };
 }
 
 // supabase-js throws a generic FunctionsHttpError on non-2xx; the real

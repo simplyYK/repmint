@@ -16,8 +16,8 @@ export const legs: ExerciseEntry[] = [
   {
     meta: {
       slug: "squat",
-      name: "Bodyweight Squat",
-      aliases: ["air squat", "bodyweight squat", "squat"],
+      name: "Squat",
+      aliases: ["air squat", "bodyweight squat", "back squat", "squat"],
       primaryMuscles: ["quads", "glutes"],
       secondaryMuscles: ["hamstrings", "core", "adductors"],
       equipment: ["bodyweight", "dumbbell", "barbell"],

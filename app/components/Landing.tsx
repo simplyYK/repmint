@@ -219,7 +219,9 @@ function useScrollProgress(ref: React.RefObject<HTMLElement | null>) {
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const vh = window.innerHeight;
+      // innerHeight can read 0 in embedded/headless contexts — fall back so
+      // the divisor never hits zero (which would freeze the scrub at 0).
+      const vh = window.innerHeight || document.documentElement.clientHeight || 800;
       // 0 when the section's top touches the viewport bottom, 1 after it has
       // travelled 70% of the viewport — a long, visible scrub window.
       const p = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));

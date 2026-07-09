@@ -30,6 +30,8 @@ import {
   type TemplateWithExercises,
 } from "../../lib/db";
 import type { DbSession } from "../../lib/types";
+import { generateWorkout } from "../../lib/ai";
+import { setTemplatePublic } from "../../lib/social";
 import { WorkoutBuilder } from "./WorkoutBuilder";
 import { athleteImageFor } from "../../lib/athleteImage";
 import "./workouts.css";
@@ -41,6 +43,8 @@ const TRAINING_TABS = [
 
 type ViewMode =
   | { kind: "list" }
+  | { kind: "choose" }
+  | { kind: "ai" }
   | { kind: "build"; editing: TemplateWithExercises | null };
 
 type ResumeInfo = { session: DbSession; template: TemplateWithExercises };
@@ -190,6 +194,7 @@ export default function WorkoutsPage() {
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   const [duplicating, setDuplicating] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterKey>("all");
+  const [justCreated, setJustCreated] = useState<string | null>(null);
 
   async function refresh() {
     setLoading(true);
@@ -233,6 +238,17 @@ export default function WorkoutsPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not delete this workout.");
       setPendingDelete(null);
+    }
+  }
+
+  /** Toggle a template's community visibility (shows on your profile for friends). */
+  async function handleShareToggle(t: TemplateWithExercises) {
+    setError(null);
+    try {
+      await setTemplatePublic(t.id, !t.is_public);
+      await refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not update sharing for this workout.");
     }
   }
 
@@ -285,7 +301,30 @@ export default function WorkoutsPage() {
     );
   }
 
-  const openBuilder = () => setView({ kind: "build", editing: null });
+  if (view.kind === "choose") {
+    return (
+      <CreateChooser
+        onManual={() => setView({ kind: "build", editing: null })}
+        onAi={() => setView({ kind: "ai" })}
+        onCancel={() => setView({ kind: "list" })}
+      />
+    );
+  }
+
+  if (view.kind === "ai") {
+    return (
+      <AiWorkoutForm
+        onDone={(title) => {
+          setView({ kind: "list" });
+          setJustCreated(title);
+          void refresh();
+        }}
+        onBack={() => setView({ kind: "choose" })}
+      />
+    );
+  }
+
+  const openBuilder = () => setView({ kind: "choose" });
 
   return (
     <div className="stack">
@@ -298,6 +337,11 @@ export default function WorkoutsPage() {
       />
 
       {error && <InlineNotice tone="danger">{error}</InlineNotice>}
+      {justCreated && (
+        <InlineNotice tone="info">
+          “{justCreated}” is ready — it&apos;s in your library under System &amp; AI. Your weekly plan is untouched.
+        </InlineNotice>
+      )}
 
       {loading ? (
         <Spinner label="Loading your workouts…" />
@@ -401,6 +445,7 @@ export default function WorkoutsPage() {
                       onAskDelete={() => setPendingDelete(t.id)}
                       onCancelDelete={() => setPendingDelete(null)}
                       onConfirmDelete={() => handleDelete(t.id)}
+                      onShareToggle={() => handleShareToggle(t)}
                     />
                   ))}
                   <button type="button" className="wk-create-card" onClick={openBuilder}>
@@ -448,6 +493,153 @@ export default function WorkoutsPage() {
   );
 }
 
+/** Step 1 of Create workout: build by hand, or let the AI build today's session. */
+function CreateChooser({
+  onManual,
+  onAi,
+  onCancel,
+}: {
+  onManual: () => void;
+  onAi: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <div className="stack">
+      <PageHeader
+        eyebrow="New workout"
+        title="How do you want to build it?"
+        actions={
+          <Button variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+        }
+      />
+      <div className="wk-grid">
+        <button type="button" className="wk-choose-card" onClick={onAi}>
+          <span className="wk-choose-icon" aria-hidden>
+            ✦
+          </span>
+          <strong>Ask your AI coach</strong>
+          <p>
+            Tell it what you want to hit today — it builds the session and saves it to your library.
+            Your weekly plan stays exactly as it is.
+          </p>
+        </button>
+        <button type="button" className="wk-choose-card" onClick={onManual}>
+          <span className="wk-choose-icon" aria-hidden>
+            ⚒
+          </span>
+          <strong>Build it myself</strong>
+          <p>Pick exercises, sets, reps, and rest by hand in the full builder.</p>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Step 2 (AI path): one focus prompt + session length → generate & save. */
+function AiWorkoutForm({ onDone, onBack }: { onDone: (title: string) => void; onBack: () => void }) {
+  const [focus, setFocus] = useState("");
+  const [minutes, setMinutes] = useState(40);
+  const [trackedOnly, setTrackedOnly] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function generate() {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      // Profile fills in goal/level/equipment so the form stays one question.
+      const prof = (await getProfile().catch(() => null)) as {
+        goal?: string | null;
+        experience_level?: string;
+        equipment?: string[];
+      } | null;
+      const res = await generateWorkout({
+        focus: focus.trim() || "coach's choice",
+        goal: prof?.goal ?? undefined,
+        level: prof?.experience_level ?? undefined,
+        equipment: prof?.equipment?.length ? prof.equipment : undefined,
+        sessionMinutes: minutes,
+        trackedOnly,
+      });
+      if ("error" in res) {
+        setError(res.error);
+        return;
+      }
+      onDone(res.title);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="stack">
+      <PageHeader
+        eyebrow="New workout · AI"
+        title="What do you want to hit today?"
+        subtitle="One session, built for today — your weekly plan is not touched."
+        actions={
+          <Button variant="ghost" onClick={onBack} disabled={busy}>
+            Back
+          </Button>
+        }
+      />
+
+      <Card className="wk-ai-form">
+        <label className="field">
+          <span>Today&apos;s focus</span>
+          <textarea
+            value={focus}
+            onChange={(e) => setFocus(e.target.value)}
+            placeholder="e.g. Chest and triceps, feeling fresh — or: quick full-body, knees are cranky, nothing jumpy"
+            rows={3}
+            maxLength={400}
+            disabled={busy}
+          />
+        </label>
+
+        <div className="field">
+          <span>Session length</span>
+          <div className="slider-wrap">
+            <input
+              type="range"
+              min={10}
+              max={90}
+              step={5}
+              value={minutes}
+              onChange={(e) => setMinutes(Number(e.target.value))}
+              aria-label="Session length in minutes"
+              disabled={busy}
+            />
+            <span className="slider-value">{minutes} min</span>
+          </div>
+        </div>
+
+        <label className="field wk-ai-tracked">
+          <input
+            type="checkbox"
+            checked={trackedOnly}
+            onChange={(e) => setTrackedOnly(e.target.checked)}
+            disabled={busy}
+          />
+          <span>Camera-tracked exercises only</span>
+        </label>
+
+        {error && <InlineNotice tone="danger">{error}</InlineNotice>}
+
+        <div className="row-wrap" style={{ marginTop: 12 }}>
+          <Button onClick={generate} disabled={busy}>
+            {busy ? "Building your workout…" : "Build my workout"}
+          </Button>
+        </div>
+        {busy && <Spinner label="Your coach is picking exercises…" />}
+      </Card>
+    </div>
+  );
+}
+
 function TemplateCard({
   template,
   owned,
@@ -458,6 +650,7 @@ function TemplateCard({
   onCancelDelete,
   onConfirmDelete,
   onDuplicate,
+  onShareToggle,
 }: {
   template: TemplateWithExercises;
   owned: boolean;
@@ -468,6 +661,7 @@ function TemplateCard({
   onCancelDelete?: () => void;
   onConfirmDelete?: () => void;
   onDuplicate?: () => void;
+  onShareToggle?: () => void;
 }) {
   const count = template.exercises.length;
   // Use the first exercise's category to pick a representative glyph.
@@ -520,6 +714,11 @@ function TemplateCard({
               <Button size="sm" variant="secondary" onClick={onEdit}>
                 Edit
               </Button>
+              {onShareToggle && (
+                <Button size="sm" variant="ghost" onClick={onShareToggle}>
+                  {template.is_public ? "Unshare" : "Share"}
+                </Button>
+              )}
               <Button size="sm" variant="ghost" onClick={onAskDelete}>
                 Delete
               </Button>
