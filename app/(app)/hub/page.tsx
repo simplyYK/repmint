@@ -10,6 +10,7 @@ import { PageHeader, Card, LinkButton, Metric, Spinner, Reveal } from "../../com
 import { getActivePlan, listSessions, listTemplates, getProfile, type ActivePlan, type TemplateWithExercises } from "../../lib/db";
 import type { DbSession, DbProfile } from "../../lib/types";
 import { computeStreak, relativeDate, formatDuration } from "../../lib/format";
+import { athleteImageFor } from "../../lib/athleteImage";
 import "./hub.css";
 
 /**
@@ -118,7 +119,7 @@ export default function HubPage() {
           {recommendedTemplate ? (
             <Card className="hub-hero-card">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/athletes/focus.jpg" alt="" className="hub-hero-img" />
+              <img src={athleteImageFor(recommendedTemplate.title, recommendedDay?.focus, recommendedTemplate.description)} alt="" className="hub-hero-img" />
               <div className="hub-hero-scrim" aria-hidden />
               <div className="hub-hero-body">
                 <p className="eyebrow">Recommended today</p>

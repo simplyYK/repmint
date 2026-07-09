@@ -31,8 +31,15 @@ const UTILITY: Tab[] = [
   { href: "/exercises", label: "Exercise library", icon: <IconLibrary /> },
 ];
 
-/** The signed-in user's avatar: preset emoji (`emoji:⚡`) or initial. */
+/** The signed-in user's avatar: human preset (`preset:aN`), legacy emoji
+ * (`emoji:⚡`), or an initial. Looks like a person, so it reads as "profile". */
 function ProfileBadge({ avatarUrl, name }: { avatarUrl: string | null; name: string | null }) {
+  if (avatarUrl?.startsWith("preset:")) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img className="shell-profile-badge shell-profile-img" src={`/avatars/${avatarUrl.slice(7)}.svg`} alt="" aria-hidden />
+    );
+  }
   const emoji = avatarUrl?.startsWith("emoji:") ? avatarUrl.slice(6) : null;
   return (
     <span className="shell-profile-badge" aria-hidden>

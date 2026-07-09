@@ -58,8 +58,11 @@
 .hub-hero-actions {
   align-items: center;
   margin-top: auto;
+  max-width: 100%;
   padding-top: 20px;
 }
+/* The secondary pill carries a long sentence — let it wrap on small screens. */
+.hub-hero-actions .btn { max-width: 100%; white-space: normal; }
 
 /* Glass backing so the ghost pill stays legible over the photo. */
 .hub-hero-short {

@@ -1612,7 +1612,9 @@ dd {
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 16px;
-  padding: 12px 15px;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  padding: 13px 16px;
 }
 
 .ai-msg.user .ai-bubble {
@@ -2056,7 +2058,7 @@ dd {
 .shell-rail-item.active .shell-icon { color: var(--accent); }
 .shell-icon { align-items: center; color: inherit; display: inline-flex; }
 
-.shell-main { min-width: 0; padding: clamp(18px, 3vw, 34px); padding-top: calc(clamp(18px, 3vw, 34px) + var(--safe-top)); }
+.shell-main { min-width: 0; overflow-x: hidden; padding: clamp(18px, 3vw, 34px); padding-top: calc(clamp(18px, 3vw, 34px) + var(--safe-top)); }
 .shell-page { margin: 0 auto; max-width: 1180px; }
 
 .shell-rail-sep { border-top: 1px solid var(--line); margin: 12px 10px; }
@@ -2277,9 +2279,15 @@ dd {
   font-size: 0.8rem;
   font-weight: 700;
   gap: 6px;
+  justify-content: center;
+  line-height: 1.2;
   padding: 6px 12px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 button.chip { cursor: pointer; }
+a.chip:hover { border-color: var(--line-strong); color: var(--text); }
+a.chip-accent:hover { border-color: var(--accent); color: var(--accent); }
 button.chip:hover { border-color: var(--line-strong); color: var(--text); }
 .chip.active { background: var(--accent); border-color: var(--accent); color: #10141b; }
 .chip-accent { border-color: rgba(183,255,60,0.4); color: var(--accent); }
@@ -2556,3 +2564,35 @@ button.chip:hover { border-color: var(--line-strong); color: var(--text); }
 .launcher-template small { color: var(--text-muted); font-size: 0.76rem; }
 .launcher-quick-toggle { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; font-weight: 600; padding: 4px 0; text-align: left; }
 .launcher-quick-toggle:hover { color: var(--text); }
+
+/* ---- Train: 3-2-1 countdown overlay ---- */
+.hud-countdown {
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgba(8, 10, 13, 0.55);
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+  z-index: 6;
+}
+.hud-countdown strong {
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 7rem;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(183, 255, 60, 0.5);
+  animation: reppop 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hud-countdown small { color: var(--text-soft); font-size: 0.85rem; }
+
+/* Human avatar presets */
+.set-avatar { overflow: hidden; padding: 0; }
+.set-avatar img { border-radius: 50%; display: block; height: 100%; object-fit: cover; width: 100%; }
+.shell-profile-img { object-fit: cover; }

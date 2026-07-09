@@ -240,6 +240,8 @@ export type DbUserSettings = {
   /** Full system-prompt override for the workout/plan creator agent. Null = built-in default. */
   ai_prompt_planner: string | null;
   coach_voice: string;
+  /** Voice engine for the live trainer: on-device Web Speech or OpenAI TTS. */
+  voice_provider: "browser" | "openai";
   audio_cues: boolean;
   haptics: boolean;
   rest_timer_default: number;

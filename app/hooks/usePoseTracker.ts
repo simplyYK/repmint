@@ -51,6 +51,9 @@ export type TrackerSnapshot = {
   lastRep: RepEvent | null;
   /** Camera setup diagnostics, evaluated while idle (pre-set). */
   setup: SetupResult | null;
+  /** True while the athlete holds a hand above their head (idle only) —
+   * the hands-free "start my set" gesture. */
+  raiseHand: boolean;
 };
 
 export type SetOutcome = {
@@ -83,6 +86,7 @@ const IDLE: TrackerSnapshot = {
   motion: "Ready",
   lastRep: null,
   setup: null,
+  raiseHand: false,
 };
 
 const PHASE_LABEL: Record<RepPhase, string> = {
@@ -115,6 +119,7 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
   const liveRef = useRef<TrackerSnapshot>({ ...IDLE });
   const [snapshot, setSnapshot] = useState<TrackerSnapshot>({ ...IDLE });
   const setupFrameRef = useRef(0);
+  const gestureSinceRef = useRef(0);
 
   // Recreate the pure engines whenever the movement or coaching config changes.
   useEffect(() => {
@@ -242,12 +247,23 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
               const keyIdxs = move.keyJoints.map((j) => SIDE_JOINTS[setupSide][j]);
               setup = evaluateSetup(pose, keyIdxs, expectedView);
             }
+            const nose = pose[0];
+            const handUp =
+              nose &&
+              visibilityOf(nose) > 0.5 &&
+              [pose[15], pose[16]].some((w) => w && visibilityOf(w) > 0.5 && w.y < nose.y - 0.05);
+            if (handUp) {
+              if (!gestureSinceRef.current) gestureSinceRef.current = ts;
+            } else {
+              gestureSinceRef.current = 0;
+            }
             liveRef.current = {
               ...liveRef.current,
               quality: Math.round(frame.quality * 100),
               angle: frame.angle,
               depth: move.mode === "hold" ? 0 : frame.depth,
               setup,
+              raiseHand: gestureSinceRef.current > 0 && ts - gestureSinceRef.current > 900,
             };
           }
         }
@@ -305,6 +321,7 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
 
   const startSet = useCallback(() => {
     const move = movementRef.current;
+    gestureSinceRef.current = 0;
     engineRef.current.reset();
     coachRef.current.reset();
     smootherRef.current.reset();
@@ -315,6 +332,7 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
     runningRef.current = true;
     setStatus({
       running: true,
+      raiseHand: false,
       reps: 0,
       seconds: 0,
       tut: 0,

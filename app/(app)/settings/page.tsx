@@ -53,8 +53,9 @@ const MODEL_PRESETS = [
   { value: "meta-llama/llama-3.3-70b-instruct", label: "Llama 3.3 70B" },
 ];
 
-// Preset avatars — stored as `emoji:<char>` in profiles.avatar_url.
-const AVATARS = ["⚡", "🔥", "🦁", "🏔️", "🐺", "🚀", "💎", "🌊"];
+// Preset avatars — human illustrations in public/avatars/, stored as
+// `preset:aN` in profiles.avatar_url (legacy `emoji:<char>` still renders).
+const AVATARS = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"];
 
 const DELETE_TABLES = ["sessions", "workout_templates", "plans", "coach_messages"];
 
@@ -248,19 +249,20 @@ function ProfileSection({
       <div className="field" style={{ marginBottom: 14 }}>
         <span>Avatar</span>
         <div className="set-avatars" role="group" aria-label="Avatar">
-          {AVATARS.map((emoji) => {
-            const val = `emoji:${emoji}`;
+          {AVATARS.map((id, i) => {
+            const val = `preset:${id}`;
             const on = value.avatar_url === val;
             return (
               <button
-                key={emoji}
+                key={id}
                 type="button"
                 className={`set-avatar${on ? " on" : ""}`}
                 aria-pressed={on}
-                aria-label={`Avatar ${emoji}`}
+                aria-label={`Avatar ${i + 1}`}
                 onClick={() => set("avatar_url", on ? "" : val)}
               >
-                {emoji}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={`/avatars/${id}.svg`} alt="" />
               </button>
             );
           })}
@@ -393,6 +395,9 @@ function CoachingSection({
   const [audioCues, setAudioCues] = useState(settings.audio_cues);
   const [haptics, setHaptics] = useState(settings.haptics);
   const [restTimer, setRestTimer] = useState(settings.rest_timer_default);
+  const [voiceProvider, setVoiceProvider] = useState<"browser" | "openai">(
+    settings.voice_provider === "openai" ? "openai" : "browser",
+  );
 
   async function save() {
     setSaving(true);
@@ -402,6 +407,7 @@ function CoachingSection({
         audio_cues: audioCues,
         haptics,
         rest_timer_default: restTimer,
+        voice_provider: voiceProvider,
       });
       onChange(updated);
       setNotice({ tone: "info", text: "Preferences saved." });
@@ -440,6 +446,24 @@ function CoachingSection({
           <small>A gentle buzz on rep and rest milestones.</small>
         </div>
         <Toggle on={haptics} onToggle={() => setHaptics((v) => !v)} label="Haptics" />
+      </div>
+
+      <div className="setting-row">
+        <div className="setting-label">
+          <strong>Coach voice engine</strong>
+          <small>
+            OpenAI voice sounds natural (needs an OpenAI key on the server); on-device is
+            instant and works offline. Rep counts always use on-device speech.
+          </small>
+        </div>
+        <select
+          value={voiceProvider}
+          onChange={(e) => setVoiceProvider(e.target.value === "openai" ? "openai" : "browser")}
+          aria-label="Coach voice engine"
+        >
+          <option value="browser">On-device (instant)</option>
+          <option value="openai">OpenAI voice (natural)</option>
+        </select>
       </div>
 
       <div className="setting-row">

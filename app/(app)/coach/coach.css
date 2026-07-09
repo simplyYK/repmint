@@ -97,7 +97,10 @@
 .coach-md {
   color: var(--text);
   display: grid;
-  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  gap: 10px;
+  line-height: 1.65;
 }
 
 .coach-md > p {
@@ -108,7 +111,7 @@
 
 .coach-md strong {
   color: var(--text);
-  font-weight: 850;
+  font-weight: 700;
 }
 
 .coach-md ul {
@@ -176,3 +179,8 @@
 }
 .coach-workout-card strong { display: block; font-size: 0.95rem; }
 .coach-workout-card small { color: var(--text-soft); font-size: 0.78rem; }
+
+/* Keep the chat input clear of the raised Train button on mobile. */
+@media (max-width: 860px) {
+  .coach-page { padding-bottom: 30px; }
+}

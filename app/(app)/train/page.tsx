@@ -20,6 +20,7 @@ import { useWakeLock } from "../../hooks/useWakeLock";
 import {
   getTemplate,
   getProfile,
+  getSettings,
   saveSession,
   listTemplates,
   listSessions,
@@ -32,7 +33,7 @@ import { configFromProfile, DEFAULT_PROFILE } from "../../lib/types";
 import type { DbSession } from "../../lib/types";
 import type { MovementDef } from "../../lib/movements/types";
 import { Spinner, Button, Reveal } from "../../components/ui/primitives";
-import { VoiceCoach } from "../../lib/tracking/voiceCoach";
+import { CoachVoice } from "../../lib/tracking/coachVoice";
 import { scoreRep } from "../../lib/tracking/repQuality";
 import { SetAnalytics, type FatigueStatus } from "../../lib/tracking/setAnalytics";
 import { WeightLogger } from "./WeightLogger";
@@ -47,6 +48,7 @@ import {
   type PlannedSet,
 } from "./workoutModel";
 import { formatClock, relativeDate } from "../../lib/format";
+import { athleteImageFor } from "../../lib/athleteImage";
 import { SessionSummary } from "./SessionSummary";
 
 type Stage = "config" | "coach" | "log" | "rest" | "summary";
@@ -478,7 +480,7 @@ function SessionLauncher({ onPickSlug }: { onPickSlug: (slug: string) => void })
         <Reveal>
           <Link href={`/train?template=${todayTemplate.id}&day=${todayDay!.id}`} className="launcher-hero">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/athletes/deadlift.jpg" alt="" className="launcher-hero-img" />
+            <img src={athleteImageFor(todayTemplate.title, todayDay?.focus, todayTemplate.description)} alt="" className="launcher-hero-img" />
             <div className="launcher-hero-scrim" aria-hidden />
             <div className="launcher-hero-body">
               <span className="eyebrow">Continue your plan · today</span>
@@ -690,7 +692,7 @@ function CameraSet({
   const tier = planned.meta.tier;
 
   // ---- ML instrumentation: voice, per-rep quality, fatigue ----
-  const voiceRef = useRef<VoiceCoach | null>(null);
+  const voiceRef = useRef<CoachVoice | null>(null);
   const analyticsRef = useRef(new SetAnalytics());
   const [repScores, setRepScores] = useState<number[]>([]);
   const repMetricsRef = useRef<Record<string, unknown>[]>([]);
@@ -699,7 +701,16 @@ function CameraSet({
   const fatigueSpoken = useRef(false);
 
   useEffect(() => {
-    voiceRef.current = new VoiceCoach();
+    voiceRef.current = new CoachVoice("browser");
+    // Upgrade to the natural OpenAI voice if the user picked it in Settings
+    // (browser engine keeps working while this loads / if it fails).
+    getSettings()
+      .then((s) => {
+        if (voiceRef.current && s.voice_provider === "openai") {
+          voiceRef.current = new CoachVoice("openai");
+        }
+      })
+      .catch(() => {});
     return () => voiceRef.current?.stop();
   }, []);
   useEffect(() => {
@@ -755,7 +766,46 @@ function CameraSet({
   }, [snapshot.cue, snapshot.tone, active]);
 
   const [manualFallback, setManualFallback] = useState(false);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const countdownRef = useRef<number | null>(null);
   const cameraBlocked = !snapshot.hasCamera && /blocked/i.test(snapshot.cameraStatus);
+
+  // One permission grant, zero clicks after: auto-start the camera whenever
+  // this set mounts and the user has granted it before (the browser then
+  // reconnects silently). The camera turns itself off between sets because
+  // the set component unmounts — exactly the on/off behavior users expect.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const status = await navigator.permissions?.query?.({ name: "camera" as PermissionName });
+        if (!cancelled && status?.state === "granted") {
+          void startCamera();
+          return;
+        }
+      } catch {
+        // Safari: no camera permission query — fall back to our own flag.
+      }
+      if (!cancelled && window.localStorage.getItem("repmint-cam-ok") === "1") {
+        void startCamera();
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Remember a successful grant for browsers without permissions.query.
+  useEffect(() => {
+    if (snapshot.hasCamera) {
+      try {
+        window.localStorage.setItem("repmint-cam-ok", "1");
+      } catch {
+        // storage unavailable — auto-start just won't work next time
+      }
+    }
+  }, [snapshot.hasCamera]);
 
   const toneClass = snapshot.tone === "adjust" ? "adjust" : snapshot.tone === "good" ? "good" : "idle";
   const depthPct = Math.round(snapshot.depth * 100);
@@ -770,6 +820,45 @@ function CameraSet({
   const tempo = lastRep
     ? `${Math.round(lastRep.eccentricSeconds)}:${Math.round(lastRep.pauseSeconds)}:${Math.round(lastRep.concentricSeconds)}`
     : "—";
+
+  // 3-2-1 countdown before every set: time to pick up the dumbbells after
+  // triggering the start (by button or by raising a hand).
+  const beginCountdown = () => {
+    if (active || countdown !== null) return;
+    setCountdown(3);
+    voiceRef.current?.immediate("Starting in 3, 2, 1");
+    const tick = () => {
+      setCountdown((c) => {
+        if (c === null) return null;
+        if (c <= 1) {
+          countdownRef.current = null;
+          start();
+          return null;
+        }
+        countdownRef.current = window.setTimeout(tick, 1000);
+        return c - 1;
+      });
+    };
+    countdownRef.current = window.setTimeout(tick, 1000);
+  };
+
+  const cancelCountdown = () => {
+    if (countdownRef.current) window.clearTimeout(countdownRef.current);
+    countdownRef.current = null;
+    setCountdown(null);
+  };
+
+  useEffect(() => () => {
+    if (countdownRef.current) window.clearTimeout(countdownRef.current);
+  }, []);
+
+  // Hands-free start: hold a hand above your head once framing passes.
+  useEffect(() => {
+    if (!active && countdown === null && setupOk && snapshot.raiseHand) {
+      beginCountdown();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snapshot.raiseHand, active, countdown, setupOk]);
 
   const start = () => {
     setActive(true);
@@ -860,7 +949,7 @@ function CameraSet({
         {snapshot.hasCamera && (
           <div className={`hud-cue ${toneClass}`} aria-live="polite">
             <span className="hud-cue-dot" aria-hidden />
-            {active ? snapshot.cue || movement.setupCue : setupOk ? "Framing looks good — start when ready." : snapshot.setup?.issues[0]?.message ?? movement.setupCue}
+            {active ? snapshot.cue || movement.setupCue : countdown !== null ? "Get set…" : setupOk ? "Raise a hand to start — or tap Start set." : snapshot.setup?.issues[0]?.message ?? movement.setupCue}
           </div>
         )}
 
@@ -950,6 +1039,14 @@ function CameraSet({
           </div>
         )}
 
+        {/* Countdown before the set goes live */}
+        {countdown !== null && (
+          <button type="button" className="hud-countdown" onClick={cancelCountdown} aria-label="Cancel start">
+            <strong key={countdown}>{countdown}</strong>
+            <small>Get into position — tap to cancel</small>
+          </button>
+        )}
+
         {/* Setup gate: framing + privacy, before the set starts */}
         {snapshot.hasCamera && !active && (
           <div className="hud-setup">
@@ -980,9 +1077,9 @@ function CameraSet({
             )}
           </>
         )}
-        {snapshot.hasCamera && !active && (
+        {snapshot.hasCamera && !active && countdown === null && (
           <>
-            <Button size="lg" onClick={start} disabled={!setupOk}>
+            <Button size="lg" onClick={beginCountdown} disabled={!setupOk}>
               {isHold ? "Start hold" : "Start set"}
             </Button>
             {!setupOk && (
@@ -1016,7 +1113,7 @@ function CameraSet({
             </Button>
           </>
         )}
-        {!active && (
+        {!active && countdown === null && (
           <button
             className="btn btn-ghost btn-sm"
             onClick={() => onComplete({ reps: 0, seconds: 0, tut: 0, formScore: null, romScore: null, cues: [], repMetrics: [] })}
@@ -1025,9 +1122,11 @@ function CameraSet({
           </button>
         )}
       </div>
-      <p className="train-hint">
-        {movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}.
-      </p>
+      {!active && (
+        <p className="train-hint">
+          {movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}.
+        </p>
+      )}
     </div>
   );
 }

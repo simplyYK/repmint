@@ -31,6 +31,7 @@ import {
 } from "../../lib/db";
 import type { DbSession } from "../../lib/types";
 import { WorkoutBuilder } from "./WorkoutBuilder";
+import { athleteImageFor } from "../../lib/athleteImage";
 import "./workouts.css";
 
 const TRAINING_TABS = [
@@ -339,7 +340,7 @@ export default function WorkoutsPage() {
             <Reveal>
               <section className="wk-resume" aria-label="Jump back in">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/athletes/focus.jpg" alt="" className="wk-resume-img" />
+                <img src={athleteImageFor(resume.template.title, resume.template.description, resume.template.goal)} alt="" className="wk-resume-img" />
                 <div className="wk-resume-overlay" aria-hidden />
                 <div className="wk-resume-body">
                   <p className="eyebrow">Jump back in</p>

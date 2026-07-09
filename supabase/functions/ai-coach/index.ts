@@ -33,6 +33,7 @@ STYLE:
 - Keep answers reasonably short and skimmable.
 - Ground recommendations in the user's actual training data when available; if data is thin, say so plainly instead of guessing.
 - When repmint_context.current_screen is provided, it describes what the user is looking at right now — use it to resolve "this page"-style questions.
+- When repmint_context.focused_session is provided, the user opened this chat ABOUT that specific session — answer questions about "this workout" / "how did I do" using its per-set data first.
 
 SAFETY (see AGENTS.md claim-safety rules):
 - Coaching guidance only — never diagnose, never claim injury prevention, never promise guaranteed strength/hypertrophy/body-change outcomes, never claim "perfect form".
@@ -172,7 +173,7 @@ Deno.serve(async (req) => {
         .select("ai_model, ai_instructions_override, ai_prompt_coach")
         .eq("owner_id", userId)
         .maybeSingle(),
-      loadUserContext(adminClient, userId),
+      loadUserContext(adminClient, userId, body.sessionId ?? null),
       loadHistory(adminClient, userId),
       loadExerciseBank(adminClient),
     ]);
@@ -257,7 +258,11 @@ async function resolveAiKeys(adminClient: ReturnType<typeof createClient>) {
   return { openRouterKey, geminiKey };
 }
 
-async function loadUserContext(adminClient: ReturnType<typeof createClient>, userId: string) {
+async function loadUserContext(
+  adminClient: ReturnType<typeof createClient>,
+  userId: string,
+  focusSessionId: string | null,
+) {
   const [profile, recentSessions, activePlan] = await Promise.all([
     adminClient.from("profiles").select("display_name, goal, experience_level, equipment, units").eq("id", userId).maybeSingle(),
     adminClient
@@ -286,11 +291,36 @@ async function loadUserContext(adminClient: ReturnType<typeof createClient>, use
     aggregateSets = data ?? [];
   }
 
+  // When the user opened the coach "about" a specific session (post-workout
+  // handoff), load THAT session and its full set breakdown so questions about
+  // it get grounded answers instead of generic ones.
+  let focusedSession: unknown = null;
+  if (focusSessionId) {
+    const [sess, sets] = await Promise.all([
+      adminClient
+        .from("sessions")
+        .select("id, title, started_at, ended_at, total_reps, total_sets, active_seconds, avg_form_score, notes")
+        .eq("id", focusSessionId)
+        .eq("owner_id", userId)
+        .maybeSingle(),
+      adminClient
+        .from("session_sets")
+        .select("exercise_slug, set_index, reps, seconds, weight, weight_unit, avg_form_score, rom_score, tut_seconds, top_cues")
+        .eq("session_id", focusSessionId)
+        .eq("owner_id", userId)
+        .order("set_index"),
+    ]);
+    if (sess.data) {
+      focusedSession = { ...sess.data, sets: sets.data ?? [] };
+    }
+  }
+
   return {
     profile: profile.data ?? null,
     recentSessions: recentSessions.data ?? [],
     recentSetStats: aggregateSets,
     activePlan: activePlan.data ?? null,
+    focused_session: focusedSession,
   };
 }
 
