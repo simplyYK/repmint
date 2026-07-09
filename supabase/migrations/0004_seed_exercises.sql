@@ -41,7 +41,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":45,"min_rep_fraction":0.75,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":60,"min_rep_fraction":0.65,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'barbell_row',
@@ -59,7 +59,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":160,"active_angle":68,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":160,"active_angle":68,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'bench_press',
@@ -77,7 +77,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":85,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":85,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'bent_over_row',
@@ -95,7 +95,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":160,"active_angle":70,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":160,"active_angle":70,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'bicep_curl',
@@ -113,7 +113,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":45,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":60,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'bird_dog',
@@ -149,7 +149,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":92,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":168,"active_angle":92,"min_rep_fraction":0.62,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'chin_up',
@@ -167,7 +167,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":52,"min_rep_fraction":0.75,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":62,"min_rep_fraction":0.68,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'concentration_curl',
@@ -185,7 +185,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":45,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":165,"active_angle":58,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'crunch',
@@ -257,7 +257,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'diamond_push_up',
@@ -275,7 +275,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":85,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":85,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'dip',
@@ -293,7 +293,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":85,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":85,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'dumbbell_bench_press',
@@ -311,7 +311,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'dumbbell_chest_press',
@@ -329,7 +329,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'dumbbell_shoulder_press',
@@ -365,7 +365,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.62,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'front_plank',
@@ -419,7 +419,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":172,"active_angle":90,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":172,"active_angle":90,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'glute_bridge',
@@ -455,7 +455,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":172,"active_angle":90,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":172,"active_angle":90,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'good_morning',
@@ -491,7 +491,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":45,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":60,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'hip_thrust',
@@ -527,7 +527,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'incline_push_up',
@@ -563,7 +563,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":65,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":70,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'kettlebell_swing',
@@ -653,7 +653,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":172,"active_angle":95,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":172,"active_angle":95,"min_rep_fraction":0.62,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'mountain_climber',
@@ -743,7 +743,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":45,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":58,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'pull_up',
@@ -761,7 +761,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":55,"min_rep_fraction":0.75,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":65,"min_rep_fraction":0.68,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'renegade_row',
@@ -779,7 +779,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":70,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":165,"active_angle":70,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'reverse_lunge',
@@ -797,7 +797,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.62,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'romanian_deadlift',
@@ -851,7 +851,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":162,"active_angle":68,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":162,"active_angle":68,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'sit_up',
@@ -905,7 +905,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.62,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'squat',
@@ -923,7 +923,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":172,"active_angle":88,"min_rep_fraction":0.78,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":172,"active_angle":92,"min_rep_fraction":0.72,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'standing_calf_raise',
@@ -977,7 +977,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.75,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     't_bar_row',
@@ -995,7 +995,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":160,"active_angle":70,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":160,"active_angle":70,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'tricep_dip_bench',
@@ -1013,7 +1013,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":88,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":88,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'tricep_kickback',
@@ -1049,7 +1049,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":94,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":170,"active_angle":94,"min_rep_fraction":0.58,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'assisted_pull_up_machine',
@@ -1067,7 +1067,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":58,"min_rep_fraction":0.75,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":66,"min_rep_fraction":0.68,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'cable_chest_fly',
@@ -1085,7 +1085,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":160,"active_angle":95,"min_rep_fraction":0.6,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":160,"active_angle":105,"min_rep_fraction":0.55,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'cable_lat_pushdown',
@@ -1103,7 +1103,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":125,"active_angle":15,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":125,"active_angle":25,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'cable_row_single_arm',
@@ -1121,7 +1121,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":75,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":true}'::jsonb
+    '{"rest_angle":165,"active_angle":75,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":true}'::jsonb
   ),
   (
     'chest_fly',
@@ -1139,7 +1139,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":95,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":105,"min_rep_fraction":0.55,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'chest_press_machine',
@@ -1193,7 +1193,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":95,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":170,"active_angle":95,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'incline_chest_press_machine',
@@ -1229,7 +1229,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":60,"min_rep_fraction":0.7,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":68,"min_rep_fraction":0.65,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'leg_press',
@@ -1247,7 +1247,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":168,"active_angle":95,"min_rep_fraction":0.7,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":168,"active_angle":95,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'pec_deck',
@@ -1265,7 +1265,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":160,"active_angle":95,"min_rep_fraction":0.6,"view":"front","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":160,"active_angle":105,"min_rep_fraction":0.55,"view":"front","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'reverse_pec_deck',
@@ -1301,7 +1301,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":165,"active_angle":75,"min_rep_fraction":0.65,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":165,"active_angle":75,"min_rep_fraction":0.6,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'seated_shoulder_press_machine',
@@ -1355,7 +1355,7 @@ values
     '[]'::jsonb,
     null,
     null,
-    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.72,"view":"side","mode":"rep","unilateral":false}'::jsonb
+    '{"rest_angle":170,"active_angle":92,"min_rep_fraction":0.68,"view":"side","mode":"rep","unilateral":false}'::jsonb
   ),
   (
     'upright_row',

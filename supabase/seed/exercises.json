@@ -91,8 +91,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 45,
-      "min_rep_fraction": 0.75,
+      "active_angle": 60,
+      "min_rep_fraction": 0.65,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -145,7 +145,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 68,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -197,7 +197,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 85,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -251,7 +251,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 70,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -303,8 +303,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 45,
-      "min_rep_fraction": 0.75,
+      "active_angle": 60,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -411,7 +411,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 92,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.62,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -462,8 +462,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 168,
-      "active_angle": 52,
-      "min_rep_fraction": 0.75,
+      "active_angle": 62,
+      "min_rep_fraction": 0.68,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -509,8 +509,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 45,
-      "min_rep_fraction": 0.75,
+      "active_angle": 58,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -717,7 +717,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -769,7 +769,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 85,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -821,7 +821,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 85,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -873,7 +873,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -925,7 +925,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1030,7 +1030,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.62,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -1188,7 +1188,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 90,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1292,7 +1292,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 90,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1391,8 +1391,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 45,
-      "min_rep_fraction": 0.75,
+      "active_angle": 60,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1496,7 +1496,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1602,8 +1602,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 168,
-      "active_angle": 65,
-      "min_rep_fraction": 0.65,
+      "active_angle": 70,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1865,7 +1865,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 95,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.62,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2120,8 +2120,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 45,
-      "min_rep_fraction": 0.75,
+      "active_angle": 58,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2172,8 +2172,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 168,
-      "active_angle": 55,
-      "min_rep_fraction": 0.75,
+      "active_angle": 65,
+      "min_rep_fraction": 0.68,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -2225,7 +2225,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 70,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2278,7 +2278,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.62,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2443,7 +2443,7 @@
     "tracking": {
       "rest_angle": 162,
       "active_angle": 68,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2597,7 +2597,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.62,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2652,8 +2652,8 @@
     "tut_target": "[3,5]",
     "tracking": {
       "rest_angle": 172,
-      "active_angle": 88,
-      "min_rep_fraction": 0.78,
+      "active_angle": 92,
+      "min_rep_fraction": 0.72,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2807,7 +2807,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.75,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2860,7 +2860,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 70,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2912,7 +2912,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3014,7 +3014,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 94,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.58,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -3064,8 +3064,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 168,
-      "active_angle": 58,
-      "min_rep_fraction": 0.75,
+      "active_angle": 66,
+      "min_rep_fraction": 0.68,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3110,12 +3110,12 @@
       "Using the whole body to fling the handles together."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms wide in to hands together in front; cross-body angle closes from ~160° to ~95°.",
+    "rom_guideline": "Arms wide in to hands together in front; cross-body angle closes from ~160° to ~105°.",
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 160,
-      "active_angle": 95,
-      "min_rep_fraction": 0.6,
+      "active_angle": 105,
+      "min_rep_fraction": 0.55,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3158,12 +3158,12 @@
       "Cutting the sweep short at the bottom."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms forward and high sweeping down toward the thighs; shoulder angle closes from ~125° to ~15°.",
+    "rom_guideline": "Arms forward and high sweeping down toward the thighs; shoulder angle closes from ~125° to ~25°.",
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 125,
-      "active_angle": 15,
-      "min_rep_fraction": 0.65,
+      "active_angle": 25,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3214,7 +3214,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 75,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -3262,12 +3262,12 @@
       "Rushing the reps instead of controlling the arc."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms wide at the stretch in to hands together; cross-body angle closes from ~165° to ~95°.",
+    "rom_guideline": "Arms wide at the stretch in to hands together; cross-body angle closes from ~165° to ~105°.",
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 165,
-      "active_angle": 95,
-      "min_rep_fraction": 0.6,
+      "active_angle": 105,
+      "min_rep_fraction": 0.55,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3418,7 +3418,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 95,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3520,8 +3520,8 @@
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 168,
-      "active_angle": 60,
-      "min_rep_fraction": 0.7,
+      "active_angle": 68,
+      "min_rep_fraction": 0.65,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3571,7 +3571,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 95,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3616,12 +3616,12 @@
       "Short reps that never bring the pads together."
     ],
     "safety_note": null,
-    "rom_guideline": "Pads open at the stretch in to together at the front; cross-body angle closes from ~160° to ~95°.",
+    "rom_guideline": "Pads open at the stretch in to together at the front; cross-body angle closes from ~160° to ~105°.",
     "tut_target": "[2,4]",
     "tracking": {
       "rest_angle": 160,
-      "active_angle": 95,
-      "min_rep_fraction": 0.6,
+      "active_angle": 105,
+      "min_rep_fraction": 0.55,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3723,7 +3723,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 75,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3875,7 +3875,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.72,
+      "min_rep_fraction": 0.68,
       "view": "side",
       "mode": "rep",
       "unilateral": false

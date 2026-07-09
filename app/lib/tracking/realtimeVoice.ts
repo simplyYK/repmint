@@ -26,7 +26,10 @@ export class RealtimeVoice {
   private closing: Promise<void> | null = null;
   /** Resolves the finishAndClose wait when the final line's audio is done. */
   private onFinalDone: (() => void) | null = null;
-  private finalCueCreated = false;
+  /** True from the moment the final cue is sent until its response.created. */
+  private awaitingFinalCreated = false;
+  /** The final cue's response id — the ONLY response.done that may close us. */
+  private finalResponseId: string | null = null;
   /** Sticky after a hard failure; CoachVoice checks this to fall back. */
   failed = false;
 
@@ -115,14 +118,27 @@ export class RealtimeVoice {
       const evt = JSON.parse(raw);
       if (evt.type === "response.created") {
         this.speaking = true;
-        // A cancel emits no response.created, so any created seen after the
-        // final cue was sent belongs to the final cue itself.
-        if (this.onFinalDone) this.finalCueCreated = true;
+        // The first response CREATED after the final cue was sent is the final
+        // cue itself (a cancel never emits response.created). Pin its id: an
+        // earlier, interrupted cue's response.done can arrive AFTER this and
+        // must not be mistaken for the final line finishing — that race is
+        // what used to cut the closing line off after one word.
+        if (this.awaitingFinalCreated) {
+          this.awaitingFinalCreated = false;
+          this.finalResponseId = (evt.response?.id as string | undefined) ?? "final";
+        }
       }
       if (evt.type === "response.done" || evt.type === "response.output_audio.done") {
-        this.speaking = false;
-        this.currentPriority = 0;
-        if (this.finalCueCreated) {
+        const doneId =
+          (evt.response?.id as string | undefined) ?? (evt.response_id as string | undefined) ?? null;
+        const isFinal =
+          this.finalResponseId !== null && (doneId === null || doneId === this.finalResponseId);
+        // A done for some other (cancelled/older) response: ignore for closing.
+        if (this.finalResponseId === null || isFinal) {
+          this.speaking = false;
+          this.currentPriority = 0;
+        }
+        if (isFinal) {
           this.onFinalDone?.();
           this.onFinalDone = null;
         }
@@ -174,6 +190,7 @@ export class RealtimeVoice {
         const done = new Promise<void>((resolve) => {
           this.onFinalDone = resolve;
         });
+        this.awaitingFinalCreated = true;
         // Interrupt whatever is mid-sentence — the closing line takes the floor.
         const spoke = await this.send(text, 2, true);
         if (!spoke) {
@@ -183,6 +200,9 @@ export class RealtimeVoice {
         }
         // Wait for the audio, but never let a dropped event wedge the session.
         await Promise.race([done, new Promise<void>((r) => setTimeout(r, 15_000))]);
+        // response.done marks GENERATION complete; WebRTC playout can trail it
+        // slightly. Give the tail a moment to leave the speaker before closing.
+        await new Promise<void>((r) => setTimeout(r, 900));
       } finally {
         this.dispose();
       }
