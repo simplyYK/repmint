@@ -72,19 +72,30 @@ export function visibilityOf(point: Landmark | undefined): number {
 }
 
 /**
- * Interior angle (in degrees) at vertex `b` formed by points a-b-c, using the
- * 2D (x, y) projection. Returns null if any point is missing or degenerate.
+ * Interior angle (in degrees) at vertex `b` formed by points a-b-c.
+ *
+ * Uses full 3D (x, y, z) when every point carries a z estimate, falling back
+ * to the 2D (x, y) projection otherwise. The 3D form matters: MediaPipe z is
+ * in roughly the same scale as x, and any limb segment moving toward or away
+ * from the camera (a curl seen from the front, a fly, a face pull) makes the
+ * 2D projected angle collapse far faster than the real anatomical angle —
+ * which is how "100% ROM at half a curl" bugs happen. The One-Euro smoother
+ * upstream filters z alongside x/y, so the 3D angle is stable enough to coach
+ * with. Returns null if any point is missing or degenerate.
  */
 export function jointAngle(a?: Landmark, b?: Landmark, c?: Landmark): number | null {
   if (!a || !b || !c) return null;
+  const use3d = a.z !== undefined && b.z !== undefined && c.z !== undefined;
   const abx = a.x - b.x;
   const aby = a.y - b.y;
+  const abz = use3d ? (a.z as number) - (b.z as number) : 0;
   const cbx = c.x - b.x;
   const cby = c.y - b.y;
-  const abMag = Math.hypot(abx, aby);
-  const cbMag = Math.hypot(cbx, cby);
+  const cbz = use3d ? (c.z as number) - (b.z as number) : 0;
+  const abMag = Math.hypot(abx, aby, abz);
+  const cbMag = Math.hypot(cbx, cby, cbz);
   if (abMag < 1e-6 || cbMag < 1e-6) return null;
-  const cos = clamp((abx * cbx + aby * cby) / (abMag * cbMag), -1, 1);
+  const cos = clamp((abx * cbx + aby * cby + abz * cbz) / (abMag * cbMag), -1, 1);
   return (Math.acos(cos) * 180) / Math.PI;
 }
 

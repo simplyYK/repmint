@@ -67,6 +67,11 @@ export class RepEngine {
   private startTs = 0;
   private bottomTs = 0;
   private riseTs = 0;
+  // When the athlete last left the rest zone. A rep only CONFIRMS at the
+  // deeper ENTER threshold (hysteresis vs jitter), but its timing is
+  // backdated to this moment so eccentric/duration reflect the real movement,
+  // not just the portion past halfway.
+  private leftHomeTs = 0;
 
   // repFractionScale scales the range-of-motion gate: <1 = more lenient counting,
   // >1 = stricter (a rep must reach deeper to count).
@@ -94,6 +99,7 @@ export class RepEngine {
     this.startTs = 0;
     this.bottomTs = 0;
     this.riseTs = 0;
+    this.leftHomeTs = 0;
   }
 
   get repCount() {
@@ -165,6 +171,9 @@ export class RepEngine {
     const bottomZone = Math.max(this.minFrac * 0.9, ENTER + 0.05);
 
     if (!this.inRep) {
+      // Track the moment the athlete leaves rest, for backdated rep timing.
+      if (this.lastDepth <= HOME && depth > HOME) this.leftHomeTs = timestampMs;
+      if (depth <= HOME) this.leftHomeTs = 0;
       // Waiting at home; start a rep when we clearly leave rest.
       if (depth > ENTER) {
         this.inRep = true;
@@ -172,7 +181,7 @@ export class RepEngine {
         this.rising = false;
         this.peakDepth = depth;
         this.repTut = 0;
-        this.startTs = timestampMs;
+        this.startTs = this.leftHomeTs || timestampMs;
         this.bottomTs = 0;
         this.riseTs = 0;
       }

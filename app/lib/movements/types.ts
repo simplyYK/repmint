@@ -8,6 +8,13 @@ export type MovementCategory = "push" | "pull" | "legs" | "core";
 export type CameraView = "side" | "front" | "any";
 export type TrackingMode = "rep" | "hold";
 
+// Which part of the body the camera actually needs to see to coach this
+// movement. Pose lock only requires THIS region to be confidently visible —
+// a bicep curl locks on with just the upper body in frame, while a squat
+// needs hips-to-ankles. Defaults are derived from keyJoints (see
+// movementRegion), so defs only declare it to override.
+export type BodyRegion = "upper" | "lower" | "full";
+
 // Coarse category stored in Supabase (movement_category enum). New patterns
 // that don't map cleanly fall back to "other".
 export type DbMovementCategory =
@@ -65,6 +72,8 @@ export type MovementDef = {
   camera: string;
   setupCue: string;
   keyJoints: JointName[];
+  /** Body region the camera must see; derived from keyJoints when omitted. */
+  region?: BodyRegion;
 
   // Rep driver. Returns the primary joint angle (deg) plus tracking side/quality.
   measure: (pose: Pose) => MovementMeasure | null;
@@ -164,3 +173,22 @@ export type ExerciseEntry = {
   meta: ExerciseMeta;
   def?: MovementDef;
 };
+
+// ---------------------------------------------------------------------------
+// Body-region derivation: which part of the athlete the camera must see.
+// Explicit `def.region` wins; otherwise it falls out of the key joints —
+// leg-driven movements need the lower body, movements that read both the
+// trunk and the legs (planks, hinges) need the full body, everything else
+// (curls, presses, raises, rows) locks on with just the upper body in frame.
+// ---------------------------------------------------------------------------
+
+const LOWER_JOINTS: ReadonlySet<string> = new Set(["knee", "ankle", "foot", "heel"]);
+const UPPER_JOINTS: ReadonlySet<string> = new Set(["shoulder", "elbow", "wrist", "ear"]);
+
+export function movementRegion(def: MovementDef): BodyRegion {
+  if (def.region) return def.region;
+  const lower = def.keyJoints.some((j) => LOWER_JOINTS.has(j));
+  const upper = def.keyJoints.some((j) => UPPER_JOINTS.has(j));
+  if (lower && upper) return "full";
+  return lower ? "lower" : "upper";
+}

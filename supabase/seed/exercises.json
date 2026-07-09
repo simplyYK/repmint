@@ -90,9 +90,9 @@
     "rom_guideline": "Elbow from nearly straight to about 45-50° at the top (front/side view).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 158,
-      "active_angle": 48,
-      "min_rep_fraction": 0.65,
+      "rest_angle": 165,
+      "active_angle": 45,
+      "min_rep_fraction": 0.75,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -145,7 +145,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 68,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -197,7 +197,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 85,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -251,7 +251,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 70,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -302,9 +302,9 @@
     "rom_guideline": "Elbow from nearly straight to about 45-55° at the top (side view).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 158,
-      "active_angle": 50,
-      "min_rep_fraction": 0.65,
+      "rest_angle": 165,
+      "active_angle": 45,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -411,7 +411,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 92,
-      "min_rep_fraction": 0.62,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -463,7 +463,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 52,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -508,9 +508,9 @@
     "rom_guideline": "Elbow from fully straight to about 40-50° at the top (side view).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 160,
+      "rest_angle": 165,
       "active_angle": 45,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -558,9 +558,9 @@
     "rom_guideline": "Shoulder blades lift clear of the floor as the trunk flexes; hip angle closes toward ~70°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 125,
-      "active_angle": 72,
-      "min_rep_fraction": 0.45,
+      "rest_angle": 130,
+      "active_angle": 85,
+      "min_rep_fraction": 0.5,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -607,9 +607,9 @@
     "rom_guideline": "Leg lowers toward the floor while the back stays flat; hip opens toward ~150°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 150,
-      "active_angle": 100,
-      "min_rep_fraction": 0.5,
+      "rest_angle": 95,
+      "active_angle": 155,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -717,7 +717,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -769,7 +769,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 85,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -821,7 +821,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 85,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -873,7 +873,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -925,7 +925,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1030,7 +1030,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -1188,7 +1188,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 90,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1292,7 +1292,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 90,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1390,9 +1390,9 @@
     "rom_guideline": "Elbow from nearly straight to about 45-55° at the top (side view).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 158,
-      "active_angle": 50,
-      "min_rep_fraction": 0.65,
+      "rest_angle": 165,
+      "active_angle": 45,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1496,7 +1496,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1603,7 +1603,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 65,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1709,7 +1709,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 90,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -1865,7 +1865,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 95,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2119,9 +2119,9 @@
     "rom_guideline": "Elbow from fully straight to about 40-50° at the top (side view).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 160,
+      "rest_angle": 165,
       "active_angle": 45,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2173,7 +2173,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 55,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -2225,7 +2225,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 70,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2278,7 +2278,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.62,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2443,7 +2443,7 @@
     "tracking": {
       "rest_angle": 162,
       "active_angle": 68,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2492,7 +2492,7 @@
     "rom_guideline": "Torso curls from the floor up to about vertical; hip angle closes toward ~55°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 155,
+      "rest_angle": 140,
       "active_angle": 60,
       "min_rep_fraction": 0.6,
       "view": "side",
@@ -2597,7 +2597,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.62,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -2609,8 +2609,8 @@
     "aliases": [
       "air squat",
       "bodyweight squat",
-      "squat",
-      "back squat"
+      "back squat",
+      "squat"
     ],
     "category": "legs",
     "primary_muscles": [
@@ -2653,7 +2653,7 @@
     "tracking": {
       "rest_angle": 172,
       "active_angle": 88,
-      "min_rep_fraction": 0.72,
+      "min_rep_fraction": 0.78,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2701,8 +2701,8 @@
     "rom_guideline": "Full heel lift at the top to a controlled stretch at the bottom (side view ankle range).",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 90,
-      "active_angle": 130,
+      "rest_angle": 110,
+      "active_angle": 148,
       "min_rep_fraction": 0.55,
       "view": "side",
       "mode": "rep",
@@ -2807,7 +2807,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 88,
-      "min_rep_fraction": 0.7,
+      "min_rep_fraction": 0.75,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2860,7 +2860,7 @@
     "tracking": {
       "rest_angle": 160,
       "active_angle": 70,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -2912,7 +2912,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 88,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3014,7 +3014,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 94,
-      "min_rep_fraction": 0.58,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -3065,7 +3065,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 58,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.75,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3110,12 +3110,12 @@
       "Using the whole body to fling the handles together."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms wide in to hands together in front; measured angle closes to roughly 20°.",
+    "rom_guideline": "Arms wide in to hands together in front; cross-body angle closes from ~160° to ~95°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 80,
-      "active_angle": 20,
-      "min_rep_fraction": 0.55,
+      "rest_angle": 160,
+      "active_angle": 95,
+      "min_rep_fraction": 0.6,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3158,12 +3158,12 @@
       "Cutting the sweep short at the bottom."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms forward and high sweeping down toward the thighs; measured angle closes to roughly 10°.",
+    "rom_guideline": "Arms forward and high sweeping down toward the thighs; shoulder angle closes from ~125° to ~15°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 40,
-      "active_angle": 10,
-      "min_rep_fraction": 0.5,
+      "rest_angle": 125,
+      "active_angle": 15,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3214,7 +3214,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 75,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": true
@@ -3262,12 +3262,12 @@
       "Rushing the reps instead of controlling the arc."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms wide at the stretch in to hands together; measured angle closes to roughly 20°.",
+    "rom_guideline": "Arms wide at the stretch in to hands together; cross-body angle closes from ~165° to ~95°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 90,
-      "active_angle": 20,
-      "min_rep_fraction": 0.55,
+      "rest_angle": 165,
+      "active_angle": 95,
+      "min_rep_fraction": 0.6,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3418,7 +3418,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 95,
-      "min_rep_fraction": 0.62,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3521,7 +3521,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 60,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.7,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3571,7 +3571,7 @@
     "tracking": {
       "rest_angle": 168,
       "active_angle": 95,
-      "min_rep_fraction": 0.6,
+      "min_rep_fraction": 0.7,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3616,12 +3616,12 @@
       "Short reps that never bring the pads together."
     ],
     "safety_note": null,
-    "rom_guideline": "Pads open at the stretch in to together at the front; measured angle closes to roughly 25°.",
+    "rom_guideline": "Pads open at the stretch in to together at the front; cross-body angle closes from ~160° to ~95°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 85,
-      "active_angle": 25,
-      "min_rep_fraction": 0.55,
+      "rest_angle": 160,
+      "active_angle": 95,
+      "min_rep_fraction": 0.6,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3666,12 +3666,12 @@
       "Cutting the range short at the back."
     ],
     "safety_note": null,
-    "rom_guideline": "Arms forward at the start out to level with the shoulders; measured angle opens to roughly 80°.",
+    "rom_guideline": "Arms forward at the start out to level with the shoulders; cross-body angle opens from ~95° to ~165°.",
     "tut_target": "[2,4]",
     "tracking": {
-      "rest_angle": 20,
-      "active_angle": 80,
-      "min_rep_fraction": 0.55,
+      "rest_angle": 95,
+      "active_angle": 165,
+      "min_rep_fraction": 0.6,
       "view": "front",
       "mode": "rep",
       "unilateral": false
@@ -3723,7 +3723,7 @@
     "tracking": {
       "rest_angle": 165,
       "active_angle": 75,
-      "min_rep_fraction": 0.55,
+      "min_rep_fraction": 0.65,
       "view": "side",
       "mode": "rep",
       "unilateral": false
@@ -3875,7 +3875,7 @@
     "tracking": {
       "rest_angle": 170,
       "active_angle": 92,
-      "min_rep_fraction": 0.65,
+      "min_rep_fraction": 0.72,
       "view": "side",
       "mode": "rep",
       "unilateral": false

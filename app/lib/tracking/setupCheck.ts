@@ -14,6 +14,9 @@ import type { Landmark } from "../pose/landmarks";
 /** Which way the movement expects the user to face the camera. */
 export type ExpectedView = "front" | "side" | "any";
 
+/** Body region the movement needs in frame (mirrors MovementDef.region). */
+export type SetupRegion = "upper" | "lower" | "full";
+
 /** One actionable setup problem. */
 export type SetupIssue = {
   /** Machine-readable category: framing (joints cut off), distance, view, visibility (lighting). */
@@ -35,9 +38,14 @@ const LEFT_HIP = 23;
 const RIGHT_HIP = 24;
 
 // Torso length (mid-shoulder → mid-hip, normalized image units) that reads as
-// a good working distance for rep tracking at typical webcam FOVs.
+// a good working distance for rep tracking at typical webcam FOVs. Upper-body
+// movements (curls, presses, raises) only need the torso and arms in frame,
+// so they tolerate standing much closer — forcing "step back" there just
+// pushes the athlete's phone across the room for no tracking benefit.
 const TORSO_MIN = 0.15;
 const TORSO_MAX = 0.45;
+const TORSO_MIN_UPPER = 0.13;
+const TORSO_MAX_UPPER = 0.62;
 
 // shoulderWidth / torsoLength: wide = facing the camera, narrow = side-on.
 const FRONT_RATIO = 0.55;
@@ -82,12 +90,15 @@ function midpoint(a: Landmark, b: Landmark): { x: number; y: number } {
  * @param landmarks Full pose landmark array (MediaPipe 33-point, normalized).
  * @param keyJointIndices Landmark indices this movement needs tracked.
  * @param expectedView Camera view the movement is designed for.
+ * @param region Body region the movement needs in frame ("upper" relaxes the
+ *   working-distance band so close, upper-body-only framing passes).
  * @returns `ok: true` with no issues, or every applicable fix.
  */
 export function evaluateSetup(
   landmarks: Landmark[],
   keyJointIndices: number[],
   expectedView: ExpectedView,
+  region: SetupRegion = "full",
 ): SetupResult {
   const issues: SetupIssue[] = [];
 
@@ -125,10 +136,12 @@ export function evaluateSetup(
     const midHip = midpoint(lh, rh);
     const torsoLen = Math.hypot(midShoulder.x - midHip.x, midShoulder.y - midHip.y);
 
-    // 2. Distance.
-    if (torsoLen < TORSO_MIN) {
+    // 2. Distance (relaxed band for upper-body-only movements).
+    const minTorso = region === "upper" ? TORSO_MIN_UPPER : TORSO_MIN;
+    const maxTorso = region === "upper" ? TORSO_MAX_UPPER : TORSO_MAX;
+    if (torsoLen < minTorso) {
       issues.push({ code: "distance", message: "Step closer to the camera." });
-    } else if (torsoLen > TORSO_MAX) {
+    } else if (torsoLen > maxTorso) {
       issues.push({ code: "distance", message: "Step back so your whole movement fits in frame." });
     }
 

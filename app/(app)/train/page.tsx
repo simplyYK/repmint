@@ -708,6 +708,10 @@ function CameraSet({
       .then((s) => {
         if (voiceRef.current && (s.voice_provider === "openai" || s.voice_provider === "realtime")) {
           voiceRef.current = new CoachVoice(s.voice_provider, s.tts_voice || undefined);
+          // Carry the mute state onto the replacement engine — otherwise a
+          // muted coach comes back to life when the settings load.
+          voiceRef.current.enabled =
+            typeof window === "undefined" || window.localStorage.getItem("repmint-voice") !== "off";
         }
       })
       .catch(() => {});
@@ -770,6 +774,9 @@ function CameraSet({
   const [manualFallback, setManualFallback] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownRef = useRef<number | null>(null);
+  // After a cancelled countdown (or a reset), hold auto-start off briefly so
+  // the athlete standing in position doesn't immediately re-trigger it.
+  const suppressAutoUntilRef = useRef(0);
   const cameraBlocked = !snapshot.hasCamera && /blocked/i.test(snapshot.cameraStatus);
 
   // One permission grant, zero clicks after: auto-start the camera whenever
@@ -851,19 +858,26 @@ function CameraSet({
     if (countdownRef.current) window.clearTimeout(countdownRef.current);
     countdownRef.current = null;
     setCountdown(null);
+    suppressAutoUntilRef.current = Date.now() + 8000;
   };
 
   useEffect(() => () => {
     if (countdownRef.current) window.clearTimeout(countdownRef.current);
   }, []);
 
-  // Hands-free start: hold a hand above your head once framing passes.
+  // Hands-free start, two triggers:
+  // 1. autoReady — the athlete has held their start position, framed and
+  //    still, for ~1.5s (carries dumbbells-at-sides and plank cases where
+  //    raising a hand is impractical).
+  // 2. raiseHand — the explicit gesture, kept as an alternative.
   useEffect(() => {
-    if (!active && countdown === null && setupOk && snapshot.raiseHand) {
+    if (active || countdown !== null || !setupOk) return;
+    const suppressed = Date.now() < suppressAutoUntilRef.current;
+    if (snapshot.raiseHand || (snapshot.autoReady && !suppressed)) {
       beginCountdown();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snapshot.raiseHand, active, countdown, setupOk]);
+  }, [snapshot.raiseHand, snapshot.autoReady, active, countdown, setupOk]);
 
   const start = () => {
     setActive(true);
@@ -963,7 +977,15 @@ function CameraSet({
         {snapshot.hasCamera && (
           <div className={`hud-cue ${toneClass}`} aria-live="polite">
             <span className="hud-cue-dot" aria-hidden />
-            {active ? snapshot.cue || movement.setupCue : countdown !== null ? "Get set…" : setupOk ? "Raise a hand to start — or tap Start set." : snapshot.setup?.issues[0]?.message ?? movement.setupCue}
+            {active
+              ? snapshot.cue || movement.setupCue
+              : countdown !== null
+                ? "Get set…"
+                : !setupOk
+                  ? snapshot.setup?.issues[0]?.message ?? movement.setupCue
+                  : snapshot.readyProgress > 0.15
+                    ? "Hold steady — starting…"
+                    : "Get in your start position and hold still — I'll count you in."}
           </div>
         )}
 
@@ -1036,7 +1058,7 @@ function CameraSet({
                   <div className="hud-rom-fill" style={{ width: `${Math.min(100, depthPct)}%` }} />
                   <div className="hud-rom-target" style={{ left: `${Math.round(movement.minRepFraction * 100)}%` }} />
                 </div>
-                <strong>{depthPct}%</strong>
+                <strong>{Math.min(100, depthPct)}%</strong>
               </div>
             )}
             <div className="hud-stat">
@@ -1121,6 +1143,7 @@ function CameraSet({
                 analyticsRef.current.reset();
                 lastRepNumber.current = 0;
                 fatigueSpoken.current = false;
+                suppressAutoUntilRef.current = Date.now() + 5000;
               }}
             >
               Reset
@@ -1138,7 +1161,8 @@ function CameraSet({
       </div>
       {!active && (
         <p className="train-hint">
-          {movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}.
+          {movement.camera}. Target: {isHold ? `${targetSeconds}s hold` : `${targetReps} reps`}. Starts
+          automatically when you hold your start position — or raise a hand.
         </p>
       )}
     </div>

@@ -66,10 +66,12 @@ function sqlLoadType(loadType) {
 }
 
 function buildRow(ex) {
+  // exercises.json (export-exercises.mjs) writes snake_case keys; accept the
+  // legacy camelCase form too so older seed files still convert.
   const tracking = {
-    rest_angle: ex.tracking?.restAngle ?? null,
-    active_angle: ex.tracking?.activeAngle ?? null,
-    min_rep_fraction: ex.tracking?.minRepFraction ?? null,
+    rest_angle: ex.tracking?.rest_angle ?? ex.tracking?.restAngle ?? null,
+    active_angle: ex.tracking?.active_angle ?? ex.tracking?.activeAngle ?? null,
+    min_rep_fraction: ex.tracking?.min_rep_fraction ?? ex.tracking?.minRepFraction ?? null,
     view: ex.tracking?.view ?? null,
     mode: ex.tracking?.mode ?? null,
     unilateral: ex.tracking?.unilateral ?? null,

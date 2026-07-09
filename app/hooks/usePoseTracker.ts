@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PoseSmoother } from "../lib/pose/smoothing";
 import { SKELETON, SIDE_JOINTS, bestSide, visibilityOf, type Pose } from "../lib/pose/landmarks";
-import type { MovementDef, PoseContext, RepPhase } from "../lib/movements/types";
+import { movementRegion, type MovementDef, type PoseContext, type RepPhase } from "../lib/movements/types";
 import { RepEngine, type RepEvent } from "../lib/tracking/repEngine";
 import { FormCoach, type CoachTone } from "../lib/tracking/formCoach";
 import { evaluateSetup, type ExpectedView, type SetupResult } from "../lib/tracking/setupCheck";
@@ -54,6 +54,11 @@ export type TrackerSnapshot = {
   /** True while the athlete holds a hand above their head (idle only) —
    * the hands-free "start my set" gesture. */
   raiseHand: boolean;
+  /** True once the athlete has held their start position, framed and still,
+   * for ~1.5s (idle only) — the hands-free auto-start signal. */
+  autoReady: boolean;
+  /** 0..1 progress toward autoReady, for the "hold steady" HUD hint. */
+  readyProgress: number;
 };
 
 export type SetOutcome = {
@@ -87,6 +92,8 @@ const IDLE: TrackerSnapshot = {
   lastRep: null,
   setup: null,
   raiseHand: false,
+  autoReady: false,
+  readyProgress: 0,
 };
 
 const PHASE_LABEL: Record<RepPhase, string> = {
@@ -120,6 +127,11 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
   const [snapshot, setSnapshot] = useState<TrackerSnapshot>({ ...IDLE });
   const setupFrameRef = useRef(0);
   const gestureSinceRef = useRef(0);
+  // Auto-start readiness (idle only): key-joint motion energy + hold timer.
+  const motionEmaRef = useRef(0);
+  const lastKeyPtsRef = useRef<Array<{ x: number; y: number }> | null>(null);
+  const lastMotionTsRef = useRef(0);
+  const readySinceRef = useRef(0);
 
   // Recreate the pure engines whenever the movement or coaching config changes.
   useEffect(() => {
@@ -243,9 +255,11 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
                   : "any";
               // Visibility is judged on the better-tracked side's joints so a
               // correct side-on stance doesn't get flagged for the far side.
+              // Only the movement's required body REGION has to be in frame —
+              // curls lock on with just the upper body visible.
               const setupSide = bestSide(pose, move.keyJoints);
               const keyIdxs = move.keyJoints.map((j) => SIDE_JOINTS[setupSide][j]);
-              setup = evaluateSetup(pose, keyIdxs, expectedView);
+              setup = evaluateSetup(pose, keyIdxs, expectedView, movementRegion(move));
             }
             const nose = pose[0];
             const handUp =
@@ -257,6 +271,43 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
             } else {
               gestureSinceRef.current = 0;
             }
+
+            // ---- Auto-start readiness ---------------------------------------
+            // Motion energy: mean speed of the movement's key joints (better-
+            // tracked side), EMA-smoothed. Walking through frame or picking up
+            // dumbbells reads high; holding the start position reads near zero.
+            const motionSide = bestSide(pose, move.keyJoints);
+            const keyPts = move.keyJoints.map((j) => {
+              const p = pose[SIDE_JOINTS[motionSide][j]];
+              return { x: p?.x ?? 0, y: p?.y ?? 0 };
+            });
+            const motionDt = lastMotionTsRef.current ? (ts - lastMotionTsRef.current) / 1000 : 0;
+            lastMotionTsRef.current = ts;
+            const prev = lastKeyPtsRef.current;
+            if (prev && prev.length === keyPts.length && motionDt > 0 && motionDt < 0.5) {
+              const meanDisp =
+                keyPts.reduce((s, p, i) => s + Math.hypot(p.x - prev[i].x, p.y - prev[i].y), 0) /
+                keyPts.length;
+              const speed = meanDisp / motionDt; // normalized units / second
+              motionEmaRef.current = motionEmaRef.current * 0.7 + speed * 0.3;
+            }
+            lastKeyPtsRef.current = keyPts;
+
+            // Ready = framed correctly + confidently tracked + in the start
+            // position (near rest for rep movements, a valid hold for planks)
+            // + still. Held for 1.5s → the UI may begin the 3-2-1 countdown.
+            const nearStart =
+              move.mode === "hold" ? frame.holdValid : frame.depth > -0.2 && frame.depth < 0.3;
+            const still = motionEmaRef.current < 0.12;
+            const ready =
+              Boolean(setup?.ok) && frame.quality >= 0.5 && nearStart && still;
+            if (ready) {
+              if (!readySinceRef.current) readySinceRef.current = ts;
+            } else {
+              readySinceRef.current = 0;
+            }
+            const readyFor = readySinceRef.current ? ts - readySinceRef.current : 0;
+
             liveRef.current = {
               ...liveRef.current,
               quality: Math.round(frame.quality * 100),
@@ -264,6 +315,8 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
               depth: move.mode === "hold" ? 0 : frame.depth,
               setup,
               raiseHand: gestureSinceRef.current > 0 && ts - gestureSinceRef.current > 900,
+              autoReady: readyFor > 1500,
+              readyProgress: Math.min(1, readyFor / 1500),
             };
           }
         }
@@ -322,6 +375,9 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
   const startSet = useCallback(() => {
     const move = movementRef.current;
     gestureSinceRef.current = 0;
+    readySinceRef.current = 0;
+    motionEmaRef.current = 0;
+    lastKeyPtsRef.current = null;
     engineRef.current.reset();
     coachRef.current.reset();
     smootherRef.current.reset();
@@ -333,6 +389,8 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
     setStatus({
       running: true,
       raiseHand: false,
+      autoReady: false,
+      readyProgress: 0,
       reps: 0,
       seconds: 0,
       tut: 0,
@@ -381,8 +439,13 @@ export function usePoseTracker(movement: MovementDef, config: CoachConfig) {
     manualRef.current = 0;
     repEventsRef.current = [];
     startedAtRef.current = 0;
+    readySinceRef.current = 0;
+    motionEmaRef.current = 0;
+    lastKeyPtsRef.current = null;
     setStatus({
       running: false,
+      autoReady: false,
+      readyProgress: 0,
       reps: 0,
       seconds: 0,
       tut: 0,
