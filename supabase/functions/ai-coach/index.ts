@@ -66,12 +66,17 @@ Tiers: 1 = full camera coaching, 2 = camera rep counting, 3 = manual/timer loggi
 2. Once you know (or the user already said), respond with ONLY a strict JSON object — no markdown fences, no prose before or after:
 {"type":"workout_proposal","title":string,"description":string,"tracked_only":boolean,"est_duration_min":number,"exercises":[{"slug":string,"sets":number,"target_reps":number|null,"target_seconds":number|null,"rest_seconds":number,"notes":string|null}]}
 3. Every slug MUST come from the exercise bank. If tracked_only is true, use only tier 1-2 slugs. 4-8 exercises is typical.
-4. For anything that is not a workout-creation request, reply in normal prose — never emit this JSON otherwise.`;
+4. For anything that is not a workout-creation request, reply in normal prose — never emit this JSON otherwise.
+
+MEMORY PROTOCOL:
+repmint_context.long_term_memory holds durable facts about this user from earlier chats — treat them as true and use them without re-asking. When the user shares a NEW durable fact worth remembering across conversations (an injury or limitation, a schedule constraint, an equipment change, a strong preference, a goal change), append it as the very last line of your reply in exactly this form: [MEMORY: one short sentence]. At most one per reply; never for trivia, moods, or one-off questions. The tag is stripped before the user sees your reply.`;
 
 type CoachRequest = {
   mode?: "chat" | "post_session" | "recommendation";
   message?: string;
   sessionId?: string;
+  /** Which conversation this message belongs to (null = quick-ask dock). */
+  conversationId?: string;
   /** What screen the user is on right now (sent by the in-app coach dock). */
   pageContext?: string;
 };
@@ -167,18 +172,19 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const [{ data: settings }, context, history, bank] = await Promise.all([
+    const [{ data: settings }, context, history, bank, memories] = await Promise.all([
       adminClient
         .from("user_settings")
-        .select("ai_model, ai_instructions_override, ai_prompt_coach")
+        .select("ai_model, ai_model_coach, ai_instructions_override, ai_prompt_coach")
         .eq("owner_id", userId)
         .maybeSingle(),
       loadUserContext(adminClient, userId, body.sessionId ?? null),
-      loadHistory(adminClient, userId),
+      loadHistory(adminClient, userId, body.conversationId ?? null),
       loadExerciseBank(adminClient),
+      loadMemories(adminClient, userId),
     ]);
 
-    const model = settings?.ai_model || "google/gemini-2.5-flash";
+    const model = settings?.ai_model_coach || settings?.ai_model || "google/gemini-2.5-flash";
     const basePrompt = settings?.ai_prompt_coach?.trim() || DEFAULT_COACH_INSTRUCTIONS;
     const systemPrompt = [
       basePrompt,
@@ -194,11 +200,13 @@ Deno.serve(async (req) => {
       ...context,
       exercise_bank: bank,
       current_screen: body.pageContext ?? null,
+      long_term_memory: memories,
     });
 
     await adminClient.from("coach_messages").insert({
       owner_id: userId,
       session_id: body.sessionId ?? null,
+      conversation_id: body.conversationId ?? null,
       role: "user",
       content: message,
     });
@@ -212,9 +220,23 @@ Deno.serve(async (req) => {
       userPrompt,
     });
 
+    // Long-term memory extraction: the model appends `[MEMORY: fact]` on its
+    // final line when the user shares something durable. Strip + persist it —
+    // memories are shared across ALL conversations, so grounding compounds.
+    let cleanText = text;
+    const memMatch = cleanText.match(/\n?\s*\[MEMORY:\s*([^\]]{4,240})\]\s*$/);
+    if (memMatch) {
+      cleanText = cleanText.slice(0, memMatch.index).trimEnd();
+      await adminClient.from("coach_memories").insert({
+        owner_id: userId,
+        content: memMatch[1].trim(),
+        source: body.conversationId ?? "quick-ask",
+      });
+    }
+
     // Workout proposal? Validate against the bank and persist as a template.
-    const proposal = parseWorkoutProposal(text);
-    let replyText = text;
+    const proposal = parseWorkoutProposal(cleanText);
+    let replyText = cleanText;
     let workout: { id: string; title: string; exerciseCount: number } | null = null;
 
     if (proposal) {
@@ -232,10 +254,18 @@ Deno.serve(async (req) => {
     await adminClient.from("coach_messages").insert({
       owner_id: userId,
       session_id: body.sessionId ?? null,
+      conversation_id: body.conversationId ?? null,
       role: "assistant",
       content: replyText,
       model: modelUsed,
     });
+    if (body.conversationId) {
+      await adminClient
+        .from("coach_conversations")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", body.conversationId)
+        .eq("owner_id", userId);
+    }
 
     return json({ message: replyText, model: modelUsed, workout });
   } catch (error) {
@@ -324,17 +354,36 @@ async function loadUserContext(
   };
 }
 
-// Recent conversation turns, oldest first, so the coach has memory.
-async function loadHistory(adminClient: ReturnType<typeof createClient>, userId: string) {
-  const { data } = await adminClient
+// Recent turns of THIS conversation, oldest first. Cross-conversation
+// knowledge flows through coach_memories instead, so chats stay coherent.
+async function loadHistory(
+  adminClient: ReturnType<typeof createClient>,
+  userId: string,
+  conversationId: string | null,
+) {
+  let q = adminClient
     .from("coach_messages")
     .select("role, content")
     .eq("owner_id", userId)
     .order("created_at", { ascending: false })
     .limit(12);
+  q = conversationId ? q.eq("conversation_id", conversationId) : q.is("conversation_id", null);
+  const { data } = await q;
   return (data ?? [])
     .reverse()
     .map((m) => ({ role: m.role as "user" | "assistant", content: m.content as string }));
+}
+
+// Durable facts extracted across all past chats (injuries, preferences,
+// schedule constraints) — capped so the prompt stays lean.
+async function loadMemories(adminClient: ReturnType<typeof createClient>, userId: string) {
+  const { data } = await adminClient
+    .from("coach_memories")
+    .select("content, created_at")
+    .eq("owner_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(30);
+  return (data ?? []).map((m) => m.content as string);
 }
 
 async function loadExerciseBank(adminClient: ReturnType<typeof createClient>): Promise<BankRow[]> {

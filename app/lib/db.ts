@@ -431,3 +431,67 @@ export async function upsertProfile(patch: Record<string, unknown>) {
   if (error) throw error;
   return data;
 }
+
+// ---------------------------------------------------------------------------
+// Coach conversations (multiple chats; long-term memories are server-managed)
+// ---------------------------------------------------------------------------
+
+import type { DbCoachConversation } from "./types";
+
+export async function listConversations(): Promise<DbCoachConversation[]> {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("coach_conversations")
+    .select("*")
+    .order("updated_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []) as DbCoachConversation[];
+}
+
+export async function createConversation(title?: string): Promise<DbCoachConversation> {
+  const client = requireSupabase();
+  const ownerId = await requireUserId();
+  const { data, error } = await client
+    .from("coach_conversations")
+    .insert({ owner_id: ownerId, title: title ?? null })
+    .select("*")
+    .single();
+  if (error || !data) throw error ?? new Error("Could not create the conversation");
+  return data as DbCoachConversation;
+}
+
+export async function renameConversation(id: string, title: string): Promise<void> {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("coach_conversations")
+    .update({ title, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function touchConversation(id: string): Promise<void> {
+  const client = requireSupabase();
+  await client
+    .from("coach_conversations")
+    .update({ updated_at: new Date().toISOString() })
+    .eq("id", id);
+}
+
+export async function deleteConversation(id: string): Promise<void> {
+  const client = requireSupabase();
+  const { error } = await client.from("coach_conversations").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function listConversationMessages(conversationId: string) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("coach_messages")
+    .select("*")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true })
+    .limit(200);
+  if (error) throw error;
+  return data ?? [];
+}

@@ -55,7 +55,7 @@ const MODEL_PRESETS = [
 
 // Preset avatars — human illustrations in public/avatars/, stored as
 // `preset:aN` in profiles.avatar_url (legacy `emoji:<char>` still renders).
-const AVATARS = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8"];
+const AVATARS = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13", "a14"];
 
 const DELETE_TABLES = ["sessions", "workout_templates", "plans", "coach_messages"];
 
@@ -563,6 +563,11 @@ function AiSection({
   // Per-agent system prompts. `defaults` come from the server; drafts start
   // from the saved override (or the default once loaded).
   const [role, setRole] = useState<AgentRole>("coach");
+  // Per-agent model overrides ("" = use the default model above).
+  const [agentModels, setAgentModels] = useState<Record<AgentRole, string>>({
+    coach: settings.ai_model_coach ?? "",
+    planner: settings.ai_model_planner ?? "",
+  });
   const [defaults, setDefaults] = useState<AgentPrompts | null>(null);
   const [defaultsError, setDefaultsError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<AgentRole, string>>({
@@ -623,6 +628,8 @@ function AiSection({
       };
       const updated = await upsertSettings({
         ai_model: model,
+        ai_model_coach: agentModels.coach || null,
+        ai_model_planner: agentModels.planner || null,
         ai_instructions_override: override.trim() ? override.trim() : null,
         ai_prompt_coach: normalize("coach"),
         ai_prompt_planner: normalize("planner"),
@@ -703,6 +710,21 @@ function AiSection({
       <p className="set-hint" style={{ marginBottom: 10 }}>
         {AGENT_META[role].hint}
       </p>
+
+      <label className="field" style={{ marginBottom: 14 }}>
+        <span>Model for this agent</span>
+        <select
+          value={agentModels[role]}
+          onChange={(e) => setAgentModels((cur) => ({ ...cur, [role]: e.target.value }))}
+        >
+          <option value="">Use the default model above</option>
+          {MODEL_PRESETS.map((m) => (
+            <option key={m.value} value={m.value}>
+              {m.label}
+            </option>
+          ))}
+        </select>
+      </label>
 
       {defaultsError && (
         <InlineNotice tone="warn">

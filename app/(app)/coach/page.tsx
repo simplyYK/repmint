@@ -11,10 +11,18 @@ import { useSearchParams } from "next/navigation";
 import { PageHeader, Card, Button, Spinner } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { askCoach } from "../../lib/ai";
-import { getSessionDetail } from "../../lib/db";
+import {
+  getSessionDetail,
+  listConversations,
+  createConversation,
+  deleteConversation,
+  renameConversation,
+  listConversationMessages,
+} from "../../lib/db";
 import { supabase } from "../../lib/supabaseClient";
 import { shortDate } from "../../lib/format";
-import type { DbCoachMessage } from "../../lib/types";
+import type { DbCoachMessage, DbCoachConversation } from "../../lib/types";
+import { relativeDate } from "../../lib/format";
 import "./coach.css";
 
 type ChatRole = "user" | "assistant";
@@ -148,6 +156,9 @@ function CoachInner() {
   const [input, setInput] = useState("");
   const [sessionLabel, setSessionLabel] = useState<string | null>(null);
   const [contextActive, setContextActive] = useState(Boolean(sessionId));
+  const [conversations, setConversations] = useState<DbCoachConversation[]>([]);
+  const [activeConvId, setActiveConvId] = useState<string | null>(null);
+  const [showChats, setShowChats] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -156,7 +167,9 @@ function CoachInner() {
     if (el) el.scrollTop = el.scrollHeight;
   }, []);
 
-  // Seed the conversation from persisted coach_messages.
+  // Bootstrap conversations: pick the most recent (or create the first), then
+  // load that conversation's messages. Opening with ?session= starts a fresh
+  // chat about that workout.
   useEffect(() => {
     let active = true;
     (async () => {
@@ -165,20 +178,24 @@ function CoachInner() {
         return;
       }
       try {
-        const { data } = await supabase
-          .from("coach_messages")
-          .select("*")
-          .order("created_at", { ascending: true })
-          .limit(100);
+        let convs = await listConversations();
+        let target: DbCoachConversation;
+        if (sessionId) {
+          target = await createConversation("About a workout");
+          convs = [target, ...convs];
+        } else if (convs.length === 0) {
+          target = await createConversation();
+          convs = [target];
+        } else {
+          target = convs[0];
+        }
         if (!active) return;
-        const rows = (data ?? []) as DbCoachMessage[];
+        setConversations(convs);
+        setActiveConvId(target.id);
+        const rows = (await listConversationMessages(target.id)) as DbCoachMessage[];
+        if (!active) return;
         setMessages(
-          rows.map((r) => ({
-            id: r.id,
-            role: r.role,
-            content: r.content,
-            model: r.model,
-          })),
+          rows.map((r) => ({ id: r.id, role: r.role, content: r.content, model: r.model })),
         );
       } catch {
         // Non-fatal — just start from an empty (welcome) state.
@@ -189,7 +206,43 @@ function CoachInner() {
     return () => {
       active = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
+
+  const switchConversation = useCallback(async (id: string) => {
+    setActiveConvId(id);
+    setShowChats(false);
+    setLoading(true);
+    try {
+      const rows = (await listConversationMessages(id)) as DbCoachMessage[];
+      setMessages(rows.map((r) => ({ id: r.id, role: r.role, content: r.content, model: r.model })));
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  const startNewChat = useCallback(async () => {
+    const conv = await createConversation();
+    setConversations((cur) => [conv, ...cur]);
+    setActiveConvId(conv.id);
+    setMessages([]);
+    setShowChats(false);
+  }, []);
+
+  const removeConversation = useCallback(
+    async (id: string) => {
+      await deleteConversation(id);
+      setConversations((cur) => {
+        const next = cur.filter((c) => c.id !== id);
+        if (id === activeConvId) {
+          if (next[0]) void switchConversation(next[0].id);
+          else void startNewChat();
+        }
+        return next;
+      });
+    },
+    [activeConvId, switchConversation, startNewChat],
+  );
 
   // If opened with ?session=, fetch a friendly label for the context chip.
   useEffect(() => {
@@ -226,10 +279,18 @@ function CoachInner() {
       setAwaiting(true);
 
       const useContext = Boolean(sessionId) && contextActive;
+      // First message names an untitled chat so the list stays scannable.
+      const conv = conversations.find((c) => c.id === activeConvId);
+      if (conv && !conv.title && activeConvId) {
+        const title = trimmed.slice(0, 48);
+        void renameConversation(activeConvId, title).catch(() => {});
+        setConversations((cur) => cur.map((c) => (c.id === activeConvId ? { ...c, title } : c)));
+      }
       const result = await askCoach({
         message: trimmed,
         mode: useContext ? "post_session" : "chat",
         sessionId: useContext ? sessionId ?? undefined : undefined,
+        conversationId: activeConvId ?? undefined,
       });
 
       setAwaiting(false);
@@ -254,7 +315,7 @@ function CoachInner() {
         },
       ]);
     },
-    [awaiting, sessionId, contextActive],
+    [awaiting, sessionId, contextActive, activeConvId, conversations],
   );
 
   function handleSubmit(e: React.FormEvent) {
@@ -269,9 +330,45 @@ function CoachInner() {
     <div className="coach-page">
       <PageHeader
         eyebrow="AI coach"
-        title="Coach"
+        title={conversations.find((c) => c.id === activeConvId)?.title || "Coach"}
         subtitle="Ask about your training, plan your next session, or talk through where to focus."
+        actions={
+          <div className="coach-header-actions">
+            <Button size="sm" variant="secondary" onClick={() => void startNewChat()}>
+              + New chat
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowChats((v) => !v)}>
+              Chats ({conversations.length})
+            </Button>
+          </div>
+        }
       />
+
+      {showChats && (
+        <Card className="coach-chats">
+          {conversations.length === 0 && <p className="coach-chats-empty">No chats yet.</p>}
+          {conversations.map((c) => (
+            <div key={c.id} className={`coach-chats-row${c.id === activeConvId ? " active" : ""}`}>
+              <button type="button" className="coach-chats-open" onClick={() => void switchConversation(c.id)}>
+                <strong>{c.title || "New conversation"}</strong>
+                <small>{relativeDate(c.updated_at)}</small>
+              </button>
+              <button
+                type="button"
+                className="coach-chats-delete"
+                aria-label={`Delete chat ${c.title || "New conversation"}`}
+                onClick={() => {
+                  if (window.confirm("Delete this chat? Its messages are removed; what the coach learned about you is kept.")) {
+                    void removeConversation(c.id);
+                  }
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </Card>
+      )}
 
       <Card className="coach-card ai-chat">
         <div className="coach-scroll" ref={scrollRef} aria-live="polite">

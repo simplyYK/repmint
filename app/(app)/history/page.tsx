@@ -459,7 +459,7 @@ function SessionDrawer({
             )}
 
             <div className="drawer-actions">
-              <LinkButton href={`/coach?session=${sessionId}`} variant="secondary">
+              <LinkButton href={`/coach?session=${sessionId}`} variant="secondary" size="sm">
                 Ask coach about this session
               </LinkButton>
               {confirmDelete ? (
@@ -473,7 +473,7 @@ function SessionDrawer({
                   </Button>
                 </div>
               ) : (
-                <Button variant="danger" onClick={() => setConfirmDelete(true)}>
+                <Button variant="ghost" size="sm" className="drawer-delete" onClick={() => setConfirmDelete(true)}>
                   Delete session
                 </Button>
               )}

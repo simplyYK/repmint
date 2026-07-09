@@ -17,6 +17,8 @@ export type AskCoachInput = {
   message: string;
   mode?: CoachChatMode;
   sessionId?: string;
+  /** Conversation this message belongs to (omit for quick-ask dock chats). */
+  conversationId?: string;
   /** What the user is currently looking at (route + on-screen summary), so the
    * coach can answer "about this page" questions. */
   pageContext?: string;
@@ -93,6 +95,7 @@ export async function askCoach(input: AskCoachInput): Promise<AskCoachResult> {
       message: input.message,
       mode: input.mode ?? "chat",
       sessionId: input.sessionId,
+      conversationId: input.conversationId,
       pageContext: input.pageContext,
     },
     headers: { Authorization: `Bearer ${token}` },

@@ -225,15 +225,27 @@ export type DbCoachMessage = {
   id: string;
   owner_id: string;
   session_id: string | null;
+  conversation_id: string | null;
   role: DbCoachRole;
   content: string;
   model: string | null;
   created_at: string;
 };
 
+export type DbCoachConversation = {
+  id: string;
+  owner_id: string;
+  title: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type DbUserSettings = {
   owner_id: string;
   ai_model: string;
+  /** Per-agent model overrides — null falls back to ai_model. */
+  ai_model_coach: string | null;
+  ai_model_planner: string | null;
   ai_instructions_override: string | null;
   /** Full system-prompt override for the chat coach agent. Null = built-in default. */
   ai_prompt_coach: string | null;

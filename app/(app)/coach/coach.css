@@ -184,3 +184,16 @@
 @media (max-width: 860px) {
   .coach-page { padding-bottom: 30px; }
 }
+
+/* Conversation switcher */
+.coach-header-actions { display: flex; gap: 8px; }
+.coach-chats { display: grid; gap: 4px; padding: 10px; }
+.coach-chats-empty { color: var(--text-muted); margin: 6px; }
+.coach-chats-row { align-items: center; border: 1px solid transparent; border-radius: var(--radius-sm); display: flex; gap: 6px; }
+.coach-chats-row.active { background: rgba(183, 255, 60, 0.08); border-color: rgba(183, 255, 60, 0.25); }
+.coach-chats-row:hover { background: rgba(244, 247, 251, 0.04); }
+.coach-chats-open { background: none; border: none; color: var(--text); cursor: pointer; display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; padding: 9px 10px; text-align: left; }
+.coach-chats-open strong { font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.coach-chats-open small { color: var(--text-muted); font-size: 0.72rem; }
+.coach-chats-delete { background: none; border: none; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; flex-shrink: 0; font-size: 0.9rem; height: 32px; width: 32px; }
+.coach-chats-delete:hover { color: var(--danger); }

@@ -139,10 +139,10 @@ Deno.serve(async (req) => {
 
   const { data: settings } = await adminClient
     .from("user_settings")
-    .select("ai_model, ai_instructions_override, ai_prompt_planner")
+    .select("ai_model, ai_model_planner, ai_instructions_override, ai_prompt_planner")
     .eq("owner_id", userId)
     .maybeSingle();
-  const model = settings?.ai_model || "google/gemini-2.5-flash";
+  const model = settings?.ai_model_planner || settings?.ai_model || "google/gemini-2.5-flash";
 
   const systemPrompt = [
     settings?.ai_prompt_planner?.trim() || DEFAULT_PLANNER_INSTRUCTIONS,
