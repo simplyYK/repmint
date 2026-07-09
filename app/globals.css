@@ -2678,3 +2678,30 @@ button.chip:hover { border-color: var(--line-strong); color: var(--text); }
   .landing-privacy-inner { flex-direction: column; gap: 10px; }
 }
 a.button { align-items: center; display: inline-flex; justify-content: center; text-decoration: none; }
+
+/* Landing: compact exercise category chips (replaces the 115-name text wall) */
+.exercise-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 26px auto 0; max-width: 720px; }
+.exercise-chip {
+  align-items: center;
+  background: rgba(27, 36, 48, 0.6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--text-soft);
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 700;
+  gap: 8px;
+  padding: 9px 16px;
+}
+.exercise-chip em { color: var(--accent); font-family: var(--font-mono); font-size: 0.78rem; font-style: normal; font-weight: 700; }
+
+/* Landing mobile: tighter, less text-dense */
+@media (max-width: 640px) {
+  .landing-hero-copy h1 { font-size: clamp(1.8rem, 8.5vw, 2.4rem); }
+  .landing-lead { font-size: 0.98rem; line-height: 1.55; }
+  .landing-microtrust { font-size: 0.68rem; }
+  .scene-text p { font-size: 0.95rem; }
+  .landing-step p { font-size: 0.88rem; }
+  .landing-stats { padding-block: 18px; }
+  .landing-stat small { font-size: 0.66rem; }
+}
