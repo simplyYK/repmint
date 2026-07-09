@@ -11,21 +11,12 @@ import { getActivePlan, listSessions, listTemplates, getProfile, type ActivePlan
 import type { DbSession, DbProfile } from "../../lib/types";
 import { computeStreak, relativeDate, formatDuration } from "../../lib/format";
 import { athleteImageFor } from "../../lib/athleteImage";
+import { estimateTemplateMinutes } from "../../lib/library";
 import "./hub.css";
 
-/**
- * Estimated minutes for a template: per exercise, sets × (target_seconds or
- * target_reps × 4s of work) plus rest between sets, rounded to the nearest 5.
- * Falls back to the stored est_duration_min when there are no exercises.
- */
+/** Realistic session estimate (shared logic — see lib/library). */
 function estimateMinutes(t: TemplateWithExercises): number | null {
-  if (t.exercises.length === 0) return t.est_duration_min ?? null;
-  let seconds = 0;
-  for (const ex of t.exercises) {
-    const perSet = ex.target_seconds ?? (ex.target_reps ?? 10) * 4;
-    seconds += ex.sets * perSet + Math.max(0, ex.sets - 1) * ex.rest_seconds;
-  }
-  return Math.max(5, Math.round(seconds / 60 / 5) * 5);
+  return estimateTemplateMinutes(t);
 }
 
 const FIRST_RUN_OPTIONS = [

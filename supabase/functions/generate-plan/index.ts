@@ -194,10 +194,11 @@ Deno.serve(async (req) => {
       const { templateId, title } = await persistWorkout(adminClient, userId, day, {
         goal: focus || goal,
         planTitle: planJson.title,
+        sessionMinutes,
       });
       return json({ templateId, title });
     }
-    const planId = await persistPlan(adminClient, userId, planJson, { goal, weeks, model });
+    const planId = await persistPlan(adminClient, userId, planJson, { goal, weeks, model, sessionMinutes });
     return json({ planId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Could not save the generated workout";
@@ -256,7 +257,7 @@ Rules:
 - Use ONLY exercise slugs from the allowed list provided in the user message. Never invent slugs.
 - Rest days have isRest=true and an empty exercises array.
 - Number of non-rest days should match the requested days per week; total days in the array should cover one full weekly cycle (7 entries recommended, rest days included).
-- Keep each session realistic for the requested session length.
+- Keep each session realistic for the requested session length: include enough exercises and sets to genuinely FILL it, counting work time, the prescribed rest after every set, and ~90s between exercises.
 - No clinical, injury-prevention, or guaranteed-outcome claims in any text field (see AGENTS.md claim-safety rules).`;
 
 const WORKOUT_SYSTEM_APPENDIX = `You are now generating ONE standalone workout for today, not a weekly plan and not a chat reply.
@@ -291,6 +292,7 @@ Rules:
 - Exactly ONE day, isRest=false, 3-8 exercises sized to the requested session length.
 - Honor the user's stated focus for today (muscle groups, vibe, constraints they mention).
 - Use ONLY exercise slugs from the allowed list. Never invent slugs.
+- Size the session to genuinely FILL the requested minutes: count work time, the prescribed rest after every set, and ~90s between exercises.
 - No clinical, injury-prevention, or guaranteed-outcome claims in any text field.`;
 
 function buildWorkoutPrompt(input: {
@@ -399,7 +401,7 @@ async function persistWorkout(
   adminClient: ReturnType<typeof createClient>,
   userId: string,
   day: PlanDayJson,
-  meta: { goal: string; planTitle: string },
+  meta: { goal: string; planTitle: string; sessionMinutes: number },
 ) {
   const title = day.title?.trim() || meta.planTitle;
   const { data: templateRow, error: templateError } = await adminClient
@@ -410,7 +412,7 @@ async function persistWorkout(
       description: day.focus || null,
       source: "ai",
       goal: meta.goal.slice(0, 120) || null,
-      est_duration_min: null,
+      est_duration_min: meta.sessionMinutes,
       is_public: false,
     })
     .select("id")
@@ -440,7 +442,7 @@ async function persistPlan(
   adminClient: ReturnType<typeof createClient>,
   userId: string,
   plan: PlanJson,
-  meta: { goal: string; weeks: number; model: string },
+  meta: { goal: string; weeks: number; model: string; sessionMinutes: number },
 ) {
   // One active plan at a time: generating a new plan retires the old one.
   await adminClient.from("plans").update({ status: "archived" }).eq("owner_id", userId).eq("status", "active");
@@ -473,7 +475,7 @@ async function persistPlan(
           description: day.focus || null,
           source: "ai",
           goal: meta.goal,
-          est_duration_min: null,
+          est_duration_min: meta.sessionMinutes,
           is_public: false,
         })
         .select("id")

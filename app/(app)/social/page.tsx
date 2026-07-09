@@ -77,12 +77,23 @@ function sinceLabel(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, { month: "short", year: "numeric" });
 }
 
+/** Which entry of a friendship row is the OTHER athlete. */
+function otherIdOf(e: FriendEntry): string {
+  return e.outgoing ? e.friendship.friend_id : e.friendship.user_id;
+}
+
+type SocialView = "friends" | "competitions";
+
 export default function SocialPage() {
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState<Notice>(null);
   const [graph, setGraph] = useState<SocialGraph>({ friends: [], incoming: [], outgoing: [] });
   const [discoverable, setDiscoverableState] = useState<boolean | null>(null);
   const [hasUsername, setHasUsername] = useState(true);
+  const [view, setView] = useState<SocialView>("friends");
+
+  // Glanceable per-friend stats for the friends grid (privacy-safe RPC).
+  const [cardStats, setCardStats] = useState<Map<string, FriendStats>>(new Map());
 
   // Search state
   const [query, setQuery] = useState("");
@@ -99,6 +110,15 @@ export default function SocialPage() {
       const p = prof as { is_public?: boolean; username?: string | null } | null;
       setDiscoverableState(Boolean(p?.is_public));
       setHasUsername(Boolean(p?.username));
+      // Core stats for every friend card, fetched in parallel; failures just
+      // leave that card without the stat line.
+      const ids = g.friends.map(otherIdOf);
+      const stats = await Promise.all(ids.map((id) => getFriendStats(id).catch(() => null)));
+      const map = new Map<string, FriendStats>();
+      ids.forEach((id, i) => {
+        if (stats[i]) map.set(id, stats[i] as FriendStats);
+      });
+      setCardStats(map);
     } catch (err) {
       setNotice({ tone: "danger", text: err instanceof Error ? err.message : "Could not load your community." });
     } finally {
@@ -194,150 +214,194 @@ export default function SocialPage() {
     return <FriendProfile entry={viewing} onBack={() => setViewing(null)} onUnfriend={() => handleRemove(viewing, "Removed from your friends")} />;
   }
 
+  const pendingCount = graph.incoming.length;
+
   return (
     <div className="stack">
       <PageHeader
         eyebrow="Community"
         title="Train with your people."
-        subtitle="Find friends, see their profiles, and share workouts."
+        subtitle="Friends, shared workouts, and week-long competitions."
       />
+
+      {/* Two clear spaces instead of one long scroll: your people, and the
+          competitions between them. Works as wrapping pills on mobile. */}
+      <div className="soc-tabs" role="tablist" aria-label="Community sections">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === "friends"}
+          className={`soc-tab${view === "friends" ? " active" : ""}`}
+          onClick={() => setView("friends")}
+        >
+          Friends{graph.friends.length > 0 ? ` · ${graph.friends.length}` : ""}
+          {pendingCount > 0 && <span className="soc-tab-badge">{pendingCount}</span>}
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={view === "competitions"}
+          className={`soc-tab${view === "competitions" ? " active" : ""}`}
+          onClick={() => setView("competitions")}
+        >
+          Competitions
+        </button>
+      </div>
 
       {notice && <InlineNotice tone={notice.tone}>{notice.text}</InlineNotice>}
 
-      <Card className="soc-visibility">
-        <div className="setting-label">
-          <strong>Discoverable</strong>
-          <small>
-            {discoverable
-              ? "Other athletes can find you by your username or name."
-              : "You're hidden from search. Turn this on so friends can find you."}
-            {!hasUsername && " Tip: set a username in Settings so you're easy to find."}
-          </small>
-        </div>
-        <button
-          type="button"
-          className={`toggle${discoverable ? " on" : ""}`}
-          role="switch"
-          aria-checked={Boolean(discoverable)}
-          aria-label="Discoverable"
-          onClick={toggleDiscoverable}
-        >
-          <span />
-        </button>
-      </Card>
-
-      <section>
-        <SectionTitle>Find athletes</SectionTitle>
-        <input
-          className="soc-search"
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by username or name…"
-          aria-label="Search athletes"
-        />
-        {searching && <Spinner label="Searching…" />}
-        {results !== null && !searching && (
-          <div className="soc-list">
-            {results.length === 0 ? (
-              <p className="soc-empty">No discoverable athletes match “{query.trim()}”.</p>
-            ) : (
-              results.map((p) => {
-                const rel = relationOf.get(p.id);
-                return (
-                  <Card key={p.id} className="soc-row">
-                    <Avatar profile={p} />
+      {view === "competitions" ? (
+        <Competitions hasFriends={graph.friends.length > 0} onNotice={setNotice} />
+      ) : (
+        <>
+          {graph.incoming.length > 0 && (
+            <section>
+              <SectionTitle>Requests</SectionTitle>
+              <div className="soc-list">
+                {graph.incoming.map((e) => (
+                  <Card key={e.friendship.id} className="soc-row">
+                    <Avatar profile={e.profile} />
                     <div className="soc-row-text">
-                      <strong>{nameOf(p)}</strong>
-                      {p.username && p.display_name && <small>@{p.username}</small>}
+                      <strong>{nameOf(e.profile)}</strong>
+                      <small>wants to be friends</small>
                     </div>
-                    {rel === "friends" ? (
-                      <span className="soc-tag">Friends</span>
-                    ) : rel === "outgoing" ? (
-                      <span className="soc-tag">Requested</span>
-                    ) : rel === "incoming" ? (
-                      <span className="soc-tag">Wants to connect</span>
-                    ) : (
-                      <Button size="sm" onClick={() => handleAdd(p)}>
-                        Add friend
+                    <div className="row-wrap">
+                      <Button size="sm" onClick={() => handleAccept(e)}>
+                        Accept
                       </Button>
-                    )}
+                      <Button size="sm" variant="ghost" onClick={() => handleRemove(e, "Request declined")}>
+                        Decline
+                      </Button>
+                    </div>
                   </Card>
-                );
-              })
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section>
+            <SectionTitle>
+              Friends{graph.friends.length > 0 ? ` · ${graph.friends.length}` : ""}
+            </SectionTitle>
+            {graph.friends.length === 0 ? (
+              <Card className="soc-empty-card">
+                <p>No friends yet. Search below — or share your username so people can find you.</p>
+              </Card>
+            ) : (
+              <div className="soc-grid">
+                {graph.friends.map((e) => {
+                  const s = cardStats.get(otherIdOf(e));
+                  return (
+                    <button key={e.friendship.id} type="button" className="soc-friend-card" onClick={() => setViewing(e)}>
+                      <Avatar profile={e.profile} size={56} />
+                      <strong>{nameOf(e.profile)}</strong>
+                      {e.profile?.username && <small>@{e.profile.username}</small>}
+                      {s ? (
+                        s.last_trained_at ? (
+                          <span className="soc-friend-stats">
+                            <em>{s.sessions_7d}</em> this week · <em>{s.reps_28d.toLocaleString()}</em> reps · trained{" "}
+                            {agoLabel(s.last_trained_at)}
+                          </span>
+                        ) : (
+                          <span className="soc-friend-stats">No workouts logged yet</span>
+                        )
+                      ) : (
+                        <span className="soc-friend-since">Friends since {sinceLabel(e.friendship.created_at)}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             )}
-          </div>
-        )}
-      </section>
+          </section>
 
-      <Competitions hasFriends={graph.friends.length > 0} onNotice={setNotice} />
+          <section>
+            <SectionTitle>Find athletes</SectionTitle>
+            <input
+              className="soc-search"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by username or name…"
+              aria-label="Search athletes"
+            />
+            {searching && <Spinner label="Searching…" />}
+            {results !== null && !searching && (
+              <div className="soc-list">
+                {results.length === 0 ? (
+                  <p className="soc-empty">No discoverable athletes match “{query.trim()}”.</p>
+                ) : (
+                  results.map((p) => {
+                    const rel = relationOf.get(p.id);
+                    return (
+                      <Card key={p.id} className="soc-row">
+                        <Avatar profile={p} />
+                        <div className="soc-row-text">
+                          <strong>{nameOf(p)}</strong>
+                          {p.username && p.display_name && <small>@{p.username}</small>}
+                        </div>
+                        {rel === "friends" ? (
+                          <span className="soc-tag">Friends</span>
+                        ) : rel === "outgoing" ? (
+                          <span className="soc-tag">Requested</span>
+                        ) : rel === "incoming" ? (
+                          <span className="soc-tag">Wants to connect</span>
+                        ) : (
+                          <Button size="sm" onClick={() => handleAdd(p)}>
+                            Add friend
+                          </Button>
+                        )}
+                      </Card>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </section>
 
-      {graph.incoming.length > 0 && (
-        <section>
-          <SectionTitle>Requests</SectionTitle>
-          <div className="soc-list">
-            {graph.incoming.map((e) => (
-              <Card key={e.friendship.id} className="soc-row">
-                <Avatar profile={e.profile} />
-                <div className="soc-row-text">
-                  <strong>{nameOf(e.profile)}</strong>
-                  <small>wants to be friends</small>
-                </div>
-                <div className="row-wrap">
-                  <Button size="sm" onClick={() => handleAccept(e)}>
-                    Accept
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => handleRemove(e, "Request declined")}>
-                    Decline
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
+          {graph.outgoing.length > 0 && (
+            <section>
+              <SectionTitle>Sent</SectionTitle>
+              <div className="soc-list">
+                {graph.outgoing.map((e) => (
+                  <Card key={e.friendship.id} className="soc-row">
+                    <Avatar profile={e.profile} />
+                    <div className="soc-row-text">
+                      <strong>{nameOf(e.profile)}</strong>
+                      <small>request pending</small>
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => handleRemove(e, "Request cancelled")}>
+                      Cancel
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
 
-      {graph.outgoing.length > 0 && (
-        <section>
-          <SectionTitle>Sent</SectionTitle>
-          <div className="soc-list">
-            {graph.outgoing.map((e) => (
-              <Card key={e.friendship.id} className="soc-row">
-                <Avatar profile={e.profile} />
-                <div className="soc-row-text">
-                  <strong>{nameOf(e.profile)}</strong>
-                  <small>request pending</small>
-                </div>
-                <Button size="sm" variant="ghost" onClick={() => handleRemove(e, "Request cancelled")}>
-                  Cancel
-                </Button>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section>
-        <SectionTitle>
-          Friends{graph.friends.length > 0 ? ` · ${graph.friends.length}` : ""}
-        </SectionTitle>
-        {graph.friends.length === 0 ? (
-          <Card className="soc-empty-card">
-            <p>No friends yet. Search above — or share your username so people can find you.</p>
+          <Card className="soc-visibility">
+            <div className="setting-label">
+              <strong>Discoverable</strong>
+              <small>
+                {discoverable
+                  ? "Other athletes can find you by your username or name."
+                  : "You're hidden from search. Turn this on so friends can find you."}
+                {!hasUsername && " Tip: set a username in Settings so you're easy to find."}
+              </small>
+            </div>
+            <button
+              type="button"
+              className={`toggle${discoverable ? " on" : ""}`}
+              role="switch"
+              aria-checked={Boolean(discoverable)}
+              aria-label="Discoverable"
+              onClick={toggleDiscoverable}
+            >
+              <span />
+            </button>
           </Card>
-        ) : (
-          <div className="soc-grid">
-            {graph.friends.map((e) => (
-              <button key={e.friendship.id} type="button" className="soc-friend-card" onClick={() => setViewing(e)}>
-                <Avatar profile={e.profile} size={56} />
-                <strong>{nameOf(e.profile)}</strong>
-                {e.profile?.username && <small>@{e.profile.username}</small>}
-                <span className="soc-friend-since">Friends since {sinceLabel(e.friendship.created_at)}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </section>
+        </>
+      )}
     </div>
   );
 }

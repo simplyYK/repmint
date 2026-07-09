@@ -130,3 +130,35 @@ export function matchesQuery(meta: ExerciseMeta, query: string): boolean {
   if (meta.primaryMuscles.some((m) => MUSCLE_LABEL[m].toLowerCase().includes(q))) return true;
   return false;
 }
+
+/**
+ * Realistic session-length estimate for a workout template, in minutes.
+ *
+ * Stored est_duration_min wins when present — for AI-generated workouts it's
+ * the session length the user actually asked for; for system templates it's
+ * curated. Otherwise, estimate honestly: work (target seconds, or ~5s per
+ * rep) plus the prescribed rest after EVERY set, ~90s of racking/setup
+ * between exercises, and a warm-up buffer on full sessions. The old formula
+ * skipped rest tails, transitions, and warm-up, which is how a 16-set
+ * strength day read as "~20 min".
+ */
+export function estimateTemplateMinutes(t: {
+  est_duration_min?: number | null;
+  exercises: Array<{
+    sets: number;
+    target_reps: number | null;
+    target_seconds: number | null;
+    rest_seconds: number | null;
+  }>;
+}): number | null {
+  if (t.est_duration_min && t.est_duration_min > 0) return t.est_duration_min;
+  if (t.exercises.length === 0) return null;
+  let seconds = 0;
+  for (const ex of t.exercises) {
+    const work = ex.target_seconds ?? (ex.target_reps ?? 10) * 5;
+    seconds += ex.sets * (work + (ex.rest_seconds ?? 60));
+  }
+  seconds += Math.max(0, t.exercises.length - 1) * 90;
+  if (t.exercises.length >= 3) seconds += 300;
+  return Math.max(10, Math.round(seconds / 60 / 5) * 5);
+}

@@ -19,7 +19,7 @@ import {
   Reveal,
 } from "../../components/ui/primitives";
 import { MovementGlyph } from "../../components/visuals";
-import { glyphCategory, getMeta, equipmentLabel } from "../../lib/library";
+import { glyphCategory, getMeta, equipmentLabel, estimateTemplateMinutes } from "../../lib/library";
 import {
   listTemplates,
   listSessions,
@@ -70,15 +70,9 @@ function equipmentSummary(t: TemplateWithExercises): string {
   return items.length > 2 ? `${labels.join(", ")} +${items.length - 2}` : labels.join(", ");
 }
 
-/** est_duration_min if set, otherwise a work+rest estimate rounded to 5 min. */
+/** Realistic session estimate (shared logic — see lib/library). */
 function estimateMinutes(t: TemplateWithExercises): number {
-  if (t.est_duration_min) return t.est_duration_min;
-  let seconds = 0;
-  for (const ex of t.exercises) {
-    const work = ex.target_seconds ?? (ex.target_reps ?? 10) * 3;
-    seconds += ex.sets * (work + (ex.rest_seconds ?? 60));
-  }
-  return Math.max(5, Math.round(seconds / 60 / 5) * 5);
+  return estimateTemplateMinutes(t) ?? t.est_duration_min ?? 30;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {

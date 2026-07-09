@@ -28,7 +28,7 @@ import {
   type TemplateWithExercises,
   type ActivePlan,
 } from "../../lib/db";
-import { getMovementForSlug, getMeta, TIER_INFO } from "../../lib/library";
+import { getMovementForSlug, getMeta, TIER_INFO, estimateTemplateMinutes } from "../../lib/library";
 import { configFromProfile, DEFAULT_PROFILE } from "../../lib/types";
 import type { DbSession } from "../../lib/types";
 import type { MovementDef } from "../../lib/movements/types";
@@ -68,13 +68,19 @@ function compressPlanned(sets: PlannedSet[]): PlannedSet[] {
   return kept.map((s) => ({ ...s, totalSets: totals.get(s.exerciseSlug) ?? s.totalSets }));
 }
 
-/** Estimated minutes for the planned sets (work + rest), rounded to 5. */
+/** Realistic minutes for the planned sets: work + rest per set, racking/setup
+ * between exercises, and a warm-up buffer on full sessions (mirrors
+ * estimateTemplateMinutes in lib/library). */
 function estimateSessionMinutes(sets: PlannedSet[]): number {
   let seconds = 0;
+  const exercises = new Set<string>();
   for (const s of sets) {
-    seconds += s.targetSeconds ?? (s.targetReps ?? 10) * 4;
+    exercises.add(s.exerciseSlug);
+    seconds += s.targetSeconds ?? (s.targetReps ?? 10) * 5;
     seconds += s.restSeconds ?? 60;
   }
+  seconds += Math.max(0, exercises.size - 1) * 90;
+  if (exercises.size >= 3) seconds += 300;
   return Math.max(5, Math.round(seconds / 60 / 5) * 5);
 }
 
@@ -532,7 +538,7 @@ function SessionLauncher({ onPickSlug }: { onPickSlug: (slug: string) => void })
                   <strong>{t.title}</strong>
                   <small>
                     {t.exercises.length} exercises
-                    {t.est_duration_min ? ` · ~${t.est_duration_min} min` : ""}
+                    {estimateTemplateMinutes(t) ? ` · ~${estimateTemplateMinutes(t)} min` : ""}
                   </small>
                 </Link>
               ))}

@@ -123,6 +123,70 @@
   margin-top: 4px;
 }
 
+/* Glanceable training stats on each friend card. */
+.soc-friend-stats {
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.soc-friend-stats em {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* --- Section tabs: Friends | Competitions -------------------------------- */
+
+.soc-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.soc-tab {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  gap: 8px;
+  letter-spacing: 0.06em;
+  padding: 9px 18px;
+  text-transform: uppercase;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.soc-tab:hover {
+  border-color: rgba(183, 255, 60, 0.45);
+  color: var(--text);
+}
+
+.soc-tab.active {
+  background: rgba(183, 255, 60, 0.09);
+  border-color: rgba(183, 255, 60, 0.65);
+  color: var(--accent);
+}
+
+.soc-tab-badge {
+  background: var(--accent);
+  border-radius: 999px;
+  color: #0b0e12;
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 16px;
+  padding: 3px 5px;
+  text-align: center;
+}
+
 .soc-profile-head {
   align-items: center;
   display: flex;
