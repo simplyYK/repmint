@@ -24,11 +24,13 @@ export class RealtimeVoice {
   private lastConnectAttempt = 0;
   /** Set by finishAndClose; seals the engine so no cue can ever follow it. */
   private closing: Promise<void> | null = null;
-  /** Resolves the finishAndClose wait when the final line's audio is done. */
-  private onFinalDone: (() => void) | null = null;
+  /** Resolves when the final line finished GENERATING (response.done). */
+  private onFinalGenDone: (() => void) | null = null;
+  /** Resolves when the final line finished PLAYING (output_audio_buffer.stopped). */
+  private onFinalAudioStopped: (() => void) | null = null;
   /** True from the moment the final cue is sent until its response.created. */
   private awaitingFinalCreated = false;
-  /** The final cue's response id — the ONLY response.done that may close us. */
+  /** The final cue's response id — the ONLY response that may close us. */
   private finalResponseId: string | null = null;
   /** Sticky after a hard failure; CoachVoice checks this to fall back. */
   failed = false;
@@ -138,9 +140,22 @@ export class RealtimeVoice {
           this.speaking = false;
           this.currentPriority = 0;
         }
+        // NOTE: response.done means the audio finished GENERATING, which runs
+        // far ahead of playback — closing here would cut the line off after a
+        // word. It only arms the fallback below; playout completion is the
+        // real close signal.
         if (isFinal) {
-          this.onFinalDone?.();
-          this.onFinalDone = null;
+          this.onFinalGenDone?.();
+          this.onFinalGenDone = null;
+        }
+      }
+      // WebRTC-only event: the output audio buffer fully DRAINED — the line
+      // has actually left the speaker. This is the true "speech complete".
+      if (evt.type === "output_audio_buffer.stopped") {
+        const rid = (evt.response_id as string | undefined) ?? null;
+        if (this.finalResponseId !== null && (rid === null || rid === this.finalResponseId)) {
+          this.onFinalAudioStopped?.();
+          this.onFinalAudioStopped = null;
         }
       }
     } catch {
@@ -187,8 +202,11 @@ export class RealtimeVoice {
     if (this.closing) return this.closing;
     this.closing = (async () => {
       try {
-        const done = new Promise<void>((resolve) => {
-          this.onFinalDone = resolve;
+        const genDone = new Promise<void>((resolve) => {
+          this.onFinalGenDone = resolve;
+        });
+        const audioStopped = new Promise<void>((resolve) => {
+          this.onFinalAudioStopped = resolve;
         });
         this.awaitingFinalCreated = true;
         // Interrupt whatever is mid-sentence — the closing line takes the floor.
@@ -198,11 +216,17 @@ export class RealtimeVoice {
           this.failed = true;
           return;
         }
-        // Wait for the audio, but never let a dropped event wedge the session.
-        await Promise.race([done, new Promise<void>((r) => setTimeout(r, 15_000))]);
-        // response.done marks GENERATION complete; WebRTC playout can trail it
-        // slightly. Give the tail a moment to leave the speaker before closing.
-        await new Promise<void>((r) => setTimeout(r, 900));
+        // The model GENERATES audio much faster than it PLAYS — response.done
+        // can arrive with seconds of speech still queued in the WebRTC playout
+        // buffer, so it must never close the session by itself. Close on
+        // output_audio_buffer.stopped (playback truly finished, +300ms pad);
+        // if that event never arrives, fall back to generation-done plus a
+        // drain window long enough for the whole line; 15s hard cap.
+        await Promise.race([
+          audioStopped.then(() => new Promise<void>((r) => setTimeout(r, 300))),
+          genDone.then(() => new Promise<void>((r) => setTimeout(r, 6_000))),
+          new Promise<void>((r) => setTimeout(r, 15_000)),
+        ]);
       } finally {
         this.dispose();
       }
@@ -223,9 +247,11 @@ export class RealtimeVoice {
   dispose(): void {
     this.stop();
     this.teardown();
-    // Unblock a pending finishAndClose wait so it can't outlive the session.
-    this.onFinalDone?.();
-    this.onFinalDone = null;
+    // Unblock any pending finishAndClose waits so they can't outlive the session.
+    this.onFinalGenDone?.();
+    this.onFinalGenDone = null;
+    this.onFinalAudioStopped?.();
+    this.onFinalAudioStopped = null;
   }
 
   private teardown(): void {
