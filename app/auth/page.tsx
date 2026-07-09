@@ -80,7 +80,16 @@ function AuthInner() {
         if (error) throw error;
       }
     } catch (err) {
-      setMessage({ tone: "error", text: err instanceof Error ? err.message : "Something went wrong. Try again." });
+      const raw = err instanceof Error ? err.message : "";
+      const isEmailRateLimit =
+        (err as { code?: string } | null)?.code === "over_email_send_rate_limit" || /rate limit/i.test(raw);
+      setMessage({
+        tone: "error",
+        text: isEmailRateLimit
+          ? "We've emailed this address too many times in the past hour. Sign in with your password instead, or wait an hour and try again."
+          : raw || "Something went wrong. Try again.",
+      });
+      if (isEmailRateLimit && mode === "magic") setMode("sign-in");
     } finally {
       setBusy(false);
     }

@@ -2705,3 +2705,21 @@ a.button { align-items: center; display: inline-flex; justify-content: center; t
   .landing-stats { padding-block: 18px; }
   .landing-stat small { font-size: 0.66rem; }
 }
+
+/* Landing hero: cinematic video backdrop */
+.landing-hero { overflow: hidden; position: relative; }
+.landing-hero-bg { inset: 0; position: absolute; z-index: 0; }
+.landing-hero-bg video, .landing-hero-bg img { height: 100%; object-fit: cover; opacity: 0.38; width: 100%; }
+.landing-hero-bg-scrim {
+  background:
+    linear-gradient(90deg, rgba(8, 10, 13, 0.92) 0%, rgba(8, 10, 13, 0.55) 55%, rgba(8, 10, 13, 0.35) 100%),
+    linear-gradient(180deg, rgba(8, 10, 13, 0.6) 0%, rgba(8, 10, 13, 0.2) 45%, var(--bg) 100%);
+  inset: 0;
+  position: absolute;
+}
+.landing-hero-copy, .landing-hero-visual { position: relative; z-index: 1; }
+@media (max-width: 640px) {
+  .landing-hero-bg video, .landing-hero-bg img { opacity: 0.3; }
+  .landing-hero-bg-scrim { background: linear-gradient(180deg, rgba(8, 10, 13, 0.85) 0%, rgba(8, 10, 13, 0.55) 50%, var(--bg) 100%); }
+}
+.scene-scrub { will-change: transform, opacity; }

@@ -8,6 +8,7 @@
 // prefers reduced motion. No video files, no heavy deps.
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { EXERCISES } from "../lib/movements/registry";
 import { listMeta, glyphCategory } from "../lib/library";
@@ -172,34 +173,105 @@ function HeroSkeleton() {
 }
 
 // ---- Scroll reveal ------------------------------------------------------
+/**
+ * Bidirectional reveal: fades/rises in when entering the viewport and eases
+ * back out when scrolled away in EITHER direction (viewport.once=false), so
+ * scrolling up replays the motion instead of leaving a static page.
+ */
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [shown, setShown] = useState(false);
+  const reduced = useReducedMotion();
+  if (reduced) return <div className={`revealed ${className}`}>{children}</div>;
+  return (
+    <motion.div
+      className={`revealed ${className}`}
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.25, margin: "-8% 0% -8% 0%" }}
+      transition={{ duration: 0.55, delay: delay / 1000, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/**
+ * ScrollScene: a feature scene whose text and visual are SCRUBBED by scroll
+ * position — they slide toward each other and settle as the section crosses
+ * the viewport center, then reverse on the way back up. Driven by a plain
+ * scroll listener + rAF (progress 0 at "section enters viewport", 1 at
+ * "section center reaches viewport center"), so it works in both directions
+ * with no animation-library measurement quirks.
+ */
+function useScrollProgress(ref: React.RefObject<HTMLElement | null>) {
+  const [progress, setProgress] = useState(0);
+  const lastRef = useRef(-1);
   useEffect(() => {
     if (prefersReducedMotion()) {
-      setShown(true);
+      setProgress(1);
       return;
     }
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setShown(true);
-            io.disconnect();
-          }
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    // Two triggers, one measurement: a continuous rAF loop for buttery
+    // per-frame scrubbing while the tab is visible, plus scroll/resize
+    // listeners so throttled or background contexts still update. State only
+    // changes on real movement.
+    let raf = 0;
+    const measure = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 when the section's top touches the viewport bottom, 1 after it has
+      // travelled 70% of the viewport — a long, visible scrub window.
+      const p = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));
+      if (Math.abs(p - lastRef.current) > 0.004) {
+        lastRef.current = p;
+        setProgress(p);
+      }
+    };
+    const tick = () => {
+      measure();
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const onScroll = () => measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    measure();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [ref]);
+  return progress;
+}
+
+function ScrollScene({
+  reverse = false,
+  text,
+  visual,
+}: {
+  reverse?: boolean;
+  text: ReactNode;
+  visual: ReactNode;
+}) {
+  const ref = useRef<HTMLElement | null>(null);
+  const p = useScrollProgress(ref);
+  const dir = reverse ? -1 : 1;
+  const ease = p * p * (3 - 2 * p); // smoothstep: motion stays visible across the whole scrub
+  const opacity = 0.2 + 0.8 * ease;
+  const textStyle = { transform: `translateX(${(1 - ease) * -56 * dir}px)`, opacity };
+  const visualStyle = { transform: `translateX(${(1 - ease) * 56 * dir}px) scale(${0.94 + 0.06 * ease})`, opacity };
+
   return (
-    <div ref={ref} className={`reveal ${shown ? "revealed" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
+    <section ref={ref} className={`landing-scene${reverse ? " reverse" : ""}`}>
+      <div className="scene-text revealed scene-scrub" style={textStyle}>
+        {text}
+      </div>
+      <div className="scene-visual revealed scene-scrub" style={visualStyle}>
+        {visual}
+      </div>
+    </section>
   );
 }
 
@@ -215,6 +287,14 @@ export default function Landing() {
   const router = useRouter();
   const onGetStarted = () => router.push("/auth?mode=sign-up");
   const onSignIn = () => router.push("/auth");
+  // Hero parallax: the demo card drifts up slightly faster than the copy as
+  // you scroll away, and both ease back when you scroll up (scroll-linked,
+  // not time-linked). No-ops under prefers-reduced-motion.
+  const reducedHero = useReducedMotion();
+  const { scrollY } = useScroll();
+  const heroVisualY = useTransform(scrollY, [0, 700], [0, -72]);
+  const heroCopyY = useTransform(scrollY, [0, 700], [0, 44]);
+  const heroFade = useTransform(scrollY, [0, 560], [1, 0.35]);
   const totalExercises = Object.keys(EXERCISES).length;
   // All real categories with counts (not just the 4 legacy camera groups).
   const categoryCounts = listMeta().reduce<Record<string, number>>((acc, ex) => {
@@ -249,7 +329,21 @@ export default function Landing() {
       </header>
 
       <section className="landing-hero">
-        <div className="landing-hero-copy">
+        {/* Cinematic backdrop (Pexels free license). Static poster under
+            prefers-reduced-motion; scrim keeps copy readable and blends the
+            clip into the page background. */}
+        <div className="landing-hero-bg" aria-hidden>
+          {reducedHero ? (
+            <img src="/videos/hero-poster.jpg" alt="" />
+          ) : (
+            <video autoPlay muted loop playsInline preload="metadata" poster="/videos/hero-poster.jpg" src="/videos/hero-bg.mp4" />
+          )}
+          <div className="landing-hero-bg-scrim" />
+        </div>
+        <motion.div
+          className="landing-hero-copy"
+          style={reducedHero ? undefined : { y: heroCopyY, opacity: heroFade }}
+        >
           <Reveal>
             <p className="micro-label">Your AI camera coach</p>
             <h1>A personal trainer, living in your camera.</h1>
@@ -269,10 +363,13 @@ export default function Landing() {
               Video never leaves your device · No equipment needed · Free to start
             </p>
           </Reveal>
-        </div>
-        <div className="landing-hero-visual">
+        </motion.div>
+        <motion.div
+          className="landing-hero-visual"
+          style={reducedHero ? undefined : { y: heroVisualY }}
+        >
           <HeroSkeleton />
-        </div>
+        </motion.div>
       </section>
 
       <section className="landing-stats" aria-label="RepMint by the numbers">
@@ -321,14 +418,17 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="landing-scene">
-        <Reveal className="scene-text">
-          <p className="micro-label">Every rep, counted</p>
+      <ScrollScene
+        text={
+          <>
+            <p className="micro-label">Every rep, counted</p>
           <h2>It counts the reps that actually count.</h2>
           <p>Half-reps don&apos;t fool it — only full range of motion makes the count.</p>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="scene-card">
+          </>
+        }
+        visual={
+          <>
+            <div className="scene-card">
             <div className="scene-metric">
               <small>Reps</small>
               <strong>8 / 8</strong>
@@ -343,34 +443,42 @@ export default function Landing() {
               <span>Tempo 3-1-1-0</span>
             </div>
           </div>
-        </Reveal>
-      </section>
+          </>
+        }
+      />
 
-      <section className="landing-scene reverse">
-        <Reveal className="scene-text">
-          <p className="micro-label">A coach that speaks up</p>
+      <ScrollScene reverse
+        text={
+          <>
+            <p className="micro-label">A coach that speaks up</p>
           <h2>It talks you through the set.</h2>
           <p>You can&apos;t read a screen mid-squat — so your coach speaks, one cue at a time.</p>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="cue-stack">
+          </>
+        }
+        visual={
+          <>
+            <div className="cue-stack">
             {CUES.map((c, i) => (
               <div key={c} className="cue-line" style={{ transitionDelay: `${i * 120}ms` }}>
                 {c}
               </div>
             ))}
           </div>
-        </Reveal>
-      </section>
+          </>
+        }
+      />
 
-      <section className="landing-scene">
-        <Reveal className="scene-text">
-          <p className="micro-label">Fatigue, measured</p>
+      <ScrollScene
+        text={
+          <>
+            <p className="micro-label">Fatigue, measured</p>
           <h2>It knows when you&apos;re grinding.</h2>
           <p>Rep speed dropping? It tells you when to push and when to call it.</p>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="scene-card">
+          </>
+        }
+        visual={
+          <>
+            <div className="scene-card">
             <div className="scene-metric">
               <small>Rep speed</small>
               <strong>−18%</strong>
@@ -384,17 +492,21 @@ export default function Landing() {
               <span className="fatigue-tag">In the productive zone</span>
             </div>
           </div>
-        </Reveal>
-      </section>
+          </>
+        }
+      />
 
-      <section className="landing-scene reverse">
-        <Reveal className="scene-text">
-          <p className="micro-label">Plans that fit real life</p>
+      <ScrollScene reverse
+        text={
+          <>
+            <p className="micro-label">Plans that fit real life</p>
           <h2>Built around your week, not someone else&apos;s.</h2>
           <p>Your goal, your gear, your week — a full plan in seconds, with a 20-minute version for the days that go sideways.</p>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="landing-photo-card">
+          </>
+        }
+        visual={
+          <>
+            <div className="landing-photo-card">
             <img src="/images/athletes/home-training.jpg" alt="Athlete training at home" loading="lazy" />
             <div className="landing-photo-scrim" aria-hidden />
             <div className="landing-photo-caption">
@@ -403,17 +515,21 @@ export default function Landing() {
               <span>Short on time? 20-min version ready</span>
             </div>
           </div>
-        </Reveal>
-      </section>
+          </>
+        }
+      />
 
-      <section className="landing-scene">
-        <Reveal className="scene-text">
-          <p className="micro-label">A coach with memory</p>
+      <ScrollScene
+        text={
+          <>
+            <p className="micro-label">A coach with memory</p>
           <h2>It remembers your shoulder. And your goals.</h2>
           <p>Mention a tweaky shoulder once — every future session trains around it.</p>
-        </Reveal>
-        <Reveal className="scene-visual" delay={120}>
-          <div className="progress-preview">
+          </>
+        }
+        visual={
+          <>
+            <div className="progress-preview">
             <div className="progress-row">
               <span>This week</span>
               <strong>3 / 3</strong>
@@ -432,8 +548,9 @@ export default function Landing() {
               ))}
             </div>
           </div>
-        </Reveal>
-      </section>
+          </>
+        }
+      />
 
       <section className="landing-exercises">
         <Reveal>
