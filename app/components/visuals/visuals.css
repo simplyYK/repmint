@@ -26,52 +26,54 @@
 
 .rmviz-musclemap {
   display: flex;
+  flex-direction: column;
 }
 
-.rmviz-musclemap-figures {
-  display: flex;
-  gap: clamp(10px, 3vw, 28px);
+.rmviz-muscle-figs {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
+}
+
+.rmviz-muscle-figs-1 {
+  grid-template-columns: minmax(0, 320px);
   justify-content: center;
 }
 
-.rmviz-musclemap-figure-label {
-  fill: var(--rmviz-text-muted);
+.rmviz-muscle-fig {
+  margin: 0;
+  min-width: 0;
+}
+
+.rmviz-muscle-fig img {
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--rmviz-line, rgba(244, 247, 251, 0.1));
+  border-radius: 14px;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.rmviz-muscle-fig figcaption {
+  color: var(--rmviz-text-muted);
   font-family: var(--rmviz-mono);
-  font-size: 6px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+  text-align: center;
   text-transform: uppercase;
 }
 
-.rmviz-region {
-  fill: rgba(244, 247, 251, 0.06);
-  stroke: rgba(244, 247, 251, 0.14);
-  stroke-width: 0.6;
-  transition: fill 420ms cubic-bezier(0.22, 1, 0.36, 1), stroke 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 420ms ease;
+.rmviz-muscle-caption {
+  color: var(--rmviz-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 12px 0 0;
 }
 
-.rmviz-region.rmviz-region-secondary {
-  fill: rgba(72, 229, 194, 0.32);
-  stroke: rgba(72, 229, 194, 0.55);
-}
-
-.rmviz-region.rmviz-region-primary {
-  fill: rgba(183, 255, 60, 0.85);
-  stroke: rgba(183, 255, 60, 1);
-}
-
-.rmviz-body-outline {
-  fill: rgba(244, 247, 251, 0.025);
-  stroke: var(--rmviz-line-strong);
-  stroke-width: 0.75;
-}
-
-.rmviz-body-detail {
-  stroke: var(--rmviz-line);
-  stroke-width: 0.4;
-  fill: none;
-  opacity: 0.6;
+.rmviz-muscle-caption strong {
+  color: var(--rmviz-text, #f2f5f2);
 }
 
 /* ------------------------------- MovementGlyph ------------------------------- */
