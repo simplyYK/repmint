@@ -8,10 +8,17 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { PageHeader, Card, LinkButton, Metric, Spinner } from "../../components/ui/primitives";
-import { HeroVisual, MovementGlyph } from "../../components/visuals";
+import { HeroVisual } from "../../components/visuals";
 import { getActivePlan, listSessions, listTemplates, getProfile, type ActivePlan, type TemplateWithExercises } from "../../lib/db";
 import type { DbSession, DbProfile } from "../../lib/types";
 import { computeStreak, relativeDate, formatDuration } from "../../lib/format";
+
+const QUICK_ACTIONS = [
+  { href: "/train", img: "/images/quick-actions/start-workout.svg", label: "Start a workout", sub: "Camera coach" },
+  { href: "/plan", img: "/images/quick-actions/generate-plan.svg", label: "Generate a plan", sub: "AI, goal-based" },
+  { href: "/exercises", img: "/images/quick-actions/browse-exercises.svg", label: "Browse exercises", sub: "115 movements" },
+  { href: "/coach", img: "/images/quick-actions/ask-coach.svg", label: "Ask your coach", sub: "Grounded in your data" },
+];
 
 export default function HubPage() {
   const [loading, setLoading] = useState(true);
@@ -176,22 +183,13 @@ export default function HubPage() {
             <h2>Quick actions</h2>
           </div>
           <div className="hub-actions">
-            <Link href="/train" className="hub-action">
-              <MovementGlyph category="legs" />
-              <span>Start a workout</span>
-            </Link>
-            <Link href="/plan" className="hub-action">
-              <MovementGlyph category="core" />
-              <span>Generate a plan</span>
-            </Link>
-            <Link href="/exercises" className="hub-action">
-              <MovementGlyph category="pull" />
-              <span>Browse exercises</span>
-            </Link>
-            <Link href="/coach" className="hub-action">
-              <MovementGlyph category="mobility" />
-              <span>Ask your coach</span>
-            </Link>
+            {QUICK_ACTIONS.map((a) => (
+              <Link key={a.href} href={a.href} className="hub-action">
+                <img src={a.img} alt="" className="hub-action-img" />
+                <span className="hub-action-label">{a.label}</span>
+                <span className="hub-action-sub">{a.sub}</span>
+              </Link>
+            ))}
           </div>
           <Link href="/coach" className="hub-ai-teaser">
             <p className="eyebrow">AI coach</p>

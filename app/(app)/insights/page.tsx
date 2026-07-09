@@ -7,7 +7,7 @@
 // form % is presented as a coaching signal, not a precise measurement.
 
 import { useEffect, useMemo, useState } from "react";
-import { PageHeader, Card, LinkButton, Spinner, InlineNotice, SectionTitle } from "../../components/ui/primitives";
+import { PageHeader, Card, LinkButton, Spinner, InlineNotice, SectionTitle, SectionTabs } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { listSessions, getSessionDetail, getExerciseProgress, getProfile, type ExerciseProgressPoint } from "../../lib/db";
 import { getMeta } from "../../lib/library";
@@ -15,6 +15,11 @@ import { convertWeight } from "../../lib/format";
 import type { DbSession, DbSessionSet } from "../../lib/types";
 import { BarChart, LineChart, Sparkline, Heatmap, type BarDatum, type LinePoint, type HeatCell } from "./charts";
 import "./insights.css";
+
+const PROGRESS_TABS = [
+  { href: "/history", label: "History" },
+  { href: "/insights", label: "Insights" },
+];
 
 type Units = "kg" | "lb";
 
@@ -206,6 +211,7 @@ export default function InsightsPage() {
   if (sessions.length <= 1) {
     return (
       <div className="stack">
+        <SectionTabs tabs={PROGRESS_TABS} label="Progress section" />
         <PageHeader eyebrow="Training insights" title="Your progress, at a glance" />
         {error && <InlineNotice tone="danger">{error}</InlineNotice>}
         <Card className="insights-empty">
@@ -229,6 +235,7 @@ export default function InsightsPage() {
 
   return (
     <div className="stack">
+      <SectionTabs tabs={PROGRESS_TABS} label="Progress section" />
       <PageHeader
         eyebrow="Training insights"
         title="Your progress, at a glance"

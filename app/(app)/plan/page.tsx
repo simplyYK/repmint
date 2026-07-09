@@ -16,6 +16,7 @@ import {
   Spinner,
   InlineNotice,
   SectionTitle,
+  SectionTabs,
 } from "../../components/ui/primitives";
 import { EmptyState } from "../../components/visuals";
 import { listMeta } from "../../lib/library";
@@ -23,6 +24,11 @@ import { getActivePlan, getProfile, type ActivePlan } from "../../lib/db";
 import type { DbPlanDay } from "../../lib/types";
 import { generatePlan } from "../../lib/ai";
 import "./plan.css";
+
+const TRAINING_TABS = [
+  { href: "/workouts", label: "My workouts" },
+  { href: "/plan", label: "AI plan" },
+];
 
 const GOAL_OPTIONS: { value: string; label: string; hint: string }[] = [
   { value: "strength", label: "Strength", hint: "Build force with heavier, lower-rep work" },
@@ -130,6 +136,7 @@ function PlanView({ plan, onNew }: { plan: ActivePlan; onNew: () => void }) {
 
   return (
     <div className="stack">
+      <SectionTabs tabs={TRAINING_TABS} label="Workouts section" />
       <PageHeader
         eyebrow="Your active plan"
         title={plan.title}
@@ -289,6 +296,7 @@ function PlanWizard({
 
   return (
     <div className="stack">
+      <SectionTabs tabs={TRAINING_TABS} label="Workouts section" />
       <PageHeader
         eyebrow="Plan builder"
         title="Design your plan"

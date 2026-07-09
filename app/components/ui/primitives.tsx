@@ -5,6 +5,7 @@
 // theme with the single mint accent.
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 export function PageHeader({
@@ -158,5 +159,27 @@ export function SectionTitle({ children, action }: { children: ReactNode; action
       <h2>{children}</h2>
       {action}
     </div>
+  );
+}
+
+/** Pill switcher between sibling routes of one nav section (e.g. My workouts / AI plan). */
+export function SectionTabs({ tabs, label }: { tabs: { href: string; label: string }[]; label: string }) {
+  const pathname = usePathname();
+  return (
+    <nav className="section-tabs" aria-label={label}>
+      {tabs.map((t) => {
+        const active = pathname === t.href || pathname.startsWith(`${t.href}/`);
+        return (
+          <Link
+            key={t.href}
+            href={t.href}
+            className={`section-tab${active ? " active" : ""}`}
+            aria-current={active ? "page" : undefined}
+          >
+            {t.label}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

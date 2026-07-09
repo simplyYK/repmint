@@ -10,7 +10,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { PageHeader, Card, Button, LinkButton, Spinner, InlineNotice } from "../../components/ui/primitives";
+import { PageHeader, Card, Button, LinkButton, Spinner, InlineNotice, SectionTabs } from "../../components/ui/primitives";
 import { EmptyState, MovementGlyph } from "../../components/visuals";
 import { listSessions, getSessionDetail, getProfile } from "../../lib/db";
 import { getMeta, glyphCategory } from "../../lib/library";
@@ -18,6 +18,11 @@ import { relativeDate, shortDate, formatClock, formatDuration } from "../../lib/
 import { supabase } from "../../lib/supabaseClient";
 import type { DbSession, DbSessionSet } from "../../lib/types";
 import "./history.css";
+
+const PROGRESS_TABS = [
+  { href: "/history", label: "History" },
+  { href: "/insights", label: "Insights" },
+];
 
 type Units = "kg" | "lb";
 
@@ -141,6 +146,7 @@ function HistoryInner() {
 
   return (
     <div className="stack">
+      <SectionTabs tabs={PROGRESS_TABS} label="Progress section" />
       <PageHeader
         eyebrow="Training history"
         title="Your training calendar"

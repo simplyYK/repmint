@@ -10,27 +10,29 @@ import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "../../lib/session";
 
-type Tab = { href: string; label: string; icon: React.ReactNode };
+type Tab = { href: string; label: string; icon: React.ReactNode; match?: string[] };
 
-const TABS: Tab[] = [
-  { href: "/hub", label: "Hub", icon: <IconHub /> },
-  { href: "/exercises", label: "Exercises", icon: <IconLibrary /> },
+// Five primary destinations, ordered by the core loop: build → train → review → ask.
+// "Workouts" spans /workouts + /plan and "Progress" spans /history + /insights;
+// each pair is one nav entry with in-page SectionTabs between the siblings.
+const PRIMARY: Tab[] = [
+  { href: "/hub", label: "Home", icon: <IconHub /> },
+  { href: "/workouts", label: "Workouts", icon: <IconStack />, match: ["/workouts", "/plan"] },
   { href: "/train", label: "Train", icon: <IconCamera /> },
-  { href: "/history", label: "History", icon: <IconCalendar /> },
+  { href: "/history", label: "Progress", icon: <IconChart />, match: ["/history", "/insights"] },
   { href: "/coach", label: "Coach", icon: <IconCoach /> },
 ];
 
-// Secondary destinations reachable from the rail (desktop) / hub quick actions.
-const SECONDARY: Tab[] = [
-  { href: "/workouts", label: "Workouts", icon: <IconStack /> },
-  { href: "/plan", label: "Plan", icon: <IconPlan /> },
-  { href: "/insights", label: "Insights", icon: <IconChart /> },
+// Utility destinations: rail footer on desktop, top-bar icons on mobile.
+const UTILITY: Tab[] = [
+  { href: "/exercises", label: "Exercise library", icon: <IconLibrary /> },
   { href: "/settings", label: "Settings", icon: <IconGear /> },
 ];
 
-function isActive(pathname: string, href: string): boolean {
-  if (href === "/train") return pathname === "/train" || pathname.startsWith("/train?");
-  return pathname === href || pathname.startsWith(`${href}/`);
+function isActive(pathname: string, tab: Tab): boolean {
+  return (tab.match ?? [tab.href]).some(
+    (h) => pathname === h || pathname.startsWith(`${h}/`) || pathname.startsWith(`${h}?`)
+  );
 }
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -71,11 +73,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <strong>RepMint</strong>
         </Link>
         <nav className="shell-rail-nav">
-          {[...TABS, ...SECONDARY].map((t) => (
+          {PRIMARY.map((t) => (
             <Link
               key={t.href}
               href={t.href}
-              className={`shell-rail-item${isActive(pathname, t.href) ? " active" : ""}`}
+              className={`shell-rail-item${isActive(pathname, t) ? " active" : ""}`}
+            >
+              <span className="shell-icon" aria-hidden>
+                {t.icon}
+              </span>
+              <span>{t.label}</span>
+            </Link>
+          ))}
+          <div className="shell-rail-sep" role="presentation" />
+          {UTILITY.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className={`shell-rail-item shell-rail-item-utility${isActive(pathname, t) ? " active" : ""}`}
             >
               <span className="shell-icon" aria-hidden>
                 {t.icon}
@@ -85,6 +100,27 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
       </aside>
+
+      <header className="shell-mobile-top">
+        <Link href="/hub" className="shell-brand" aria-label="RepMint hub">
+          <span className="shell-brand-mark">R</span>
+          <strong>RepMint</strong>
+        </Link>
+        <div className="shell-mobile-actions">
+          {UTILITY.map((t) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className={`shell-mobile-action${isActive(pathname, t) ? " active" : ""}`}
+              aria-label={t.label}
+            >
+              <span className="shell-icon" aria-hidden>
+                {t.icon}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </header>
 
       <main className="shell-main">
         <AnimatePresence mode="wait">
@@ -102,12 +138,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <nav className="shell-tabbar" aria-label="Primary">
-        {TABS.map((t) => (
+        {PRIMARY.map((t) => (
           <Link
             key={t.href}
             href={t.href}
-            className={`shell-tab${isActive(pathname, t.href) ? " active" : ""}`}
-            aria-current={isActive(pathname, t.href) ? "page" : undefined}
+            className={`shell-tab${isActive(pathname, t) ? " active" : ""}`}
+            aria-current={isActive(pathname, t) ? "page" : undefined}
           >
             <span className="shell-icon" aria-hidden>
               {t.icon}
@@ -148,14 +184,6 @@ function IconCamera() {
     </svg>
   );
 }
-function IconCalendar() {
-  return (
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="5" width="18" height="16" rx="2" />
-      <path d="M3 9h18M8 3v4M16 3v4" />
-    </svg>
-  );
-}
 function IconCoach() {
   return (
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -169,14 +197,6 @@ function IconStack() {
     <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 3 3 8l9 5 9-5-9-5Z" />
       <path d="m3 13 9 5 9-5M3 18l9 5 9-5" opacity="0.55" />
-    </svg>
-  );
-}
-function IconPlan() {
-  return (
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-      <path d="M8 9h8M8 13h8M8 17h5" />
     </svg>
   );
 }

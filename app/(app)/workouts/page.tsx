@@ -14,6 +14,7 @@ import {
   Spinner,
   InlineNotice,
   SectionTitle,
+  SectionTabs,
 } from "../../components/ui/primitives";
 import { MovementGlyph, EmptyState } from "../../components/visuals";
 import { glyphCategory, getMeta } from "../../lib/library";
@@ -25,6 +26,11 @@ import {
 } from "../../lib/db";
 import { WorkoutBuilder } from "./WorkoutBuilder";
 import "./workouts.css";
+
+const TRAINING_TABS = [
+  { href: "/workouts", label: "My workouts" },
+  { href: "/plan", label: "AI plan" },
+];
 
 type ViewMode =
   | { kind: "list" }
@@ -93,6 +99,7 @@ export default function WorkoutsPage() {
 
   return (
     <div className="stack">
+      <SectionTabs tabs={TRAINING_TABS} label="Workouts section" />
       <PageHeader
         eyebrow="Your training library"
         title="Workouts"

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <path d="M95 61a35 35 0 1 1-8-22" fill="none" stroke="#b7ff3c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  <path d="M25 88c10 9 58 9 70 0" fill="none" stroke="#f4f7fb" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+  <circle cx="60" cy="25" r="7" fill="#141a22" stroke="#f4f7fb" stroke-width="4" opacity="0.9"/>
+  <circle cx="44" cy="45" r="5" fill="#b7ff3c" opacity="0.9"/>
+  <circle cx="76" cy="45" r="5" fill="#b7ff3c" opacity="0.9"/>
+  <circle cx="55" cy="57" r="5" fill="#48e5c2" opacity="0.9"/>
+  <circle cx="70" cy="71" r="5" fill="#b7ff3c" opacity="0.9"/>
+  <circle cx="38" cy="72" r="5" fill="#b7ff3c" opacity="0.9"/>
+  <circle cx="91" cy="77" r="5" fill="#48e5c2" opacity="0.9"/>
+  <circle cx="46" cy="93" r="5" fill="#48e5c2" opacity="0.9"/>
+  <circle cx="74" cy="94" r="5" fill="#b7ff3c" opacity="0.9"/>
+  <path d="M56 31 44 45M64 31l12 14M44 45l11 12M76 45 55 57M55 57l15 14M55 57 38 72M70 71l21 6M38 72l8 21M70 71l4 23" fill="none" stroke="#f4f7fb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.72"/>
+</svg>
