@@ -63,7 +63,7 @@
 > We didn't spend three weeks on slides. Week one: the camera engine — pose
 > tracking, honest rep counting, a 115-exercise library. Week two: the brain —
 > AI plans, a coach with long-term memory, full training history. Week three:
-> the feel — a realtime voice, a community, and hardening. Forty-plus
+> the feel — a realtime voice, a community, and hardening. Forty-five-plus
 > production deployments later, it's live at repmint-dot-vercel-dot-app.
 
 **[Slide 6 — Solution]** *(40s)*

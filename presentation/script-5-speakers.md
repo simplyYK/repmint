@@ -38,7 +38,7 @@ Same beats as 4-speaker Speaker 2:
 > about camera privacy. Lukas lives for the streak and his friends' respect.
 >
 > Three weeks: week one the camera engine, week two the AI brain, week three
-> voice, community and polish. 40+ deployments, live right now.
+> voice, community and polish. 45+ deployments, live right now — every exercise page now carries our own AI-illustrated muscle maps.
 >
 > Five superpowers: it sees (honest reps only), speaks (realtime voice), thinks
 > (plans + grounded chat), connects (competitions), protects (video never
