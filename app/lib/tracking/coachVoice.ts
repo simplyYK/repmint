@@ -115,30 +115,18 @@ export class CoachVoice {
   }
 
   /**
-   * End-of-workout closure: speak the final line through the active engine,
-   * then go silent for good. Realtime waits for the line's audio to finish
-   * and closes the WebRTC session (disposal is guaranteed even if it fails);
-   * browser/openai just speak it — nothing persistent to close. Idempotent.
+   * End-of-set/workout closure: the closing line is ALWAYS spoken on-device
+   * (Web Speech), word-exact and guaranteed to play out in full — a realtime
+   * model paraphrases the line and its session teardown can race playback.
+   * The realtime/tts engines are shut down quietly first so nothing talks
+   * over it and no session lingers. Idempotent.
    */
   async endWorkout(finalLine?: string): Promise<void> {
     if (this.ended) return;
     this.ended = true;
-
-    if (this.engine === "realtime" && this.realtime) {
-      const rt = this.realtime;
-      if (this._enabled && finalLine && !this.failed) {
-        await rt.finishAndClose(finalLine);
-        // Failure contract: realtime couldn't deliver it → on-device fallback.
-        if (rt.failed && this._enabled) this.speakBrowser(finalLine, 2);
-      } else {
-        rt.dispose();
-        if (this._enabled && finalLine) this.speakBrowser(finalLine, 2);
-      }
-      return;
-    }
-
-    // Existing milestone path (say() handles the openai → browser fallback).
-    if (this._enabled && finalLine) await this.say(finalLine, 2);
+    this.realtime?.dispose();
+    this.stopAudioOnly();
+    if (this._enabled && finalLine) this.speakBrowser(finalLine, 2);
   }
 
   stop(): void {

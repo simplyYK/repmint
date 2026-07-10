@@ -258,6 +258,7 @@ Rules:
 - Rest days have isRest=true and an empty exercises array.
 - Number of non-rest days should match the requested days per week; total days in the array should cover one full weekly cycle (7 entries recommended, rest days included).
 - Keep each session realistic for the requested session length: include enough exercises and sets to genuinely FILL it, counting work time, the prescribed rest after every set, and ~90s between exercises.
+- Vary rep ranges by each exercise's role and the goal: heavy compounds ~4-8 reps with 90-150s rests, accessories/isolation 8-15 reps with 60-90s rests, core/endurance work 12-20 reps or targetSeconds holds. Don't give every exercise the same scheme.
 - No clinical, injury-prevention, or guaranteed-outcome claims in any text field (see AGENTS.md claim-safety rules).`;
 
 const WORKOUT_SYSTEM_APPENDIX = `You are now generating ONE standalone workout for today, not a weekly plan and not a chat reply.
@@ -293,6 +294,7 @@ Rules:
 - Honor the user's stated focus for today (muscle groups, vibe, constraints they mention).
 - Use ONLY exercise slugs from the allowed list. Never invent slugs.
 - Size the session to genuinely FILL the requested minutes: count work time, the prescribed rest after every set, and ~90s between exercises.
+- Vary rep ranges by each exercise's role and the goal: heavy compounds ~4-8 reps with 90-150s rests, accessories/isolation 8-15 reps with 60-90s rests, core/endurance work 12-20 reps or targetSeconds holds. Don't give every exercise the same scheme.
 - No clinical, injury-prevention, or guaranteed-outcome claims in any text field.`;
 
 function buildWorkoutPrompt(input: {

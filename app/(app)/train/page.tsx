@@ -644,6 +644,15 @@ function LiveCoach({
   );
 }
 
+// Spoken after "Set complete." — rotates so back-to-back sets don't repeat.
+const SET_CLOSERS = [
+  "Good job.",
+  "Great work.",
+  "Strong set.",
+  "Nice control — keep that quality.",
+  "Well done.",
+];
+
 const FATIGUE_LABEL: Record<FatigueStatus, string | null> = {
   fresh: null,
   productive: "In the productive zone",
@@ -701,6 +710,8 @@ function CameraSet({
   const voiceRef = useRef<CoachVoice | null>(null);
   const analyticsRef = useRef(new SetAnalytics());
   const [repScores, setRepScores] = useState<number[]>([]);
+  // Target reached: surface "consider ending the set" while counting continues.
+  const [targetHit, setTargetHit] = useState(false);
   const repMetricsRef = useRef<Record<string, unknown>[]>([]);
   const lastSpokenCue = useRef<string>("");
   const lastRepNumber = useRef(0);
@@ -768,6 +779,15 @@ function CameraSet({
       );
     }
   }, [lastRep, movement.minRepFraction, config.tutTargetPerRep]);
+
+  // Target reached → say so once (on-device, word-exact) and keep counting.
+  useEffect(() => {
+    if (!active || isHold || !targetReps || targetHit) return;
+    if (snapshot.reps >= targetReps) {
+      setTargetHit(true);
+      voiceRef.current?.immediate(`That's ${targetReps} — target reached. Finish strong or end the set.`);
+    }
+  }, [snapshot.reps, active, isHold, targetReps, targetHit]);
 
   // Speak form cues when they change (adjust tone only — praise stays visual).
   useEffect(() => {
@@ -888,6 +908,7 @@ function CameraSet({
   const start = () => {
     setActive(true);
     setRepScores([]);
+    setTargetHit(false);
     repMetricsRef.current = [];
     analyticsRef.current.reset();
     fatigueSpoken.current = false;
@@ -901,14 +922,16 @@ function CameraSet({
     const out: SetOutcome = endSet();
     void releaseWake();
     // Each CameraSet owns its voice engine, so every set end is a closure
-    // point: endWorkout speaks the line, then shuts the engine down for good
-    // (realtime waits for the audio to finish before closing the WebRTC
-    // session). The last planned set gets the session send-off.
+    // point. The closing line is spoken ON-DEVICE, word-exact ("Set complete…"
+    // always lands in full); endWorkout shuts the realtime session down
+    // quietly first. The closer rotates per set; the last set gets the
+    // session send-off.
     const isLastSet = index >= total - 1;
+    const closer = SET_CLOSERS[(index + planned.setIndex) % SET_CLOSERS.length];
     void voiceRef.current?.endWorkout(
       isLastSet
-        ? "That's the session. Great work — go get some water."
-        : "Set done — nice work. Rest up.",
+        ? "Set complete. That's the whole session — great work. Go get some water."
+        : `Set complete. ${closer}`,
     );
     // Detach the voice coach so unmount cleanup can't cancel the line above;
     // endWorkout lets it finish on its own before disposing anything.
@@ -1048,9 +1071,11 @@ function CameraSet({
         )}
 
         {/* HUD: fatigue signal */}
-        {active && fatigueLabel && (
-          <div className={`hud-fatigue ${fatigue}`} aria-live="polite">
-            {fatigueLabel}
+        {active && (targetHit || fatigueLabel) && (
+          <div className={`hud-fatigue ${targetHit ? "productive" : fatigue}`} aria-live="polite">
+            {targetHit
+              ? `Target hit — ${targetReps} reps ✓ Finish strong or end the set`
+              : fatigueLabel}
           </div>
         )}
 
@@ -1145,6 +1170,7 @@ function CameraSet({
                 resetSet();
                 setActive(false);
                 setRepScores([]);
+                setTargetHit(false);
                 repMetricsRef.current = [];
                 analyticsRef.current.reset();
                 lastRepNumber.current = 0;
