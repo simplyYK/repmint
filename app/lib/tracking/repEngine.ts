@@ -12,6 +12,23 @@
 //    minimum depth fraction — partial reps are ignored.
 //  - Refractory period so a fast bounce can't register two reps.
 //  - Per-phase timing → eccentric / pause / concentric seconds and TUT.
+//
+// Range calibration (the "my 0% and my 100%" layer):
+// Config restAngle/activeAngle describe the EXPECTED human; the camera
+// measures a specific athlete on a specific camera, and MediaPipe's z noise
+// systematically compresses measured angles away from full extension/flexion
+// (a truly straight arm reads ~165-172°, never 180°). So the engine
+// calibrates the config range to the athlete as they demonstrate it:
+//  - Rest side: while idle at the start position, restCal converges to the
+//    athlete's own measured rest angle (windowed EMA — samples far from the
+//    expected rest are rejected, so walking through frame can't hijack it).
+//  - Active side: after a rep that legitimately cleared the counting gate
+//    (so a half rep can never teach the calibrator), activeCal blends toward
+//    that rep's measured peak — the athlete's true lockout/bottom becomes
+//    depth 1.0, whether the sensor under- or over-reads the config target.
+//  - Honesty bound: the calibrated span can never shrink below 80% of the
+//    config span, so counting gates stay within coaching standards and half
+//    reps stay uncountable even against a shrunken range.
 
 import { clamp } from "../pose/landmarks";
 import type { MovementDef, MovementMeasure, RepPhase } from "../movements/types";
@@ -21,6 +38,12 @@ const ENTER = 0.5; // depth above this = rep is underway
 const BOTTOM_MARGIN = 0.06; // how close to peak counts as "at the bottom"
 const MIN_REP_MS = 500; // refractory between reps
 const QUALITY_GATE = 0.35; // ignore frames with worse tracking
+
+// ---- Range-calibration tuning ----
+const REST_TAU_S = 1.5; // idle rest-angle EMA time constant (settles in ~2s)
+const ACTIVE_BLEND = 0.85; // how far activeCal moves toward a demonstrated peak
+const SPAN_MIN_FRAC = 0.8; // calibrated span never shrinks below 80% of config
+const SPAN_MAX_FRAC = 1.3; // ...or grows beyond 130% (one outlier rep can't skew)
 
 export type RepEvent = {
   repNumber: number;
@@ -77,9 +100,21 @@ export class RepEngine {
   // >1 = stricter (a rep must reach deeper to count).
   private minFrac: number;
 
+  // Calibrated range (see header). Initialized from config; restCal learns
+  // during idle, activeCal learns from counted reps. Survives reset() — the
+  // athlete and camera don't change between sets; a new movement gets a new
+  // engine instance (and therefore fresh calibration) from the hook.
+  private restCal: number;
+  private activeCal: number;
+  // Raw measured angle at the deepest point of the current rep.
+  private peakAngle: number;
+
   constructor(movement: MovementDef, repFractionScale = 1) {
     this.movement = movement;
     this.minFrac = clamp(movement.minRepFraction * repFractionScale, 0.3, 0.95);
+    this.restCal = movement.restAngle;
+    this.activeCal = movement.activeAngle;
+    this.peakAngle = movement.restAngle;
   }
 
   reset() {
@@ -107,10 +142,34 @@ export class RepEngine {
   }
 
   private toDepth(angle: number): number {
-    const { restAngle, activeAngle } = this.movement;
-    const span = activeAngle - restAngle;
+    const span = this.activeCal - this.restCal;
     if (Math.abs(span) < 1e-6) return 0;
-    return clamp((angle - restAngle) / span, -0.15, 1.35);
+    return clamp((angle - this.restCal) / span, -0.15, 1.35);
+  }
+
+  /** Idle-only: converge restCal to the athlete's own measured start position.
+   * Windowed vs the CONFIG rest so a walk-through or a stretch can't teach it. */
+  private calibrateRest(angle: number, dt: number) {
+    const { restAngle, activeAngle } = this.movement;
+    const restWindow = Math.min(30, Math.abs(activeAngle - restAngle) * 0.35);
+    if (Math.abs(angle - restAngle) > restWindow) return;
+    const alpha = 1 - Math.exp(-dt / REST_TAU_S);
+    this.restCal += (angle - this.restCal) * alpha;
+  }
+
+  /** After a counted rep (a half rep can never get here): blend activeCal
+   * toward the athlete's demonstrated peak, inside the honesty bounds. */
+  private calibrateActive() {
+    const { restAngle, activeAngle } = this.movement;
+    const cfgSpan = activeAngle - restAngle;
+    const sign = Math.sign(cfgSpan) || 1;
+    const target = activeAngle + ACTIVE_BLEND * (this.peakAngle - activeAngle);
+    const spanMag = clamp(
+      (target - this.restCal) * sign,
+      Math.abs(cfgSpan) * SPAN_MIN_FRAC,
+      Math.abs(cfgSpan) * SPAN_MAX_FRAC,
+    );
+    this.activeCal = this.restCal + sign * spanMag;
   }
 
   update(measure: MovementMeasure | null, timestampMs: number): FrameState {
@@ -157,6 +216,9 @@ export class RepEngine {
       return this.snapshot(null, 0, 0, repEvent);
     }
 
+    // Learn the athlete's actual start position while they're between reps.
+    if (!this.inRep && dt > 0 && dt < 1) this.calibrateRest(measure.angle, dt);
+
     const depth = this.toDepth(measure.angle);
     const velocity = dt > 0 && dt < 1 ? (depth - this.lastDepth) / dt : 0;
     this.depth = depth;
@@ -180,13 +242,17 @@ export class RepEngine {
         this.reachedBottom = false;
         this.rising = false;
         this.peakDepth = depth;
+        this.peakAngle = measure.angle;
         this.repTut = 0;
         this.startTs = this.leftHomeTs || timestampMs;
         this.bottomTs = 0;
         this.riseTs = 0;
       }
     } else {
-      this.peakDepth = Math.max(this.peakDepth, depth);
+      if (depth > this.peakDepth) {
+        this.peakDepth = depth;
+        this.peakAngle = measure.angle;
+      }
       if (!this.reachedBottom && depth >= bottomZone) {
         this.reachedBottom = true;
         this.bottomTs = timestampMs;
@@ -205,6 +271,8 @@ export class RepEngine {
         if (this.reachedBottom && validRange && longEnough && notBounced) {
           this.reps += 1;
           this.lastRepTs = endTs;
+          // A legitimate rep just landed — tune the range to this athlete.
+          this.calibrateActive();
           const bottomTs = this.bottomTs || this.startTs;
           const riseTs = this.riseTs || bottomTs;
           repEvent = {

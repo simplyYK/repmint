@@ -35,6 +35,7 @@ import type { MovementDef } from "../../lib/movements/types";
 import { Spinner, Button, Reveal } from "../../components/ui/primitives";
 import { CoachVoice } from "../../lib/tracking/coachVoice";
 import { scoreRep } from "../../lib/tracking/repQuality";
+import { buildSetReview, type SetReviewInput } from "../../lib/tracking/setReview";
 import { SetAnalytics, type FatigueStatus } from "../../lib/tracking/setAnalytics";
 import { WeightLogger } from "./WeightLogger";
 import { RestTimer } from "./RestTimer";
@@ -117,6 +118,7 @@ function TrainInner() {
     romScore: number | null;
     cues: string[];
     repMetrics: Record<string, unknown>[];
+    recommendation: string | null;
   } | null>(null);
   const [logWeight, setLogWeight] = useState<{ weight: number | null; bodyweight: boolean }>({
     weight: null,
@@ -200,6 +202,7 @@ function TrainInner() {
     romScore: number | null;
     cues: string[];
     repMetrics: Record<string, unknown>[];
+    recommendation: string | null;
   }) => {
     setPendingOutcome(outcome);
     const last = readLastWeight(current.exerciseSlug);
@@ -391,6 +394,12 @@ function TrainInner() {
           {pendingOutcome?.tut != null && <span>{Math.round(pendingOutcome.tut)}s TUT</span>}
           {pendingOutcome?.formScore != null && <span>{Math.round(pendingOutcome.formScore)}% form</span>}
         </div>
+        {pendingOutcome?.recommendation && (
+          <div className="train-log-reco">
+            <span className="train-log-reco-label">Coach&apos;s focus for the next set</span>
+            <p>{pendingOutcome.recommendation}</p>
+          </div>
+        )}
         <WeightLogger
           unit={unit}
           loadType={current.meta.loadType}
@@ -593,6 +602,8 @@ type SetOutcomePayload = {
   romScore: number | null;
   cues: string[];
   repMetrics: Record<string, unknown>[];
+  /** One personalized "focus for next set" line (camera-tracked sets only). */
+  recommendation: string | null;
 };
 
 function LiveCoach({
@@ -651,6 +662,19 @@ const SET_CLOSERS = [
   "Strong set.",
   "Nice control — keep that quality.",
   "Well done.",
+];
+
+// Set-start lines, rotated per set for the same reason.
+const START_LINES = [
+  "Set started. Move with control.",
+  "Here we go — smooth and steady.",
+  "Let's work. Quality reps.",
+];
+
+// Lead-ins for the (at most two) spoken corrections per set, for variety.
+const CUE_LEADINS: Array<(cue: string) => string> = [
+  (cue) => cue,
+  (cue) => `Quick check — ${cue}`,
 ];
 
 const FATIGUE_LABEL: Record<FatigueStatus, string | null> = {
@@ -789,12 +813,22 @@ function CameraSet({
     }
   }, [snapshot.reps, active, isHold, targetReps, targetHit]);
 
-  // Speak form cues when they change (adjust tone only — praise stays visual).
+  // Speak form cues sparingly: the HUD shows every correction, but the coach
+  // VOICES at most two per set — one early, one mid-set if faults persist —
+  // so it corrects without nagging and rep counts always get the airtime.
+  const spokenCuesRef = useRef(0);
+  const lastCueSpokenAtRef = useRef(0);
   useEffect(() => {
     if (!active || !snapshot.cue || snapshot.tone !== "adjust") return;
     if (snapshot.cue === lastSpokenCue.current) return;
+    const now = Date.now();
+    if (spokenCuesRef.current >= 2) return;
+    if (spokenCuesRef.current === 1 && now - lastCueSpokenAtRef.current < 25_000) return;
     lastSpokenCue.current = snapshot.cue;
-    voiceRef.current?.cue(snapshot.cue);
+    const leadIn = CUE_LEADINS[spokenCuesRef.current % CUE_LEADINS.length];
+    spokenCuesRef.current += 1;
+    lastCueSpokenAtRef.current = now;
+    voiceRef.current?.cue(leadIn(snapshot.cue));
   }, [snapshot.cue, snapshot.tone, active]);
 
   const [manualFallback, setManualFallback] = useState(false);
@@ -913,9 +947,14 @@ function CameraSet({
     analyticsRef.current.reset();
     fatigueSpoken.current = false;
     lastRepNumber.current = 0;
+    spokenCuesRef.current = 0;
+    lastCueSpokenAtRef.current = 0;
+    lastSpokenCue.current = "";
     startSet();
     void wake();
-    voiceRef.current?.milestone(isHold ? "Hold started." : "Set started. Move with control.");
+    voiceRef.current?.milestone(
+      isHold ? "Hold started." : START_LINES[(index + planned.setIndex) % START_LINES.length],
+    );
   };
 
   const finish = () => {
@@ -942,6 +981,26 @@ function CameraSet({
     // Form score: mean per-rep quality when we have it, else tracking quality.
     const formScore =
       tier === 1 ? (repScores.length ? Math.round(repScores.reduce((s, x) => s + x, 0) / repScores.length) : Math.round(snapshot.quality)) : null;
+    // One personalized focus line for the next set, from what actually happened.
+    const recommendation =
+      tier !== 1
+        ? null
+        : isHold
+          ? out.faults[0]?.signal === "hip_sag"
+            ? "Your hips dipped during the hold — squeeze your glutes and keep one straight line next time."
+            : out.faults[0]?.signal === "hip_pike"
+              ? "Hips crept up during the hold — settle them level with your shoulders next time."
+              : "Solid hold. Next one: same long, level line, steady breathing."
+          : buildSetReview({
+              repMetrics: repMetricsRef.current as SetReviewInput["repMetrics"],
+              faults: out.faults,
+              reps: out.reps,
+              targetReps,
+              tutSeconds: Math.round(out.tut),
+              tutTargetPerRep: config.tutTargetPerRep || 4,
+              fatigue: analyticsRef.current.status,
+              setIndex: planned.setIndex,
+            });
     onComplete({
       reps: isHold ? null : out.reps,
       seconds: out.seconds,
@@ -950,6 +1009,7 @@ function CameraSet({
       romScore: tier === 1 ? Math.min(100, Math.round(peakRom * 100)) || null : null,
       cues: out.faults.slice(0, 3).map((f) => f.cue),
       repMetrics: repMetricsRef.current,
+      recommendation,
     });
   };
 
@@ -1175,6 +1235,8 @@ function CameraSet({
                 analyticsRef.current.reset();
                 lastRepNumber.current = 0;
                 fatigueSpoken.current = false;
+                spokenCuesRef.current = 0;
+                lastCueSpokenAtRef.current = 0;
                 suppressAutoUntilRef.current = Date.now() + 5000;
               }}
             >
@@ -1185,7 +1247,7 @@ function CameraSet({
         {!active && countdown === null && (
           <button
             className="btn btn-ghost btn-sm"
-            onClick={() => onComplete({ reps: 0, seconds: 0, tut: 0, formScore: null, romScore: null, cues: [], repMetrics: [] })}
+            onClick={() => onComplete({ reps: 0, seconds: 0, tut: 0, formScore: null, romScore: null, cues: [], repMetrics: [], recommendation: null })}
           >
             Skip set
           </button>
@@ -1237,6 +1299,7 @@ function ManualSet({
       romScore: null,
       cues: [],
       repMetrics: [],
+      recommendation: null,
     });
   };
 

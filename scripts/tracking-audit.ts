@@ -147,5 +147,75 @@ const shallow = scoreRep({
 });
 check("barely-counted rep scores noticeably lower", shallow.score < q.score - 10, `${shallow.score} vs ${q.score}`);
 
+// ---------------------------------------------------------------------------
+// 4. Range calibration: an athlete whose MEASURED range is offset from config
+//    (straighter rest, sensor-compressed peak — the MediaPipe z-noise reality)
+//    must still count reps, reach ~100% ROM on the bar, and never get credit
+//    for half reps even after the range adapts to them.
+// ---------------------------------------------------------------------------
+console.log("\n4) Per-athlete range calibration (offset-athlete scenario, every movement)");
+
+function runCalibrationScenario(moveId: string) {
+  const move = MOVEMENT_LIST.find((m) => m.id === moveId)!;
+  const engine = new RepEngine(move);
+  const span = move.activeAngle - move.restAngle;
+  // This athlete rests BEYOND the config rest (e.g. straighter arm) and their
+  // sensor-measured full ROM stops 10% short of the config target.
+  const athleteRest = move.restAngle - 0.1 * span;
+  const athleteActive = athleteRest + 0.9 * span;
+  const fps = 30;
+  let t = 0;
+  let reps = 0;
+  const feed = (angle: number) => {
+    t += 1000 / fps;
+    const frame = engine.update({ angle, side: "left", quality: 1 }, t);
+    reps = frame.reps;
+    return frame;
+  };
+  const doRep = (toAngle: number) => {
+    for (let i = 1; i <= 30; i++) feed(athleteRest + (toAngle - athleteRest) * (i / 30));
+    for (let i = 0; i < 9; i++) feed(toAngle);
+    for (let i = 29; i >= 0; i--) feed(athleteRest + (toAngle - athleteRest) * (i / 30));
+    for (let i = 0; i < 15; i++) feed(athleteRest);
+  };
+
+  // Phase 1: 3s idle at the athlete's own rest — restCal converges, no phantom reps.
+  let idleFrame = feed(athleteRest);
+  for (let i = 0; i < 90; i++) idleFrame = feed(athleteRest);
+  check(`${move.id}: idle at athlete rest reads ~0 depth`, Math.abs(idleFrame.depth) <= 0.12, String(idleFrame.depth));
+  check(`${move.id}: idle creates no phantom reps`, reps === 0, `got ${reps}`);
+
+  // Phase 2: first full (athlete-range) rep counts, despite the offset.
+  doRep(athleteActive);
+  check(`${move.id}: offset athlete's full rep counts`, reps === 1, `got ${reps}`);
+
+  // Phase 3: after one counted rep the bar reads ~100% at THEIR full range.
+  for (let i = 0; i < 15; i++) feed(athleteRest);
+  let peakFrame = feed(athleteActive);
+  for (let i = 0; i < 5; i++) peakFrame = feed(athleteActive);
+  check(
+    `${move.id}: calibrated bar reaches ≥93% at athlete's full ROM`,
+    peakFrame.depth >= 0.93,
+    peakFrame.depth.toFixed(3),
+  );
+  // walk back home so the machine settles (this may legitimately count a rep)
+  for (let i = 29; i >= 0; i--) feed(athleteRest + (athleteActive - athleteRest) * (i / 30));
+  for (let i = 0; i < 15; i++) feed(athleteRest);
+  const repsAfterProbe = reps;
+
+  // Phase 4: HALF of the athlete's own range still never counts (for movements
+  // with an honest gate; ≤0.5-gate movements are deliberately lenient).
+  if (move.minRepFraction >= 0.55) {
+    doRep(athleteRest + 0.45 * span);
+    check(`${move.id}: half rep still never counts post-calibration`, reps === repsAfterProbe, `got ${reps} vs ${repsAfterProbe}`);
+  }
+
+  // Phase 5: another full rep still counts.
+  doRep(athleteActive);
+  check(`${move.id}: full rep still counts post-calibration`, reps === repsAfterProbe + 1, `got ${reps}`);
+}
+
+for (const move of repMovements) runCalibrationScenario(move.id);
+
 console.log(failures === 0 ? "\nALL CHECKS PASSED" : `\n${failures} CHECK(S) FAILED`);
 process.exit(failures === 0 ? 0 : 1);

@@ -2424,6 +2424,11 @@ button.chip:hover { border-color: var(--line-strong); color: var(--text); }
 .train-log-summary { color: var(--text-soft); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .train-log-summary span { background: rgba(8,10,13,0.4); border: 1px solid var(--line); border-radius: 999px; font-family: var(--font-mono); font-size: 0.8rem; padding: 6px 12px; }
 
+/* Post-set coach recommendation on the logging screen */
+.train-log-reco { background: linear-gradient(135deg, rgba(183,255,60,0.08), rgba(72,229,194,0.05)); border: 1px solid rgba(183,255,60,0.25); border-radius: 14px; margin: 4px auto 0; max-width: 440px; padding: 12px 16px; text-align: left; }
+.train-log-reco-label { color: var(--accent); display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 4px; text-transform: uppercase; }
+.train-log-reco p { color: var(--text); font-size: 0.92rem; line-height: 1.45; margin: 0; }
+
 .weight-logger { display: grid; gap: 14px; justify-items: center; }
 .weight-mode { align-self: center; }
 .weight-stepper { align-items: center; display: flex; gap: 12px; }
